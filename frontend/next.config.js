@@ -6,6 +6,7 @@ const nextConfig = {
       "www.espe.edu.ec",
       "espe-el.espe.edu.ec",
       "santodomingo.espe.edu.ec",
+      "i.pinimg.com",
     ],
   },
 };

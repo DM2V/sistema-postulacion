@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import { FunctionComponent } from "react";
 
 interface IconProps {
   color?: string;
@@ -62,7 +62,7 @@ export const Circle = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 512 512"
-    className="w-9 h-9 mr-2"
+    className="mr-2 h-9 w-9"
   >
     <path
       fill="#044E29"
@@ -75,7 +75,7 @@ export const Map = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 384 512"
-    className="w-4 h-4 mr-2"
+    className="mr-2 h-4 w-4"
   >
     <path
       fill="#044E29"
@@ -88,7 +88,7 @@ export const Phone = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 512 512"
-    className="w-4 h-4 mr-2"
+    className="mr-2 h-4 w-4"
   >
     <path
       fill="#044E29"
@@ -101,7 +101,7 @@ export const Email = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 512 512"
-    className="w-4 h-4 mr-2"
+    className="mr-2 h-4 w-4"
   >
     <path
       fill="#044E29"
@@ -114,7 +114,7 @@ export const WebSite = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 512 512"
-    className="w-4 h-4 mr-2"
+    className="mr-2 h-4 w-4"
   >
     <path
       fill="#044E29"
