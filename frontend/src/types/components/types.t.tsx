@@ -32,3 +32,53 @@ export interface OfferCardProps {
   };
   onClick?: () => void;
 }
+
+export interface Checkbox{
+  name: string;
+  optiones: string[];
+  selectedOptiones: string[];
+  allowMultipleSelection: boolean;
+  onChange: (selectedOptiones: string[]) => void;
+}
+
+export interface ComboBox {
+  name: string;
+  title: string;
+  defaultOption: string;
+  options: string[];
+  onChange: (selectedOption: string) => void;
+}
+
+export interface DateInput {
+  name: string;
+  title: string;
+  onChange: (date: Date) => void;
+}
+
+export interface Input {
+  name: string;
+  title: string;
+  placeholder: string;
+  errorMessage: string;
+  disabled: boolean;
+  autocomplete: string;
+  validationFunction: (value: string) => boolean;
+  onChange: (value: string) => void;
+}
+
+
+export interface PasswordProps {
+ name: string;
+ title: string;
+ helpMessage: string;
+ errorMessage: string;
+ validationFunction: (value: string) => boolean;
+ onPasswordChange: (value: string) => void;
+ onChange: (value: string) => void; 
+}
+
+
+export interface TableProps {
+  columns: string[];
+  rows: string[][];
+}
