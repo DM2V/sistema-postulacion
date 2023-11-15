@@ -1,3 +1,4 @@
+import Image from "next/image";
 interface AboutCampusProps {
   info: {
     imageUrl: string;
@@ -11,7 +12,7 @@ function AboutCampus({ info }: AboutCampusProps) {
   return (
     <div className="bg-bg-primary-color shadow-md overflow-hidden flex flex-col lg:flex-row w-full max-w-full mx-auto p-2 mt-5 mb-5">
       <div className="lg:w-1/2">
-        <img src={imageUrl} alt={title} />
+        <Image src={imageUrl} alt={title} width={800} height={800} />
       </div>
 
       <div className="lg:w-1/2 p-6">
