@@ -8,13 +8,13 @@ import {
   EmbeddedCircle,
   Phases,
   Schedule,
-} from "../assets/icons/index";
+} from "../../assets/icons/index";
 
-import Slide from "../components/Home/Slide";
-import Hero from "../components/Home/Hero";
-import Card from "@/components/Home/Card";
-import OfferCard from "@/components/Card/OfferCard";
-import {CardHome, Offer} from "../types/components/types.t";
+import Slide from "../../components/Home/Slide";
+import Hero from "../../components/Home/Hero";
+import Card from "../../components/Home/Card";
+import OfferCard from "../../components/Card/OfferCard";
+import {CardHome, Offer} from "../../types/components/types.t";
 
 const HomePage: React.FC = () => {
   const [offers, setOffer] = useState<Offer[]>([]);
@@ -58,21 +58,21 @@ const HomePage: React.FC = () => {
         icon: <Campus />,
         description:
           "Conoce los lugares donde tendrán lugar las evaluaciones y prepárate para el éxito en tu área.",
-        //   root: CAMPUS,
+        root: "CAMPUS",
       },
       {
         title: "Fases del Concurso",
         icon: <Phases />,
         description:
           "Descubre las etapas clave de evaluación y prepárate para brillar en cada una de ellas.",
-        //   root: PHASES,
+        root: "PHASES",
       },
       {
         title: "Cronograma",
         icon: <Schedule />,
         description:
           "Planifica tus pasos con nuestro cronograma detallado para no perderte ni una fecha importante.",
-        //   root: SCHEDULE,
+        root: "SCHEDULE",
       },
     ];
 
@@ -151,19 +151,19 @@ const HomePage: React.FC = () => {
             Ciencias de la Computación!
           </h4>
           <div className="mt-4 flex h-96 flex-col items-center gap-y-4 md:flex-row md:justify-start md:space-x-4">
-            {/* {cards.map((card, index) => (
+            {cards.map((card, index) => (
               <article
                 key={index}
                 className="transition-transform hover:scale-105 lg:w-80"
               >
-                <Card {...card} />
+                <Card key={index} card={card} />
               </article>
-            ))} */}
+            ))}
           </div>
         </div>
       </div>
 
-      {/* <Hero /> */}
+      <Hero />
 
       <div className="container mx-auto mb-10 mt-8 px-10">
         <div className="flex flex-col items-baseline md:flex-row">
@@ -178,12 +178,12 @@ const HomePage: React.FC = () => {
                 options={["202351", "202350", "202251", "202250"]}
               /> */}
         </div>
-{/* 
+
         <Slider {...settings} className="slick-slider">
-           {offers.map((offer, index) => (
-                <OfferCard {...offer} />
-              ))} 
-        </Slider> */}
+            {offers.map((offer, index) => (
+            <OfferCard key={index} offer={offer} />
+          ))} 
+        </Slider>
 
         <div className="items-top md:items-top container mx-auto flex flex-col justify-center space-y-8 py-8 md:flex-row  md:space-y-0 md:py-12">
           <div className="w-full p-4  md:w-1/2 md:p-8">

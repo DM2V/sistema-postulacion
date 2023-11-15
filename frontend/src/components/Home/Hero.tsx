@@ -1,13 +1,13 @@
 import React from "react";
-import slideImage from "../../assets/images/espe-slide.jpg";
+import slideImage from "../../assets/images/espe-slide.png";
 import { Link } from "react-router-dom";
 
-function  Hero () {
+function Hero() {
   return (
     <div
       className="h-96 bg-cover bg-center relative"
       style={{
-        backgroundImage: `url(${slideImage})`,
+        backgroundImage: `url(${require('../../assets/images/espe-slide.png')})`,
       }}
     >
       <div className="absolute inset-0 "></div>
@@ -33,6 +33,6 @@ function  Hero () {
       ;
     </div>
   );
-};
+}
 
 export default Hero;

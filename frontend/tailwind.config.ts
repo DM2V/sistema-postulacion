@@ -1,20 +1,61 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/layout/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      fontFamily: {
+        raleway: ["raleway", "sans"],
+        poppins: ["poppins", "sans"],
+      },
+      colors: {
+        "primary-color": "#006935",
+        "secondary-color": "#044E29",
+        "ter-color": "#003624",
+        "4-color": "#66FF66",
+        "5-color": "#217164",
+        "bg-primary-color": "#FAFAFA",
+        "state-hover": "#2C9382",
+        "state-hover-secondary": "#EDF4FF",
+        "state-press": "#004A3E",
+        "tp-heading-color": "#14181F",
+        "tp-body-color": "#414750",
+        "tp-disable-color": "#565E69",
+        "fill-sucess": "#98C729",
+        "fill-error": "#DD331D",
+        "fill-warning": "#E8B93F",
+        "gray-bg": "#F3F4F5",
+        "gray-bg2": "#AEB3BC",
+        "bg-error": "#FDE7E5",
+        "bg-warning": "#FFF6E0",
+        "bg-sucess": "#F3FFD6",
+        "bg-disable": "#E0E2E5",
+        "dark-vanilla": "#D0BEAB",
+        "space-cadet": "#262C4C",
+      },
+      fontSize: {
+        h1: ["3.75rem", "1"],
+        h2: ["3rem", "1"],
+        h3: ["2.25rem", "2.5rem"],
+        h4: ["1.875rem", "2.25rem"],
+        h5: ["1.5rem", "2rem"],
+        h6: ["1.125rem", "1.5rem"],
+        "body-medium": ["1rem", "1.5rem"],
+        "body-small": ["0.875rem", "1.25rem"],
+        "body-xs": ["0.75rem", "1rem"],
+        "body-medium-medium": ["1rem", "1.5rem"],
+        "body-small-medium": ["0.875rem", "1rem"],
+        "body-xs-medium": ["0.75rem", "1rem"],
+        label: ["0.75rem", "1rem"],
+        placeholder: ["1rem", "1.5rem"],
+        body: ["1rem", "1.5rem"],
       },
     },
   },
   plugins: [],
-}
-export default config
+};
+export default config;
