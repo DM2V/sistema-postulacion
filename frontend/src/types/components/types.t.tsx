@@ -82,3 +82,40 @@ export interface TableProps {
   columns: string[];
   rows: string[][];
 }
+export interface SidebarProps {
+  user: {
+    avatar: string;
+    name: string;
+    email: string;
+  };
+}
+
+export interface AboutCampusInfo {
+  imageUrl: string;
+  title: string;
+  description: string;
+}
+export interface AboutCampusProps {
+  info: {
+    imageUrl: string;
+    title: string;
+    description: string;
+  };
+}
+
+export interface CampusInfo {
+  title: string;
+  location: string;
+  phone: string;
+  email: string;
+  website: string;
+}
+export interface InfoCampusProps {
+  info: {
+    title: string;
+    location: string;
+    phone: string;
+    email: string;
+    website: string;
+  };
+}
