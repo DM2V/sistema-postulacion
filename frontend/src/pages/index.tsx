@@ -1,13 +1,11 @@
-import Footer from "@/components/Layout/Footer";
 import Navbar from "@/components/Layout/Navbar";
-import HomePage from "./Public/Home";
+import Signup from "./Public/Signup";
 
 export default function Home() {
   return (
     <div className="">
       <Navbar />
-      <HomePage />
-      <Footer />
+      <Signup />
     </div>
   );
 }
