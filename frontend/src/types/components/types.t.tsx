@@ -33,15 +33,15 @@ export interface OfferCardProps {
   onClick?: () => void;
 }
 
-export interface Checkbox{
+export interface CheckBoxProps {
   name: string;
-  optiones: string[];
-  selectedOptiones: string[];
+  options: string[];
+  selectedOptions: string[];
   allowMultipleSelection: boolean;
   onChange: (selectedOptiones: string[]) => void;
 }
 
-export interface ComboBox {
+export interface ComboBoxProps {
   name: string;
   title: string;
   defaultOption: string;
@@ -49,17 +49,18 @@ export interface ComboBox {
   onChange: (selectedOption: string) => void;
 }
 
-export interface DateInput {
+export interface DateProps {
   name: string;
   title: string;
   onChange: (date: Date) => void;
 }
 
-export interface Input {
+export interface InputProps {
   name: string;
   title: string;
   placeholder: string;
   errorMessage: string;
+  helpMessage: string;  
   disabled: boolean;
   autocomplete: string;
   validationFunction: (value: string) => boolean;

@@ -46,7 +46,7 @@ const Password: React.FC<PasswordProps> = ({
     }
 
     if (onChange) {
-      onChange(name, newPassword);
+      onChange(newPassword);
     }
   };
 
