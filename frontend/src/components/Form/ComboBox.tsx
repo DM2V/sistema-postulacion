@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { ValueType } from "react-select/lib/types";
 import Select from "react-select";
-import { ComboBoxProps } from "@/types/components/types.t";
+import { ComboBoxProps, ValueType } from "@/types/components/types.t";
 
+interface Option {
+  label: string;
+  value: string;
+}
 
 const ComboBox: React.FC<ComboBoxProps> = ({
   name,
@@ -13,11 +16,13 @@ const ComboBox: React.FC<ComboBoxProps> = ({
 }) => {
   const [selectedOption, setSelectedOption] = useState<string>(defaultOption);
 
-  const handleSelect = (selectedOption: ValueType<{ label: string; value: string }>) => {
+  const handleSelect = (
+    selectedOption: ValueType<{ label: string; value: string }>,
+  ) => {
     if (selectedOption && "value" in selectedOption) {
       setSelectedOption(selectedOption.value);
       if (onChange) {
-        onChange(selectedOption.value);
+        onChange(name, selectedOption.value);
       }
     }
   };

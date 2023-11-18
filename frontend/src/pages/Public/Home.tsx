@@ -8,17 +8,40 @@ import {
   EmbeddedCircle,
   Phases,
   Schedule,
-} from "../../assets/icons/index";
+} from "@/assets/icons/index";
 
-import Slide from "../../components/Home/Slide";
-import Hero from "../../components/Home/Hero";
-import Card from "../../components/Home/Card";
-import OfferCard from "../../components/Card/OfferCard";
-import {CardHome, Offer} from "../../types/components/types.t";
+import Slide from "@/components/Home/Slide";
+import Hero from "@/components/Home/Hero";
+import Card from "@/components/Home/Card";
+import OfferCard from "@/components/Card/OfferCard";
+import ComboBox from "@/components/Form/ComboBox";
+import {CardHome, Offer} from "@/types/components/types.t";
+
+interface SearchScheduleProps{
+  schedule_period: string,
+
+}
 
 const HomePage: React.FC = () => {
   const [offers, setOffer] = useState<Offer[]>([]);
   const [cards, setCards] = useState<CardHome[]>([]);
+
+  const [formState, setFormState] = useState<SearchScheduleProps>({
+    schedule_period: "",
+  });
+
+  const handleFormChange = (fieldName: string, value: string) => {
+    setFormState({
+      ...formState,
+      [fieldName]: value,
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
+
   const handleClick = () => {
     console.log("El botón verde fue clickeado *conoce el proceso?!*");
   };
@@ -171,12 +194,16 @@ const HomePage: React.FC = () => {
             Consulta las <span className="font-extrabold">ofertas</span>{" "}
             disponibles
           </p>
-          {/* <ComboBox
+          <form action="">
+        <ComboBox
                 name={"academic_period"}
                 title={""}
                 defaultOption={"Seleccione un periodo academico"}
                 options={["202351", "202350", "202251", "202250"]}
-              /> */}
+                onChange={handleFormChange}
+              />
+          </form>
+  
         </div>
 
         <Slider {...settings} className="slick-slider">
@@ -200,7 +227,7 @@ const HomePage: React.FC = () => {
               transparencia y la excelencia en nuestro proceso de selección.
             </p>
             {/* <Link to={PHASES}>
-                  <GreenButton onClick={handleClick}>Conoce el proceso</GreenButton>
+                  <GreenButton onClick={handleClick} content:"Conoce el proceso"/>
                 </Link> */}
           </div>
 

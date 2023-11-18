@@ -33,12 +33,17 @@ export interface OfferCardProps {
   onClick?: () => void;
 }
 
+export type ValueType<T> = {
+  label: string;
+  value: any;
+}[T extends { value: string } ? "value" : never];
+
 export interface CheckBoxProps {
   name: string;
   options: string[];
   selectedOptions: string[];
   allowMultipleSelection: boolean;
-  onChange: (selectedOptiones: string[]) => void;
+  onChange: (fieldName: string, selectedOptiones: string[]) => void;
 }
 
 export interface ComboBoxProps {
@@ -46,7 +51,7 @@ export interface ComboBoxProps {
   title: string;
   defaultOption: string;
   options: string[];
-  onChange: (selectedOption: string) => void;
+  onChange: (name: string, selectedOption: string) => void;
 }
 
 export interface DateProps {
@@ -60,29 +65,28 @@ export interface InputProps {
   title: string;
   placeholder: string;
   errorMessage: string;
-  helpMessage: string;  
+  helpMessage: string;
   disabled: boolean;
   autocomplete: string;
   validationFunction: (value: string) => boolean;
   onChange: (value: string) => void;
 }
 
-
 export interface PasswordProps {
- name: string;
- title: string;
- helpMessage: string;
- errorMessage: string;
- validationFunction: (value: string) => boolean;
- onPasswordChange: (value: string) => void;
- onChange: (value: string) => void; 
+  name: string;
+  title: string;
+  helpMessage: string;
+  errorMessage: string;
+  validationFunction: (value: string) => boolean;
+  onPasswordChange: (value: string) => void;
+  onChange: (value: string) => void;
 }
-
 
 export interface TableProps {
   columns: string[];
   rows: string[][];
 }
+ 
 export interface SidebarProps {
   user: {
     avatar: string;
@@ -96,6 +100,7 @@ export interface AboutCampusInfo {
   title: string;
   description: string;
 }
+
 export interface AboutCampusProps {
   info: {
     imageUrl: string;
@@ -111,6 +116,7 @@ export interface CampusInfo {
   email: string;
   website: string;
 }
+
 export interface InfoCampusProps {
   info: {
     title: string;
@@ -119,4 +125,11 @@ export interface InfoCampusProps {
     email: string;
     website: string;
   };
+}
+
+//
+export interface SearchScheduleProps {
+  schedule_period: string;
+  schedule_announcement: string;
+  schedule_campus: string;
 }
