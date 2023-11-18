@@ -63,6 +63,8 @@ export const Circle = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 512 512"
     className="mr-2 h-9 w-9"
+    width='20px' 
+    height= '20px'
   >
     <path
       fill="#044E29"
@@ -76,6 +78,8 @@ export const Map = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 384 512"
     className="mr-2 h-4 w-4"
+    width='20px' 
+    height= '20px'
   >
     <path
       fill="#044E29"
@@ -89,6 +93,8 @@ export const Phone = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 512 512"
     className="mr-2 h-4 w-4"
+    width='20px' 
+    height= '20px'
   >
     <path
       fill="#044E29"
@@ -102,6 +108,8 @@ export const Email = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 512 512"
     className="mr-2 h-4 w-4"
+    width='20px' 
+    height= '20px'
   >
     <path
       fill="#044E29"
@@ -115,6 +123,8 @@ export const WebSite = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 512 512"
     className="mr-2 h-4 w-4"
+    width='20px' 
+    height= '20px'
   >
     <path
       fill="#044E29"

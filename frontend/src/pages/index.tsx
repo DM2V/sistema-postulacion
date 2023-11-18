@@ -9,10 +9,11 @@ export default function Home() {
   return (
     <div className="">
       <Navbar />
+      <Campus />
       <Signup />
       <HomePage />
       <Schedule />
-      <Campus />
+      <Offer />
     </div>
   );
 }

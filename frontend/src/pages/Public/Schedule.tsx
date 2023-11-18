@@ -45,9 +45,6 @@ const Schedule: FC = () => {
       ...formState,
       [fieldName]: value,
     });
-    {
-      console.log("formState", formState);
-    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
