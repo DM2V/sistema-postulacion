@@ -6,8 +6,8 @@ function InfoCampus({ info }: InfoCampusProps) {
 
   return (
     <div className="mb-5 mt-5 w-96 rounded-xl bg-bg-primary-color p-4 text-body-small text-tp-body-color shadow-md">
-      <div className="mb-4 flex items-center text-secondary-color">
-        <Circle />
+      <div className="mb-2 flex items-center text-secondary-color">
+        <Circle/>
         <h5 className="text-lg font-extrabold">{title}</h5>
       </div>
 

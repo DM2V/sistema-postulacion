@@ -88,7 +88,7 @@ function Campus() {
             Sedes
           </h3>
           {campusData.map((data, index) => (
-            <div key={index} className="transition-transform hover:scale-105">
+            <div key={index} >
               <InfoCampus key={index} info={data} />
             </div>
           ))}
