@@ -2,10 +2,6 @@ import React, { useState } from "react";
 import Select from "react-select";
 import { ComboBoxProps, ValueType } from "@/types/components/types.t";
 
-interface Option {
-  label: string;
-  value: string;
-}
 
 const ComboBox: React.FC<ComboBoxProps> = ({
   name,

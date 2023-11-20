@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
-import { personalData } from "@/types/cv";
+import { PersonalData } from "@/types/cv";
 import GreenButton from "@/components/Buttons/GreenButton";
 import InputLabel from "@/components/Form/InputLabel";
 import DateInput from "@/components/Form/DateInput";
@@ -10,15 +10,15 @@ import {
   calculateAge,
   validateNumbersOnly,
 } from "@/utils/validations";
-import { set } from "date-fns";
 
-const PersonalData: FC = () => {
+
+const PersonalDataPage: FC = () => {
   const [isSpecialCapacityVisible, setSpecialCapacityVisible] = useState(true);
   const [isDiseaseVisible, setDiseaseVisible] = useState(true);
   const [isResidenceYearsVisible, setResidenceYearsVisible] = useState(true);
   const gender = ["hombre", "mujer"];
   const nacionality = ["Ecuatoriano", "Mexicano", "Colombiano", "Peruano", "Cubano"];
-  const [formState, setFormState] = useState<personalData>({
+  const [formState, setFormState] = useState<PersonalData>({
     name: "",
     lastName1: "",
     lastName2: "",
@@ -36,6 +36,7 @@ const PersonalData: FC = () => {
     disabilityType: "",
     disabilityPercentage: "",
     MSPIDNumber: "",
+    avatar: "",
   });
 
   const handleFormChange = (fieldName: string, value: string | string[]) => {
@@ -254,4 +255,4 @@ const PersonalData: FC = () => {
   );
 };
 
-export default PersonalData;
+export default PersonalDataPage;
