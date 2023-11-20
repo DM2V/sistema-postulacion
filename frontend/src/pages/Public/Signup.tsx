@@ -1,3 +1,5 @@
+import ComboBox from "@/components/Form/ComboBox";
+import InputLabel from "@/components/Form/InputLabel";
 import Image from "next/image";
 import signupImg from "../../assets/images/signup.png";
 import GreenButton from "../../components/Buttons/GreenButton";
@@ -9,7 +11,30 @@ const Signup = () => {
         <h4 className="pb-5 text-center text-2xl font-bold text-primary-color lg:text-h4">
           Registro de Postulante
         </h4>
+
         <form className="w-full text-sm lg:text-base">
+          <ComboBox
+            name={"id_type"}
+            title={"Tipo de identificación:"}
+            options={["Seleccione", "Cédula", "Passporte"]}
+            defaultOption={""}
+          />
+          <InputLabel
+            name={"id_number"}
+            title={"Número de identificación:"}
+            errorMessage={"El numero de identificación es necesario."}
+          />
+          <InputLabel
+            name={"email"}
+            title={"Correo Electrónico:"}
+            placeholder={"correo@gmail.com"}
+          />
+          <InputLabel
+            name={"email_confirm"}
+            title={"Confirmar Correo:"}
+            placeholder={"correo@gmail.com"}
+          />
+
           <h6>Captcha</h6>
           <h6>
             Acepto la <strong>Politica de Privacidad*</strong>

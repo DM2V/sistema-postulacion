@@ -1,9 +1,34 @@
 import { SignupIcon } from "@/assets/icons";
+import InputLabel from "@/components/Form/InputLabel";
+import Password from "@/components/Form/Password";
 import Image from "next/image";
+import { useState } from "react";
 import LoginImg from "../../assets/images/login.jpg";
 import GreenButton from "../../components/Buttons/GreenButton";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleSubmit(e: any) {
+    e.preventDefault();
+
+    /*  await pb.collection("users").authWithPassword(email, password);
+    if (pb.authStore.model.role === "candidate") {  |
+      //route to the candidate dashboard
+      navigate("/info");
+    } */
+
+    /*
+    await pb.admins.authWithPassword(
+      "marce-malte@hotmail.com",
+      "#Dm2v99-pocketbase",
+    );
+    //route to the candidate dashboard
+    navigate("/candidate-panel");*/
+    console.log("Clcick Login");
+  }
+
   return (
     <>
       <div className="lg: mx-5 flex-col md:flex md:flex-row">
@@ -24,15 +49,26 @@ function Login() {
             datos.
           </p>
 
-          <form className="m-4 flex flex-col justify-center border border-cyan-400">
-            <label htmlFor="">correo</label>
-            <input type="text" className="" />
+          <form
+            className="m-2 mx-auto md:w-3/4 md:text-sm lg:text-base"
+            onSubmit={handleSubmit}
+          >
+            <InputLabel
+              onChange={setEmail}
+              title="Correo Electrónico:"
+              name={"email"}
+              placeholder="email@example.com"
+              errorMessage="El correo electrónico es necesario."
+            />
+            <Password
+              onChange={setPassword}
+              onPasswordChange={setPassword}
+              name={"password"}
+              title="Contraseña:"
+            />
 
-            <label htmlFor="">contraseña</label>
-            <input type="text" className="" />
+            <GreenButton content="Ingresar" />
           </form>
-
-          <GreenButton content="Ingresar" />
 
           <div className="m-4 text-center text-sm font-medium text-tp-disable-color lg:text-base">
             <div>
