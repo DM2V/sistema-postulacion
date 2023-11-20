@@ -41,15 +41,15 @@ export type ValueType<T> = {
 export interface CheckBoxProps {
   name: string;
   options: string[];
-  selectedOptions: string[];
+  selectedOptions: string[] | string; 
   allowMultipleSelection: boolean;
-  onChange: (fieldName: string, selectedOptiones: string[]) => void;
+  onChange: (name: string, selectedOption: string | string[]) => void;
 }
 
 export interface ComboBoxProps {
   name: string;
   title: string;
-  defaultOption: string;
+  defaultOption?: string;
   options: string[];
   onChange: (name: string, selectedOption: string) => void;
 }
@@ -57,19 +57,19 @@ export interface ComboBoxProps {
 export interface DateProps {
   name: string;
   title: string;
-  onChange: (date: Date) => void;
+  onChange: (name: string, selectedOption: string) => void;
 }
 
 export interface InputProps {
   name: string;
   title: string;
-  placeholder: string;
-  errorMessage: string;
-  helpMessage: string;
-  disabled: boolean;
-  autocomplete: string;
-  validationFunction: (value: string) => boolean;
-  onChange: (value: string) => void;
+  placeholder?: string;
+  errorMessage?: string;
+  helpMessage?: string;
+  disabled?: boolean;
+  autocomplete?: string;
+  validationFunction?: (value: string) => boolean;
+  onChange?: (name: string, selectedOption: string) => void;
 }
 
 export interface PasswordProps {
@@ -86,7 +86,7 @@ export interface TableProps {
   columns: string[];
   rows: string[][];
 }
- 
+
 export interface SidebarProps {
   user: {
     avatar: string;
@@ -127,7 +127,7 @@ export interface InfoCampusProps {
   };
 }
 
-//
+// Search Schedule
 export interface SearchScheduleProps {
   schedule_period: string;
   schedule_announcement: string;

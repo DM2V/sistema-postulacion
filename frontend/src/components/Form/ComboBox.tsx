@@ -14,8 +14,9 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   options,
   onChange,
 }) => {
-  const [selectedOption, setSelectedOption] = useState<string>(defaultOption);
-
+  const [selectedOption, setSelectedOption] = useState<string>(
+    defaultOption || ""
+  );
   const handleSelect = (
     selectedOption: ValueType<{ label: string; value: string }>,
   ) => {

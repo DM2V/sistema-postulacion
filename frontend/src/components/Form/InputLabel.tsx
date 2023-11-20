@@ -38,7 +38,7 @@ const InputLabel: React.FC<InputProps> = ({
       }
   
       if (onChange) {
-        onChange(inputValue);
+        onChange(name, inputValue);
       }
     };
   
