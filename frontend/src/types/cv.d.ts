@@ -1,6 +1,6 @@
-export interface FormData {
+export interface CV {
   personalData: PersonalData;
-  personalInfo: PersonalInformation;
+  personalInformation: PersonalInformation;
   emergencyContact: EmergencyContact;
   academicTraining: AcademicTraining[];
   languages: Language[];
@@ -135,7 +135,7 @@ export interface ExtraPoints{
   vulnerableSituations: string; //base64
 }
 
-export interface postulacionDocument{
+export interface PostulacionDocument{
   offerId: string;
   resume: string;
   idCopy: string;
