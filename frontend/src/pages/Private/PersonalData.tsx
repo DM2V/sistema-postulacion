@@ -10,11 +10,14 @@ import {
   calculateAge,
   validateNumbersOnly,
 } from "@/utils/validations";
+import { set } from "date-fns";
 
 const PersonalData: FC = () => {
   const [isSpecialCapacityVisible, setSpecialCapacityVisible] = useState(true);
   const [isDiseaseVisible, setDiseaseVisible] = useState(true);
+  const [isResidenceYearsVisible, setResidenceYearsVisible] = useState(true);
   const gender = ["hombre", "mujer"];
+  const nacionality = ["Ecuatoriano", "Mexicano", "Colombiano", "Peruano", "Cubano"];
   const [formState, setFormState] = useState<personalData>({
     name: "",
     lastName1: "",
@@ -36,36 +39,54 @@ const PersonalData: FC = () => {
   });
 
   const handleFormChange = (fieldName: string, value: string | string[]) => {
-      console.log(fieldName,value);
-    // if (fieldName === "specialCapacity") {
-    //     if(value === "Yes"){
-    //         setSpecialCapacityVisible(value === "Yes");
-    //     }else{
-    //         setSpecialCapacityVisible(value === "No");
-    //     }
-    // }
-    
+    if (fieldName === "specialCapacity") {
+      setSpecialCapacityVisible(value === "Si");
+      if (value === "No") {
+        setSpecialCapacityVisible(false);
+      } else {
+        setSpecialCapacityVisible(true);
+      }
+    }
 
-    // if (fieldName === "catastrophicDisease") {
-    //   setDiseaseVisible(value === "Yes");
-    // }
-    console.log(formState);
+    if (fieldName === "catastrophicDisease") {
+      setDiseaseVisible(value === "Si");
+
+      if (value === "No") {
+        setDiseaseVisible(false);
+      } else {
+        setDiseaseVisible(true);
+      }
+    }
+
+    if (fieldName === "nationality") {
+        setResidenceYearsVisible(value === "Ecuatoriano");
+      if (value !== "Ecuatoriano") {
+          setResidenceYearsVisible(true);
+        } else {
+          setResidenceYearsVisible(false);
+      }
+    }
 
     if (Array.isArray(value)) {
-        setFormState((prevFormState) => ({
-          ...prevFormState,
-          [fieldName]: value[0], // Update the state with the first element of the array
-        }));
-      } else {
-        setFormState((prevFormState) => ({
-          ...prevFormState,
-          [fieldName]: value, // Handle single value as before
-        }));
-      }
-    };
+      setFormState((prevFormState) => ({
+        ...prevFormState,
+        [fieldName]: value[0],
+      }));
+    } else {
+      setFormState((prevFormState) => ({
+        ...prevFormState,
+        [fieldName]: value,
+      }));
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
+
+  useEffect(() => {
+    console.log("Form state updated:", formState);
+  }, [formState]);
 
   return (
     <div className="my-8 flex min-h-screen flex-col items-center lg:p-4">
@@ -107,10 +128,11 @@ const PersonalData: FC = () => {
                 name="age"
                 title="Edad:"
                 placeholder={
-                    isNaN(calculateAge(formState.birthDate)) || calculateAge(formState.birthDate) < 19
-                      ? ""
-                      : calculateAge(formState.birthDate)?.toString() || ""
-                  }
+                  isNaN(calculateAge(formState.birthDate)) ||
+                  calculateAge(formState.birthDate) < 19
+                    ? ""
+                    : calculateAge(formState.birthDate)?.toString() || ""
+                }
                 disabled={true}
               />
               <ComboBox
@@ -134,10 +156,11 @@ const PersonalData: FC = () => {
               <ComboBox
                 name="nationality"
                 title="Nacionalidad:"
-                options={gender}
+                options={nacionality}
                 onChange={handleFormChange}
               />
             </div>
+            {isResidenceYearsVisible && (
             <InputLabel
               name="residenceYears"
               title="En caso de ser extranjero, indicar años de residencia:"
@@ -145,6 +168,7 @@ const PersonalData: FC = () => {
               validationFunction={validateNumbersOnly}
               onChange={handleFormChange}
             />
+            )}
             <ComboBox
               name="ethnicIdentification"
               title="Auto identificación étnica:"
