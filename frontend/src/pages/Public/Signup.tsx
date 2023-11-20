@@ -1,12 +1,16 @@
+import CheckBox from "@/components/Form/CheckBox";
 import ComboBox from "@/components/Form/ComboBox";
 import InputLabel from "@/components/Form/InputLabel";
+import { validateEcuadorianID, validateEmail } from "@/utils/validations";
 import Image from "next/image";
 import signupImg from "../../assets/images/signup.png";
 import GreenButton from "../../components/Buttons/GreenButton";
 
-const Signup = () => {
+function Signup() {
+  const idType = ["Cédula", "Pasaporte"];
+
   return (
-    <div className="md:bg container mx-auto mb-10 mt-2 px-10 md:flex md:flex-row md:items-center md:bg-[url(../assets/images/bg.jpg)] md:bg-cover lg:flex lg:flex-row lg:justify-center">
+    <div className="md:bg container mx-auto mb-10 mt-2 px-10 md:flex md:flex-row md:items-center lg:flex lg:flex-row lg:justify-center">
       <div className="z-10 my-5 flex w-full flex-col items-center justify-center rounded-3xl bg-gray-bg p-8 shadow-sm shadow-tp-disable-color md:m-5 md:-ml-1 md:w-96">
         <h4 className="pb-5 text-center text-2xl font-bold text-primary-color lg:text-h4">
           Registro de Postulante
@@ -16,29 +20,45 @@ const Signup = () => {
           <ComboBox
             name={"id_type"}
             title={"Tipo de identificación:"}
-            options={["Seleccione", "Cédula", "Passporte"]}
-            defaultOption={""}
+            options={idType}
+            onChange={() => {
+              console.log("type id");
+            }}
           />
+
           <InputLabel
             name={"id_number"}
             title={"Número de identificación:"}
             errorMessage={"El numero de identificación es necesario."}
+            validationFunction={validateEcuadorianID}
           />
+
           <InputLabel
             name={"email"}
             title={"Correo Electrónico:"}
-            placeholder={"correo@gmail.com"}
+            errorMessage="*Campo Requerido"
+            validationFunction={validateEmail}
           />
           <InputLabel
             name={"email_confirm"}
             title={"Confirmar Correo:"}
-            placeholder={"correo@gmail.com"}
+            errorMessage="*Campo Requerido"
+            validationFunction={validateEmail}
           />
 
-          <h6>Captcha</h6>
-          <h6>
-            Acepto la <strong>Politica de Privacidad*</strong>
-          </h6>
+          <div className="mb-5 w-max">
+            <div>Captcha</div>
+
+            <CheckBox
+              name="privacy_policy"
+              options={["Acepto las Políticas de Privacidad*"]}
+              selectedOptions={""}
+              allowMultipleSelection={true}
+              onChange={() => {
+                console.log("privacy policy");
+              }}
+            />
+          </div>
         </form>
 
         <GreenButton content="Enviar" />
@@ -57,6 +77,6 @@ const Signup = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Signup;

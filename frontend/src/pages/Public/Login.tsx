@@ -1,6 +1,7 @@
 import { SignupIcon } from "@/assets/icons";
 import InputLabel from "@/components/Form/InputLabel";
 import Password from "@/components/Form/Password";
+import { validateEmail, validatePassword } from "@/utils/validations";
 import Image from "next/image";
 import { useState } from "react";
 import LoginImg from "../../assets/images/login.jpg";
@@ -54,17 +55,20 @@ function Login() {
             onSubmit={handleSubmit}
           >
             <InputLabel
-              onChange={setEmail}
-              title="Correo Electrónico:"
               name={"email"}
-              placeholder="email@example.com"
-              errorMessage="El correo electrónico es necesario."
+              title="Correo Electrónico:"
+              errorMessage={"*Campo Requerido"}
+              validationFunction={validateEmail}
+              onChange={setEmail}
             />
             <Password
-              onChange={setPassword}
-              onPasswordChange={setPassword}
               name={"password"}
               title="Contraseña:"
+              errorMessage={"*Campo Requerido"}
+              validationFunction={validatePassword}
+              onChange={setPassword}
+              onPasswordChange={setPassword}
+              helpMessage={""}
             />
 
             <GreenButton content="Ingresar" />
