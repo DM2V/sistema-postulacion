@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
-import { PersonalInformation, emergencyContact } from "@/types/cv";
+import {CV, PersonalInformation, EmergencyContact } from "@/types/cv";
 import GreenButton from "@/components/Buttons/GreenButton";
 import InputLabel from "@/components/Form/InputLabel";
 import DateInput from "@/components/Form/DateInput";
@@ -14,8 +14,8 @@ import {
 const PersonalInformation: FC = () => {
     const gender = ["hombre", "mujer"];
 
-    const [formData, setFormData] = useState<FormData>({
-        personalInfo: {
+    const [formData, setFormData] = useState<CV>({
+        PersonalInformation: {
           province: '',
           canton: '',
           parish: '',
@@ -28,7 +28,7 @@ const PersonalInformation: FC = () => {
           workPhone: '',
           extencion: '',
         },
-        emergencyContact: {
+        EmergencyContact: {
           name: '',
           lastName1: '',
           lastName2: '',
