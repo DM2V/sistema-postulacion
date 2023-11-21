@@ -1,35 +1,34 @@
 import { SignupIcon } from "@/assets/icons";
+import LoginImg from "@/assets/images/login.jpg";
+import GreenButton from "@/components/Buttons/GreenButton";
 import InputLabel from "@/components/Form/InputLabel";
 import Password from "@/components/Form/Password";
 import { REGISTER } from "@/routes/paths";
+import { pb } from "@/utils/pocketbase";
 import { validateEmail, validatePassword } from "@/utils/validations";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
-import LoginImg from "../assets/images/login.jpg";
-import GreenButton from "../components/Buttons/GreenButton";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   async function handleSubmit(e: any) {
     e.preventDefault();
 
-    /*  await pb.collection("users").authWithPassword(email, password);
-    if (pb.authStore.model.role === "candidate") {  |
+    await pb.collection("users").authWithPassword(email, password);
+    if (pb.authStore.role === "candidate") {
       //route to the candidate dashboard
-      navigate("/info");
-    } */
-
-    /*
-    await pb.admins.authWithPassword(
-      "marce-malte@hotmail.com",
-      "#Dm2v99-pocketbase",
-    );
+      router.push("/information");
+    }
+    /* 
+    await pb.admins.authWithPassword("admin@gmail.com", "adminPostulacion1");
     //route to the candidate dashboard
-    navigate("/candidate-panel");*/
-    console.log("Clcick Login");
+    router.push("/");
+    console.log("Clcick Login"); */
   }
 
   return (
