@@ -1,6 +1,15 @@
-function WhiteButton({ content }: { content: string }) {
+function WhiteButton({
+  content,
+  onClick,
+}: {
+  content: string;
+  onClick?: () => void;
+}) {
   return (
-    <button className="rounded-xl bg-white font-semibold text-primary-color border border-primary-color py-1 px-3 hover:bg-primary-color hover:text-white hover:font-normal transform hover:scale-105 transition-all">
+    <button
+      onClick={onClick}
+      className="transform rounded-xl border border-primary-color bg-white px-3 py-1 font-semibold text-primary-color transition-all hover:scale-105 hover:bg-primary-color hover:font-normal hover:text-white"
+    >
       <p>{content}</p>
     </button>
   );

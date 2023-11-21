@@ -1,20 +1,18 @@
-import { FC, useEffect, useState } from "react";
 import GreenButton from "@/components/Buttons/GreenButton";
 import OfferCard from "@/components/Card/OfferCard";
 import ComboBox from "@/components/Form/ComboBox";
+import { FC, useState } from "react";
 
 const Offer: FC = () => {
-
-  interface SearchOfferProps{
-    offer_announcement: string,
-    offer_campus: string,
+  interface SearchOfferProps {
+    offer_announcement: string;
+    offer_campus: string;
   }
 
   const [formState, setFormState] = useState<SearchOfferProps>({
     offer_announcement: "",
     offer_campus: "",
   });
-
 
   const handleFormChange = (fieldName: string, value: string) => {
     setFormState({

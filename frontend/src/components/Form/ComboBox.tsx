@@ -1,7 +1,6 @@
+import { ComboBoxProps, ValueType } from "@/types/components/types.t";
 import React, { useState } from "react";
 import Select from "react-select";
-import { ComboBoxProps, ValueType } from "@/types/components/types.t";
-
 
 const ComboBox: React.FC<ComboBoxProps> = ({
   name,
@@ -11,7 +10,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   onChange,
 }) => {
   const [selectedOption, setSelectedOption] = useState<string>(
-    defaultOption || ""
+    defaultOption || "",
   );
   const handleSelect = (
     selectedOption: ValueType<{ label: string; value: string }>,
@@ -46,7 +45,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
 
   return (
     <div className="mb-3">
-      <label className="block text-tp-body-color font-semibold mb-1">
+      <label className="mb-1 block font-semibold text-tp-body-color">
         {title}
       </label>
       <Select

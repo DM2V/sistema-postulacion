@@ -1,21 +1,19 @@
 import GreenButton from "@/components/Buttons/GreenButton";
 import WhiteButton from "@/components/Buttons/WhiteButton";
+import { HOME, INFO, LOGIN, OFFER, REGISTER } from "@/routes/paths";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
-
-/* import { Link } from "react-router-dom"; */
-
-/* import { HOME, INFORMATION, LOGIN, OFFER, REGISTER } from "../../routes/paths"; */
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
-    { text: "Inicio", link: "/", hoverColor: "text-primary-color" },
-    { text: "Ofertas", link: "#", hoverColor: "text-primary-color" },
+    { text: "Inicio", link: HOME, hoverColor: "text-primary-color" },
+    { text: "Ofertas", link: OFFER, hoverColor: "text-primary-color" },
     {
       text: "Información",
-      link: "#",
+      link: INFO,
       hoverColor: "text-primary-color",
     },
   ];
@@ -24,31 +22,36 @@ function Navbar() {
     <nav className="bg-dark p-4 shadow-md ">
       <div className="md:flex-center container mx-auto flex flex-col items-center justify-between px-10 md:flex-col lg:flex-row">
         <div className="md:mb-4 md:text-center lg:mb-0">
-          <Image
-            src="https://www.espe.edu.ec/wp-content/uploads/2023/03/espe.png"
-            alt="logo_espe"
-            className="w-42 mx-auto h-14 cursor-pointer md:mx-0"
-            width={200}
-            height={56}
-            priority={true}
-          />
+          <Link href="/">
+            <Image
+              src="https://www.espe.edu.ec/wp-content/uploads/2023/03/espe.png"
+              alt="logo_espe"
+              className="mx-auto w-auto cursor-pointer md:mx-0"
+              width={200}
+              height={56}
+              priority={true}
+            />
+          </Link>
         </div>
 
         <div className="hidden space-x-6 text-h6 font-semibold text-tp-heading-color md:flex">
           {navItems.map((item, index) => (
-            <a
+            <Link
               key={index}
               href={item.link}
-              className={`cursor-pointer transition-transform hover:scale-110 hover:${item.hoverColor}`}
+              className={`transition-transform hover:scale-110 hover:${item.hoverColor}`}
             >
               {item.text}
-            </a>
+            </Link>
           ))}
 
           <div>
-            <WhiteButton content="Iniciar Sesión" />
-
-            <GreenButton content="Registrarse" />
+            <Link href={LOGIN}>
+              <WhiteButton content="Iniciar Sesión" />
+            </Link>
+            <Link href={REGISTER}>
+              <GreenButton content="Registrarse" />
+            </Link>
           </div>
         </div>
 
@@ -80,19 +83,22 @@ function Navbar() {
             <div className="mt-4">
               <ul className="flex flex-col items-center space-y-3 text-center text-h6 font-semibold text-tp-heading-color">
                 {navItems.map((item, index) => (
-                  <a
+                  <Link
                     key={index}
                     href={item.link}
-                    className={`hover:${item.hoverColor}`}
+                    className={`transition-transform hover:scale-110 hover:${item.hoverColor}`}
                   >
                     {item.text}
-                  </a>
+                  </Link>
                 ))}
               </ul>
               <div className="mt-3 flex flex-row gap-y-1 ">
-                <WhiteButton content="Iniciar Sesión" />
-
-                <GreenButton content="Registrarse" />
+                <Link href={LOGIN}>
+                  <WhiteButton content="Iniciar Sesión" />
+                </Link>
+                <Link href={REGISTER}>
+                  <GreenButton content="Registrarse" />
+                </Link>
               </div>
             </div>
           )}

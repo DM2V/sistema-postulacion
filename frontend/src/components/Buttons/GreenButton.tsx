@@ -1,8 +1,16 @@
-function GreenButton({ content }: { content: string }) {
+function GreenButton({
+  content,
+  onClick,
+}: {
+  content: string;
+  onClick?: () => void;
+}) {
   return (
     <button
-      className="rounded-xl font-normal bg-primary-color text-white py-1 mx-1 px-3
-    hover:bg-white hover:text-primary-color hover:font-semibold border border-primary-color transform hover:scale-105 transition-all">
+      onClick={onClick}
+      className="mx-1 transform rounded-xl border border-primary-color bg-primary-color px-3
+    py-1 font-normal text-white transition-all hover:scale-105 hover:bg-white hover:font-semibold hover:text-primary-color"
+    >
       <p>{content}</p>
     </button>
   );

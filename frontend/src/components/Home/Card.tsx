@@ -1,22 +1,21 @@
-import React from "react";
-import { Link } from "react-router-dom";
 import { CardHomeProps } from "@/types/components/types.t";
+import Link from "next/link";
+import React from "react";
 
-
-const Card : React.FC <CardHomeProps> = ({card}) =>{
+const Card: React.FC<CardHomeProps> = ({ card }) => {
   return (
     <div>
-      {/* <Link to={card.root || ""} className="mt-4"> */}
-        <div className="bg-white shadow-md p-4 rounded-md w-60 h-44">
-          <div className="flex items-top mb-2 text-left justify-between">
-            <h5 className="text-primary-color font-semibold">{card.title}</h5>
+      <Link href={card.root || ""} className="mt-4">
+        <div className="h-44 w-60 rounded-md bg-white p-4 shadow-md">
+          <div className="items-top mb-2 flex justify-between text-left">
+            <h5 className="font-semibold text-primary-color">{card.title}</h5>
             {card.icon}
           </div>
-          <p className="text-sm text-left text-gray-600">{card.description}</p>
+          <p className="text-left text-sm text-gray-600">{card.description}</p>
         </div>
-      {/* </Link> */}
+      </Link>
     </div>
   );
-}
+};
 
 export default Card;

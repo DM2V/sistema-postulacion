@@ -1,14 +1,15 @@
 import { AboutCampusInfo, CampusInfo } from "@/types/components/types.t";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import AboutCampus from "../../components/Campus/AboutCampus";
-import InfoCampus from "../../components/Campus/InfoCampus";
+
+import AboutCampus from "@/components/Campus/AboutCampus";
+import InfoCampus from "@/components/Campus/InfoCampus";
 
 function Campus() {
   const [campusData, setCampusData] = useState<CampusInfo[]>([]);
   const [aboutCampus, setAboutCampus] = useState<AboutCampusInfo[]>([]);
 
-  const MapView = dynamic(() => import("../../components/Campus/MapView"), {
+  const MapView = dynamic(() => import("@/components/Campus/MapView"), {
     ssr: false,
   });
 
@@ -88,7 +89,7 @@ function Campus() {
             Sedes
           </h3>
           {campusData.map((data, index) => (
-            <div key={index} >
+            <div key={index} className="transition-transform hover:scale-105">
               <InfoCampus key={index} info={data} />
             </div>
           ))}

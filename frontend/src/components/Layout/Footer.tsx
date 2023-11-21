@@ -13,7 +13,7 @@ export default function Footer() {
       <Image
         src="https://www.espe.edu.ec/wp-content/uploads/2023/03/espe.png"
         alt="logo_espe"
-        className="mx-auto mb-4 h-14 w-40 md:h-auto md:w-auto"
+        className="mx-auto mb-4 w-auto md:h-auto md:w-auto"
         width={400}
         height={56}
         priority={true}

@@ -1,11 +1,13 @@
 import { SignupIcon } from "@/assets/icons";
 import InputLabel from "@/components/Form/InputLabel";
 import Password from "@/components/Form/Password";
+import { REGISTER } from "@/routes/paths";
 import { validateEmail, validatePassword } from "@/utils/validations";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
-import LoginImg from "../../assets/images/login.jpg";
-import GreenButton from "../../components/Buttons/GreenButton";
+import LoginImg from "../assets/images/login.jpg";
+import GreenButton from "../components/Buttons/GreenButton";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -87,11 +89,13 @@ function Login() {
 
           <div className="m-4 mx-auto w-full rounded-2xl bg-bg-disable p-3 text-center text-sm md:w-3/4 lg:text-base">
             <div>¿No tienes usuario y clave para ingresar?</div>
-            <div className="mt-2 flex items-center justify-center gap-1">
+            <div className="mt-2 flex items-center justify-center gap-2">
               <SignupIcon />
-              <div className="font-bold text-primary-color">
-                Regístrate aquí
-              </div>
+              <Link href={REGISTER}>
+                <div className="hover:text-primary-hover font-bold text-primary-color transition-transform hover:scale-110">
+                  Regístrate aquí
+                </div>
+              </Link>
             </div>
           </div>
         </div>

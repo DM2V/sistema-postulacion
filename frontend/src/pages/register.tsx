@@ -1,16 +1,16 @@
+import GreenButton from "@/components/Buttons/GreenButton";
 import CheckBox from "@/components/Form/CheckBox";
 import ComboBox from "@/components/Form/ComboBox";
 import InputLabel from "@/components/Form/InputLabel";
 import { validateEcuadorianID, validateEmail } from "@/utils/validations";
 import Image from "next/image";
-import signupImg from "../../assets/images/signup.png";
-import GreenButton from "../../components/Buttons/GreenButton";
+import signupImg from "../assets/images/signup.png";
 
-function Signup() {
+function Register() {
   const idType = ["Cédula", "Pasaporte"];
 
   return (
-    <div className="md:bg container mx-auto mb-10 mt-2 px-10 md:flex md:flex-row md:items-center lg:flex lg:flex-row lg:justify-center">
+    <div className="md:bg container mx-auto mb-10 mt-2 w-full px-10 md:flex md:flex-row md:items-center lg:flex lg:flex-row lg:justify-center">
       <div className="z-10 my-5 flex w-full flex-col items-center justify-center rounded-3xl bg-gray-bg p-8 shadow-sm shadow-tp-disable-color md:m-5 md:-ml-1 md:w-96">
         <h4 className="pb-5 text-center text-2xl font-bold text-primary-color lg:text-h4">
           Registro de Postulante
@@ -46,7 +46,7 @@ function Signup() {
             validationFunction={validateEmail}
           />
 
-          <div className="mb-5 w-max">
+          <div className="mb-5 w-[35rem] md:w-max">
             <div>Captcha</div>
 
             <CheckBox
@@ -70,6 +70,7 @@ function Signup() {
           src={signupImg}
           alt="signup logo"
           className="h-full w-full rounded-s-3xl object-fill"
+          priority={true}
         />
         <h6 className="absolute bottom-0 left-0 right-0 p-2 text-center font-bold text-white">
           Postúlate Universidad de las Fuerzas Armadas ESPE
@@ -79,4 +80,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Register;
