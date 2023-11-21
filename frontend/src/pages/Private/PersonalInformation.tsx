@@ -15,7 +15,7 @@ const PersonalInformation: FC = () => {
     const gender = ["hombre", "mujer"];
 
     const [formData, setFormData] = useState<CV>({
-        PersonalInformation: {
+        personalInformation: {
           province: '',
           canton: '',
           parish: '',

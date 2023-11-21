@@ -1,6 +1,6 @@
-import { ComboBoxProps, ValueType } from "@/types/components/types.t";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
+import { ComboBoxProps, ValueType } from "@/types/components/types.t";
 
 const ComboBox: React.FC<ComboBoxProps> = ({
   name,
@@ -9,6 +9,8 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   options,
   onChange,
 }) => {
+  const [isMounted, setIsMounted] = useState(false);
+
   const [selectedOption, setSelectedOption] = useState<string>(
     defaultOption || "",
   );
@@ -22,6 +24,8 @@ const ComboBox: React.FC<ComboBoxProps> = ({
       }
     }
   };
+  
+  useEffect(() => setIsMounted(true), []);
 
   const customStyles = {
     control: (styles: any, { isFocused }: any) => ({
@@ -43,19 +47,20 @@ const ComboBox: React.FC<ComboBoxProps> = ({
     }),
   };
 
-  return (
+  return isMounted ?(
     <div className="mb-3">
       <label className="mb-1 block font-semibold text-tp-body-color">
         {title}
       </label>
       <Select
+        id={name}
         value={{ label: selectedOption, value: selectedOption }}
         onChange={handleSelect}
         options={options.map((option) => ({ label: option, value: option }))}
         styles={customStyles}
       />
     </div>
-  );
+  ): null;
 };
 
 export default ComboBox;
