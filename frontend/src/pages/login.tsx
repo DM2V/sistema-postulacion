@@ -4,31 +4,44 @@ import GreenButton from "@/components/Buttons/GreenButton";
 import InputLabel from "@/components/Form/InputLabel";
 import Password from "@/components/Form/Password";
 import { REGISTER } from "@/routes/paths";
+import { user } from "@/types/user";
 import { pb } from "@/utils/pocketbase";
 import { validateEmail, validatePassword } from "@/utils/validations";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { SCHEDULE } from "../routes/paths";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formState, setFormState] = useState<user>({} as any); 
+
   const router = useRouter();
+
+  const handleFormChange = (fieldName: string, value: string) => {
+    setFormState((prevFormState) => ({
+      ...prevFormState,
+      [fieldName]: value,
+    }));
+  };
 
   async function handleSubmit(e: any) {
     e.preventDefault();
-
-    await pb.collection("users").authWithPassword(email, password);
-    if (pb.authStore.role === "candidate") {
-      //route to the candidate dashboard
-      router.push("/information");
+    
+    try{
+      const authData = await pb.collection("users").authWithPassword(formState.email, formState.password);
+      console.log(pb.authStore);
+      if (pb.authStore.baseModel.role === "candidate") {
+        //route to the candidate dashboard
+        console.log("LOGIN candidate");
+        router.push(SCHEDULE);
+      }
+      console.log(pb.authStore.isValid);
+    }catch(error){
+      console.log(error);
     }
-    /* 
-    await pb.admins.authWithPassword("admin@gmail.com", "adminPostulacion1");
-    //route to the candidate dashboard
-    router.push("/");
-    console.log("Clcick Login"); */
+    
+
   }
 
   return (
@@ -60,16 +73,16 @@ function Login() {
               title="Correo Electrónico:"
               errorMessage={"*Campo Requerido"}
               validationFunction={validateEmail}
-              onChange={setEmail}
+              onChange={handleFormChange}
             />
             <Password
               name={"password"}
-              title="Contraseña:"
+              title={"Contraseña:"}
               errorMessage={"*Campo Requerido"}
               validationFunction={validatePassword}
-              onChange={setPassword}
-              onPasswordChange={setPassword}
+              onChange={handleFormChange}
               helpMessage={""}
+              onPasswordChange={handleFormChange}
             />
 
             <GreenButton content="Ingresar" />

@@ -78,8 +78,8 @@ export interface PasswordProps {
   helpMessage: string;
   errorMessage: string;
   validationFunction: (value: string) => boolean;
-  onPasswordChange: (value: string) => void;
-  onChange: (value: string) => void;
+  onPasswordChange: (name: string,  value: string) => void;
+  onChange: (name: string, value: string) => void;
 }
 
 export interface TableProps {

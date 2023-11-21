@@ -42,11 +42,11 @@ const Password: React.FC<PasswordProps> = ({
     const newPassword = e.target.value;
     setPassword(newPassword);
     if (onPasswordChange) {
-      onPasswordChange(newPassword);
+      onPasswordChange(name, newPassword);
     }
 
     if (onChange) {
-      onChange(newPassword);
+      onChange(name, newPassword);
     }
   };
 
