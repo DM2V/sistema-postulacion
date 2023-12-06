@@ -18,6 +18,8 @@ function Login() {
 
   const router = useRouter();
 
+  
+
   const handleFormChange = (fieldName: string, value: string) => {
     setFormState((prevFormState) => ({
       ...prevFormState,
@@ -25,9 +27,18 @@ function Login() {
     }));
   };
 
+  function importRecordsInParallel(records) {
+    const promises = records.map((record) => {
+        return client.records.create("example", record, {
+            '$autoCancel': false,
+        });
+    })
+
+    return Promise.all(promises);
+}
+
   async function handleSubmit(e: any) {
     e.preventDefault();
-    
     try{
       const authData = await pb.collection("users").authWithPassword(formState.email, formState.password);
       console.log(pb.authStore);
