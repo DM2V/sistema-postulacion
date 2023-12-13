@@ -61,9 +61,9 @@ h6 {
   line-height: 1.5rem;
 }
 
+
+.slick-next:before,
 .slick-prev:before {
-  color: #003624;
+  color: #003624 !important;
 }
-.slick-next:before {
-  color: #003624;
-}
+

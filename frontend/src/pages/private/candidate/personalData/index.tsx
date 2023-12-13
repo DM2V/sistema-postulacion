@@ -4,6 +4,7 @@ import GreenButton from "@/components/Buttons/GreenButton";
 import InputLabel from "@/components/Form/InputLabel";
 import DateInput from "@/components/Form/DateInput";
 import ComboBox from "@/components/Form/ComboBox";
+import ImageInput from "@/components/Form/ImageInput";
 import CheckBox from "@/components/Form/CheckBox";
 import {
   validateNotEmpty,
@@ -11,14 +12,21 @@ import {
   validateNumbersOnly,
 } from "@/utils/validations";
 
-
 const PersonalDataPage: FC = () => {
   const [isSpecialCapacityVisible, setSpecialCapacityVisible] = useState(true);
   const [isDiseaseVisible, setDiseaseVisible] = useState(true);
   const [isResidenceYearsVisible, setResidenceYearsVisible] = useState(true);
   const gender = ["hombre", "mujer"];
-  const nacionality = ["Ecuatoriano", "Mexicano", "Colombiano", "Peruano", "Cubano"];
+  const nacionality = [
+    "Ecuatoriano",
+    "Mexicano",
+    "Colombiano",
+    "Peruano",
+    "Cubano",
+  ];
+
   const [formState, setFormState] = useState<PersonalData>({
+    avatar: null as File | null,
     name: "",
     lastName1: "",
     lastName2: "",
@@ -36,10 +44,12 @@ const PersonalDataPage: FC = () => {
     disabilityType: "",
     disabilityPercentage: "",
     MSPIDNumber: "",
-    avatar: "",
   });
 
-  const handleFormChange = (fieldName: string, value: string | string[]) => {
+  const handleFormChange = (
+    fieldName: string,
+    value: string | string[] | File | null,
+  ) => {
     if (fieldName === "specialCapacity") {
       setSpecialCapacityVisible(value === "Si");
       if (value === "No") {
@@ -60,11 +70,11 @@ const PersonalDataPage: FC = () => {
     }
 
     if (fieldName === "nationality") {
-        setResidenceYearsVisible(value === "Ecuatoriano");
+      setResidenceYearsVisible(value === "Ecuatoriano");
       if (value !== "Ecuatoriano") {
-          setResidenceYearsVisible(true);
-        } else {
-          setResidenceYearsVisible(false);
+        setResidenceYearsVisible(true);
+      } else {
+        setResidenceYearsVisible(false);
       }
     }
 
@@ -97,6 +107,12 @@ const PersonalDataPage: FC = () => {
             <h2 className="mb-4 font-bold text-state-press">
               Datos personales
             </h2>
+            <ImageInput
+              title="Fotografía"
+              width={ 254  }
+              height={ 318 }
+              onChange={(file) => handleFormChange("avatar", file)}
+            />
             <InputLabel
               name="name"
               title="Nombres:"
@@ -162,13 +178,13 @@ const PersonalDataPage: FC = () => {
               />
             </div>
             {isResidenceYearsVisible && (
-            <InputLabel
-              name="residenceYears"
-              title="En caso de ser extranjero, indicar años de residencia:"
-              errorMessage={"Solo se permiten números"}
-              validationFunction={validateNumbersOnly}
-              onChange={handleFormChange}
-            />
+              <InputLabel
+                name="residenceYears"
+                title="En caso de ser extranjero, indicar años de residencia:"
+                errorMessage={"Solo se permiten números"}
+                validationFunction={validateNumbersOnly}
+                onChange={handleFormChange}
+              />
             )}
             <ComboBox
               name="ethnicIdentification"

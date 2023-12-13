@@ -133,3 +133,11 @@ export interface SearchScheduleProps {
   schedule_announcement: string;
   schedule_campus: string;
 }
+
+//Image
+export interface ImageInputProps {
+  title: string;
+  width: number;
+  height: number;
+  onChange: (file: File | null) => void;
+}

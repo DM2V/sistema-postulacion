@@ -11,7 +11,7 @@ import {
 } from "@/utils/validations";
 
 
-const PersonalInformation: FC = () => {
+const PersonalInformationPage: FC = () => {
     const gender = ["hombre", "mujer"];
 
     const [formData, setFormData] = useState<CV>({
@@ -254,4 +254,4 @@ const PersonalInformation: FC = () => {
 
 }
 
-export default PersonalInformation;
+export default PersonalInformationPage;

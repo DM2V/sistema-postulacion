@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent } from "react";
-import { EyeIcon } from "../../assets/icons/index";
-import { PasswordProps } from "../../types/components/types.t";
+import { EyeIcon } from "@/assets/icons/index";
+import { PasswordProps } from "@/types/components/types.t";
 
 
 const Password: React.FC<PasswordProps> = ({   

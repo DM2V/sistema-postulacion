@@ -30,7 +30,7 @@ export interface PersonalData {
   disabilityType?: string;
   disabilityPercentage?: string;
   MSPIDNumber?: string;
-  avatar: string; // base64
+  avatar: File | null; // base64
 }
 
 export interface PersonalInformation {
