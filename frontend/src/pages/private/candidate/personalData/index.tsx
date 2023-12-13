@@ -4,8 +4,11 @@ import GreenButton from "@/components/Buttons/GreenButton";
 import InputLabel from "@/components/Form/InputLabel";
 import DateInput from "@/components/Form/DateInput";
 import ComboBox from "@/components/Form/ComboBox";
-import ImageInput from "@/components/Form/ImageInput";
+import ImageInput from "@/components/Image/ImageInput";
 import CheckBox from "@/components/Form/CheckBox";
+import EasyCrop from "@/components/Image/EasyCrop";
+import ImageUpload from "@/components/Image/ImageUpload";
+
 import {
   validateNotEmpty,
   calculateAge,
@@ -90,6 +93,11 @@ const PersonalDataPage: FC = () => {
       }));
     }
   };
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const handleImageSelect = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -107,6 +115,9 @@ const PersonalDataPage: FC = () => {
             <h2 className="mb-4 font-bold text-state-press">
               Datos personales
             </h2>
+            {/* <ImageUpload onImageSelect={handleImageSelect} />
+            {selectedImage && <EasyCrop image={selectedImage} />} */}
+
             <ImageInput
               title="Fotografía"
               width={ 254  }
