@@ -1,7 +1,6 @@
 import L, { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, TileLayer, Tooltip } from "react-leaflet";
-import customMarketIcon from "../../assets/icons/market.svg";
 
 function MapView() {
   const position: LatLngExpression = [-0.62455, -78.74368];
@@ -29,7 +28,7 @@ function MapView() {
   ];
 
   const customIcon = new L.Icon({
-    iconUrl: customMarketIcon.toString(),
+    iconUrl: "/market.svg",
     iconSize: [25, 25],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
