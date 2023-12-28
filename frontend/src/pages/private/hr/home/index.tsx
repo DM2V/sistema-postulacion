@@ -19,7 +19,7 @@ const getCallNumber = async (): Promise<number> => {
 
 const getCandidateNumber = async (): Promise<number> => {
   // Lógica para llamar a la API y obtener el número de los postulantes
-  return 10; // Devuelve un número ficticio
+  return 15; // Devuelve un número ficticio
 };
 const Home = ({
   callNumber,
@@ -187,7 +187,7 @@ const Home = ({
 };
 export const getServerSideProps: GetServerSideProps = async () => {
   const callNumber = await getCallNumber();
-  const candidateNumber = await getCallNumber();
+  const candidateNumber = await getCandidateNumber();
   return {
     props: {
       callNumber,
