@@ -124,11 +124,11 @@ const CreateCall = () => {
               </button>
             </Link>
           </div>
-          <div>
-            <div className="overflow-x-auto">
-              <table className="w-full overflow-hidden rounded-lg border border-gray-300 bg-white">
+          <div className="max-h-[350px] overflow-x-auto text-start text-sm md:text-center md:text-base">
+            <div className="max-h-[calc(40vh)] md:max-h-[calc(70vh)] lg:max-h-[calc(90vh)]">
+              <table className="w-full overflow-x-scroll rounded-lg border border-gray-300 bg-white">
                 {offers.length > 0 && (
-                  <thead className="bg-gray-200">
+                  <thead className="sticky top-0 bg-gray-200">
                     <tr className="sm:table-row">
                       {headerName
                         .filter((header) => header !== "id")
