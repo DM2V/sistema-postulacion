@@ -471,41 +471,6 @@ const Convocatoria = () => {
           </form>
         </div>
 
-        {/* Remuneración */}
-        <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
-          style={{
-            boxShadow:
-              "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
-          }}
-        >
-          <form className="text-sm lg:text-base">
-            <section>
-              <div>
-                <InputLabel
-                  name={"remuneration"}
-                  title="Remuneración:"
-                  onChange={() => {
-                    console.log("remuneration");
-                  }}
-                  placeholder="Ejm: $4000"
-                  validationFunction={validateNotEmpty}
-                />
-              </div>
-              <div>
-                <GreenButton
-                  content="Añadir"
-                  onClick={() => console.log("Clic Añadir")}
-                />
-                <WhiteButton
-                  content="Mostrar"
-                  onClick={() => console.log("Clic Mostrar")}
-                />
-              </div>
-            </section>
-          </form>
-        </div>
-
         <div className="my-4 flex justify-end">
           <Link href="/private/hr/convocatoria/Create">
             <GreenButton content="Siguiente" />
