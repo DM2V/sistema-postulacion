@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <title>Sistema Postulacion</title>
-        <link rel="icon" type="image/png" sizes="32x32" href="favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
       </Head>
       <Navbar />
       <Component {...pageProps} />

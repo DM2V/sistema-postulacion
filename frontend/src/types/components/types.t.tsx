@@ -41,7 +41,7 @@ export type ValueType<T> = {
 export interface CheckBoxProps {
   name: string;
   options: string[];
-  selectedOptions: string[] | string; 
+  selectedOptions: string[] | string;
   allowMultipleSelection: boolean;
   onChange ?: (name: string, selectedOption: string | string[]) => void;
 }
@@ -142,3 +142,15 @@ export interface ImageInputProps {
   height: number;
   onChange ?: (file: File | null) => void;
 }
+
+//Offer
+export type OfferView = {
+  id: number;
+  vacantes: number;
+  horas: number;
+  sedes: string;
+  departamento: string;
+  campoAmplio: string;
+  campoEspecifico: string;
+  tipoPersonalAcademico: string;
+};
