@@ -43,7 +43,7 @@ export interface CheckBoxProps {
   options: string[];
   selectedOptions: string[] | string; 
   allowMultipleSelection: boolean;
-  onChange: (name: string, selectedOption: string | string[]) => void;
+  onChange ?: (name: string, selectedOption: string | string[]) => void;
 }
 
 export interface ComboBoxProps {
@@ -51,13 +51,13 @@ export interface ComboBoxProps {
   title: string;
   defaultOption?: string;
   options: string[];
-  onChange: (name: string, selectedOption: string) => void;
+  onChange ? : (name: string, selectedOption: string) => void;
 }
 
 export interface DateProps {
   name: string;
   title: string;
-  onChange: (name: string, selectedOption: string) => void;
+  onChange ?: (name: string, selectedOption: string) => void;
 }
 
 export interface InputProps {
@@ -68,6 +68,7 @@ export interface InputProps {
   helpMessage?: string;
   disabled?: boolean;
   autocomplete?: string;
+  showErrorIcon?: boolean;
   validationFunction?: (value: string) => boolean;
   onChange?: (name: string, selectedOption: string) => void;
 }
@@ -79,7 +80,7 @@ export interface PasswordProps {
   errorMessage: string;
   validationFunction: (value: string) => boolean;
   onPasswordChange: (name: string,  value: string) => void;
-  onChange: (name: string, value: string) => void;
+  onChange ?: (name: string, value: string) => void;
 }
 
 export interface TableProps {
@@ -139,5 +140,5 @@ export interface ImageInputProps {
   title: string;
   width: number;
   height: number;
-  onChange: (file: File | null) => void;
+  onChange ?: (file: File | null) => void;
 }

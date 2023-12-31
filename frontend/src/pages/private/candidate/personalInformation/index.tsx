@@ -1,22 +1,68 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState } from "react";
 import GreenButton from "@/components/Buttons/GreenButton";
 import HomeAddressForm from "./HomeAddress";
 import EmergencyContactForm from "./EmergencyContact";
-import { HomeAddress, EmergencyContact } from "@/types/cv";
 
 const PersonalInformationPage: FC = () => {
-  const handleHomeAddressSubmit = (data: HomeAddress) => {
-    // Aquí puedes manejar la lógica para guardar los datos
-    console.log("Personal Information:", data);
+  const [formData, setFormData] = useState({
+    homeAddressData: {
+      province: "",
+      canton: "",
+      parish: "",
+      mainStreet: "",
+      secondaryStreet: "",
+      reference: "",
+      number: "",
+      homePhone: "",
+      cellPhone: "",
+      workPhone: "",
+      extencion: "",
+    },
+    emergencyContactData: {
+      name: "",
+      lastName1: "",
+      lastName2: "",
+      typeIdentification: "",
+      identification: "",
+      relationship: "",
+      province: "",
+      canton: "",
+      parish: "",
+      mainStreet: "",
+      secondaryStreet: "",
+      reference: "",
+      number: "",
+      homePhone: "",
+      cellPhone: "",
+    },
+  });
+
+
+  const handleFormChange = (
+    formName: "homeAddressData" | "emergencyContactData",
+    fieldName: string,
+    value: string
+  ) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [formName]: {
+        ...prevData[formName],
+        [fieldName]: value,
+      },
+    }));
   };
 
-  const handleEmergencyContactSubmit = (data: EmergencyContact) => {
-    // Aquí puedes manejar la lógica para guardar los datos
-    console.log("Emergency Contact:", data);
+
+  const handleSubmit = () => {
+    if (formData.homeAddressData && formData.emergencyContactData) {
+      console.log("Submitting Combined Data:", formData);
+    } else {
+      console.log("Please fill out both forms before submitting.");
+    }
   };
 
   return (
-    <div className="w-5/6">
+    <div className="pr-2 lg:w-5/6">
       <div>
         <h1 className="text-ter-color">Información Personal</h1>
       </div>
@@ -27,11 +73,19 @@ const PersonalInformationPage: FC = () => {
             "15px -6px 0px -7px rgba(0, 74, 62, 0.20), 0px 4px 4px 0px rgba(0, 74, 62, 0.25), 0px -2px 4px 0px rgba(0, 74, 62, 0.25)",
         }}
       >
-        <HomeAddressForm onSubmit={handleHomeAddressSubmit} />
-        <EmergencyContactForm onSubmit={handleEmergencyContactSubmit} />
-      </div>
-      <div className="my-4 flex justify-end">
-        <GreenButton content="Siguiente" />
+        <HomeAddressForm
+          onChange={(name, value) =>
+            handleFormChange("homeAddressData", name, value)
+          }
+        />
+        <EmergencyContactForm
+          onChange={(name, value) =>
+            handleFormChange("emergencyContactData", name, value)
+          }
+        />
+        <div className="my-4 flex justify-end">
+          <GreenButton onClick={handleSubmit} content="Siguiente" />
+        </div>
       </div>
     </div>
   );
