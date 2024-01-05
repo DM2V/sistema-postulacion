@@ -10,13 +10,13 @@ const InputLabel: React.FC<InputProps> = ({
     errorMessage,
     disabled = false,
     autocomplete,
+    showErrorIcon = true,
     validationFunction,
     onChange,
   }) => {
     const [isFocused, setFocused] = useState(false);
     const [error, setError] = useState(false);
-    const [value, setValue] = useState<string>(''); // Added type annotation for value
-  
+    const [value, setValue] = useState<string>(''); 
     const handleFocus = () => {
       setFocused(true);
     };
@@ -42,7 +42,7 @@ const InputLabel: React.FC<InputProps> = ({
       }
     };
   
-    const inputBorderColor = error
+    const inputBorderColor = error && showErrorIcon
       ? 'border border-red-500'
       : isFocused
       ? 'border border-primary-color'
@@ -57,7 +57,7 @@ const InputLabel: React.FC<InputProps> = ({
       top: '50%',
       right: '10px',
       transform: 'translateY(-50%)',
-      display: error ? 'block' : 'none',
+      display: error && showErrorIcon ? 'block' : 'none',
     };
   
     const helpText = error ? (
