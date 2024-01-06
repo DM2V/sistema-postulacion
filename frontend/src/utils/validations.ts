@@ -3,7 +3,7 @@ export function validateEcuadorianID(id: string): boolean {
   return pattern.test(id);
 }
 
-export function validateEmail(email: string): boolean{
+export function validateEmail(email: string): boolean {
   const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
   return pattern.test(email);
 }
@@ -35,7 +35,6 @@ export function validateNotEmpty(input: string): boolean {
   return pattern.test(input);
 }
 
-
 export function validatePassword(password: string): boolean {
   // Define los criterios para una contraseña segura
   const lengthCheck = password.length >= 8; // Mínimo 8 caracteres
@@ -43,7 +42,7 @@ export function validatePassword(password: string): boolean {
   const lowercaseCheck = /[a-z]/.test(password); // Al menos una letra minúscula
   const numberCheck = /\d/.test(password); // Al menos un número
   const specialCharacterCheck = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(
-    password
+    password,
   ); // Al menos un carácter especial
 
   // Verifica si la contraseña cumple con todos los criterios
@@ -59,14 +58,30 @@ export function validatePassword(password: string): boolean {
 export function calculateAge(birthdate: string): number {
   const birthdateDate = new Date(birthdate);
   const currentDate = new Date();
-  
+
   const years = currentDate.getFullYear() - birthdateDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const birthdateMonth = birthdateDate.getMonth();
 
-  if (currentMonth < birthdateMonth || (currentMonth === birthdateMonth && currentDate.getDate() < birthdateDate.getDate())) {
+  if (
+    currentMonth < birthdateMonth ||
+    (currentMonth === birthdateMonth &&
+      currentDate.getDate() < birthdateDate.getDate())
+  ) {
     return years - 1;
   }
 
   return years;
 }
+
+import { randomBytes } from "crypto";
+
+export const generateUsername = (name: string) => {
+  const id = randomBytes(2).toString("hex");
+
+  const nameParts = name.split(" ");
+  const firstNameInitial = nameParts[0].charAt(0).toLowerCase();
+  const lastName = nameParts.slice(1).join("").toLowerCase();
+
+  return `${firstNameInitial}${lastName}${id}`;
+};

@@ -4,21 +4,19 @@ import GreenButton from "@/components/Buttons/GreenButton";
 import InputLabel from "@/components/Form/InputLabel";
 import Password from "@/components/Form/Password";
 import { REGISTER } from "@/routes/paths";
-import { user } from "@/types/user";
+import { User } from "@/types/user";
 import { pb } from "@/utils/pocketbase";
 import { validateEmail, validatePassword } from "@/utils/validations";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { SCHEDULE } from "../routes/paths";
+import { PERSONALDATA } from "../routes/paths";
 
 function Login() {
-  const [formState, setFormState] = useState<user>({} as any); 
+  const [formState, setFormState] = useState<User>({} as any);
 
   const router = useRouter();
-
-  
 
   const handleFormChange = (fieldName: string, value: string) => {
     setFormState((prevFormState) => ({
@@ -27,32 +25,32 @@ function Login() {
     }));
   };
 
-  function importRecordsInParallel(records) {
+  function importRecordsInParallel(records: any[]) {
     const promises = records.map((record) => {
-        return client.records.create("example", record, {
-            '$autoCancel': false,
-        });
-    })
+      return client.records.create("example", record, {
+        $autoCancel: false,
+      });
+    });
 
     return Promise.all(promises);
-}
+  }
 
   async function handleSubmit(e: any) {
     e.preventDefault();
-    try{
-      const authData = await pb.collection("users").authWithPassword(formState.email, formState.password);
+    try {
+      const authData = await pb
+        .collection("users")
+        .authWithPassword(formState.email, formState.password);
       console.log(pb.authStore);
       if (pb.authStore.baseModel.role === "candidate") {
         //route to the candidate dashboard
         console.log("LOGIN candidate");
-        router.push(SCHEDULE);
+        router.push(PERSONALDATA);
       }
       console.log(pb.authStore.isValid);
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
-    
-
   }
 
   return (

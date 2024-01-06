@@ -14,6 +14,6 @@ export const INTERNALSERVER = "internalServer";
 export const FORBIDDEN = "forbidden";
 export const CHANGEPASS = "change-password";
 
-export const PERSONALDATA = "personal-data";
-export const PERSONALINFORMATION = "personal-information";
+export const PERSONALDATA = "/private/candidate/personalData";
+export const PERSONALINFORMATION = "/private/candidate/personalInformation";
 export const CANDIDATEPANEL = "candidate-panel";

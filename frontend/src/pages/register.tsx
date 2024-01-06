@@ -9,6 +9,10 @@ import signupImg from "../assets/images/signup.png";
 function Register() {
   const idType = ["Cédula", "Pasaporte"];
 
+  async function hadleSubmit(e: any) {
+    e.preventDefault();
+  }
+
   return (
     <div className="md:bg container mx-auto mb-10 mt-2 w-full px-10 md:flex md:flex-row md:items-center lg:flex lg:flex-row lg:justify-center">
       <div className="z-10 my-5 flex w-full flex-col items-center justify-center rounded-3xl bg-gray-bg p-8 shadow-sm shadow-tp-disable-color md:m-5 md:-ml-1 md:w-96">
@@ -16,7 +20,7 @@ function Register() {
           Registro de Postulante
         </h4>
 
-        <form className="w-full text-sm lg:text-base">
+        <form onSubmit={hadleSubmit} className="w-full text-sm lg:text-base">
           <ComboBox
             name={"id_type"}
             title={"Tipo de identificación:"}
