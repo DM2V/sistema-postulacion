@@ -39,6 +39,7 @@ import {
   validateNotEmpty,
   validateNumbersOnly,
 } from "@/utils/validations";
+import { set } from "date-fns";
 
 const PersonalDataPage: FC = () => {
   const userId = "msof6xv1zl55pof";
@@ -67,7 +68,7 @@ const PersonalDataPage: FC = () => {
   const [ethnicGroup, setEthnicGroup] = useState<EthnicIdentification[]>([]);
   const [specialCapacity, setSpecialCapacity] = useState<string>("");
   const [catastrophicDisease, setCatastrophicDisease] = useState<string>("");
-  const [CatastrophicIllnessType, setCatastrophicIllnessType] = useState<
+  const [catastrophicIllnessType, setCatastrophicIllnessType] = useState<
     CatastrophicIllnessType[]
   >([]);
   const [disabilityType, setDisabilityType] = useState<DisabilityType[]>([]);
@@ -110,7 +111,6 @@ const PersonalDataPage: FC = () => {
       MSPIDNumber: formData.get("MSPIDNumber") || "0",
     };
     console.log("data", data);
-    // console.log("avartar", avatar);
 
     const isFilled = Object.values(data).every(
       (value) => value !== null && value !== undefined && value !== "",
@@ -175,7 +175,11 @@ const PersonalDataPage: FC = () => {
     fetchPersonalDataForUser(userId).then((data) => {
       setPersonalData(data);
     });
+    setSpecialCapacityVisible(personalData?.specialCapacity === "Si");
+    setDiseaseVisible(personalData?.catastrophicDisease === "Si");
   }, [userId]);
+
+  console.log("personalData", personalData);
 
   return (
     <LayoutWithSidebarCandidate>
@@ -260,7 +264,9 @@ const PersonalDataPage: FC = () => {
                       }
                     }}
                     defaultValue={
-                      personalData?.birthDate ? `${personalData?.birthDate}` : ""
+                      personalData?.birthDate
+                        ? `${personalData?.birthDate}`
+                        : ""
                     }
                   />
                   <InputLabel
@@ -268,7 +274,7 @@ const PersonalDataPage: FC = () => {
                     title="Edad:"
                     placeholder={
                       isNaN(calculateAge(birthDate)) ||
-                        calculateAge(birthDate) < 19
+                      calculateAge(birthDate) < 19
                         ? ""
                         : calculateAge(birthDate)?.toString() || ""
                     }
@@ -390,9 +396,12 @@ const PersonalDataPage: FC = () => {
                       selectedOptions={[specialCapacity]}
                       allowMultipleSelection={false}
                       onChange={(name, selectedOption) => {
-                        setSpecialCapacity(selectedOption === "Si" ? "Si" : "No");
+                        setSpecialCapacity(
+                          selectedOption === "Si" ? "Si" : "No",
+                        );
                         setSpecialCapacityVisible(selectedOption === "Si");
                       }}
+                      defaultOption={personalData?.specialCapacity || ""}
                     />
                   </div>
                   <div>
@@ -408,6 +417,7 @@ const PersonalDataPage: FC = () => {
                         );
                         setDiseaseVisible(selectedOption === "Si");
                       }}
+                      defaultOption={personalData?.catastrophicDisease || ""}
                     />
                   </div>
 
@@ -421,18 +431,24 @@ const PersonalDataPage: FC = () => {
                       onChange={(name, selectedOption) => {
                         setSelectedDisabilityType(selectedOption.label);
                       }}
+                      defaultOption={personalData?.disabilityType || ""}
                     />
                   )}
                   {isDiseaseVisible && (
                     <ComboBoxGeneric
                       name={"catastrophicDiseaseType"}
                       title={"Tipo de enfermedad catastrófica:"}
-                      options={CatastrophicIllnessType.map((c) => {
+                      options={catastrophicIllnessType.map((c) => {
                         return { label: c.name, value: c.name };
                       })}
                       onChange={(name, selectedOption) => {
-                        setSelectedCatastrophicDiseaseType(selectedOption.label);
+                        setSelectedCatastrophicDiseaseType(
+                          selectedOption.label,
+                        );
                       }}
+                      defaultOption={
+                        personalData?.catastrophicDiseaseType || ""
+                      }
                     />
                   )}
                   {isSpecialCapacityVisible && (

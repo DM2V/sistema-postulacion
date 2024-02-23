@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CheckBoxProps } from '@/types/components/types.t';
 
 const CheckBox: React.FC<CheckBoxProps> = ({
   name,
   options,
+  defaultOption,
   selectedOptions,
   onChange,
 }) => {
+  const [isMounted, setIsMounted] = useState<string | string[] | null>(selectedOptions);
   const [internalselectedOptions, setInternalselectedOptions] = useState<string | string[] | null>(selectedOptions);
 
   const handleChange = (option: string | null) => {
     setInternalselectedOptions(option);
-    // Comprobación para determinar el tipo de selectedOptions
     if (Array.isArray(internalselectedOptions)) {
       onChange(name, option === null ? internalselectedOptions.filter((selectedOption) => selectedOption !== option) : [...internalselectedOptions, option]);
     } else {
@@ -21,6 +22,12 @@ const CheckBox: React.FC<CheckBoxProps> = ({
 
 
   const numberOfColumns = options.length > 3 ? 2 : 1;
+
+  useEffect(() => {
+    if (defaultOption) {
+      setInternalselectedOptions(defaultOption);
+    }
+  }, [defaultOption]);
 
   return (
     <div className="grid grid-cols-${numberOfColumns} gap-4">

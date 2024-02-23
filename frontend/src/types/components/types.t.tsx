@@ -42,6 +42,7 @@ export interface CheckBoxProps {
   name: string;
   options: string[];
   selectedOptions: string[] | string;
+  defaultOption?: string;
   allowMultipleSelection: boolean;
   onChange ?: (name: string, selectedOption: string | string[]) => void;
 }
