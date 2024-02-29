@@ -54,10 +54,23 @@ export interface ComboBoxProps {
   onChange ? : (name: string, selectedOption: string) => void;
 }
 
+export interface ComboBoxGenericProps {
+  name: string;
+  title: string;
+  defaultOption?: string;
+  options: Option[];
+  onChange ? : (name: string, selectedOption: Option) => void;
+}
+
+export type Option = {
+  label: string, value: string
+}
 export interface DateProps {
   name: string;
   title: string;
-  onChange ?: (name: string, selectedOption: string) => void;
+  placeholder?: string;
+  defaultValue?: string | Date;
+  onChange ?: (name: string, selectedOption: Date) => void;
 }
 
 export interface InputProps {
@@ -68,9 +81,24 @@ export interface InputProps {
   helpMessage?: string;
   disabled?: boolean;
   autocomplete?: string;
+  defaultValue?: string;
   showErrorIcon?: boolean;
   validationFunction?: (value: string) => boolean;
   onChange?: (name: string, selectedOption: string) => void;
+}
+export interface InputPropsFile {
+  name: string;
+  title: string;
+  placeholder?: string;
+  errorMessage?: string;
+  helpMessage?: string;
+  disabled?: boolean;
+  accept: string;
+  autocomplete?: string;
+  defaultValue?: string;
+  showErrorIcon?: boolean;
+  validationFunction?: (value: string) => boolean;
+  onChange?: (name: string, selectedOption: File) => void;
 }
 
 export interface PasswordProps {
@@ -79,7 +107,7 @@ export interface PasswordProps {
   helpMessage: string;
   errorMessage: string;
   validationFunction: (value: string) => boolean;
-  onPasswordChange: (name: string,  value: string) => void;
+  onPasswordChange?: (name: string,  value: string) => void;
   onChange ?: (name: string, value: string) => void;
 }
 
@@ -154,3 +182,16 @@ export type OfferView = {
   campoEspecifico: string;
   tipoPersonalAcademico: string;
 };
+
+// Header table type
+export type HeaderTable = {
+  label?: string,
+  value: string,
+  type: "string" | "date",
+}
+
+export interface FileInputProps {
+  onFileChange: (file: File) => void;
+  onViewClick: () => void;
+  onDeleteClick: () => void;
+}

@@ -1,17 +1,3 @@
-export interface CV {
-  personalData: PersonalData;
-  HomeAddress: HomeAddress;
-  emergencyContact: EmergencyContact;
-  academicTraining: AcademicTraining[];
-  languages: Language[];
-  publications: Publications[];
-  trainings: Training[];
-  professionalExperience: ProfessionalExperience[];
-  extraPoints: ExtraPoints;
-  postulacionDocument: postulacionDocument;
-
-}
-
 export interface PersonalData {
   name: string;
   lastName1: string;
@@ -71,8 +57,9 @@ export interface AcademicTraining {
   degree: string;
   studyDuration: string;
   studyDurationType: string;
-  Country: string;
-  SenescytRegistrationNumber: string;
+  country: string;
+  senescytRegistrationNumber: string;
+  senescytRegistrationDate: string;
   graduationDate: string;
   certificate : File | null; // base64
 }
@@ -144,4 +131,26 @@ export interface PostulacionDocument{
   mecanizadoIess: string;
   noImpedimentCert: string;
   noAdminResponsibilityCert: string;
+}
+
+export type CV = {
+  personalData: string;
+  HomeAddress: string;
+  emergencyContact: string;
+  academicTraining: string[];
+  languages: string[];
+  publications: string[];
+  trainings: string[];
+  professionalExperience: string[];
+  extraPoints: string;
+  postulacionDocument: string;
+  expand?: CvExpandend;
+}
+
+export type CvExpandend = {
+  academicTraining: AcademicTraining[];
+  languages: Language[];
+  publications: Publications[];
+  trainings: Training[];
+  professionalExperience: ProfessionalExperience[];
 }
