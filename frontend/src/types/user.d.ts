@@ -29,6 +29,7 @@ export interface UserEvaluator {
 }
 
 export type Expandend = {
+  cv?: CV.expand.id;
   period: PostulationPeriod;
   academicTraining: AcademicTraining[];
   languages: Language[];
@@ -37,5 +38,4 @@ export type Expandend = {
   professionalExperience: ProfessionalExperience[];
   phaseStatus: PhaseStatus;
   offer: Offer[];
-
 }

@@ -20,6 +20,7 @@ export interface PersonalData {
   avatar: File | null; // base64
 }
 
+
 export interface HomeAddress {
   id?: string;
   province: string;
@@ -164,10 +165,17 @@ export type CV = {
   expand?: CvExpandend;
 }
 
+
 export type CvExpandend = {
+  id?: string;
+  personalData?: PersonalData;
+  homeAddress?: HomeAddress;
+  emergencyContact?: EmergencyContact;
   academicTraining: AcademicTraining[];
   languages: Language[];
   publications: Publications[];
   trainings: Training[];
   professionalExperience: ProfessionalExperience[];
+  extraPoints?: ExtraPoints;
+  postulacionDocument?: PostulacionDocument;
 }
