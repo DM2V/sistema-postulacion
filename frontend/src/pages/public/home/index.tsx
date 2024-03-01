@@ -1,7 +1,5 @@
 import { Campus, EmbeddedCircle, Phases, Schedule } from "@/assets/icons/index";
 import GreenButton from "@/components/Buttons/GreenButton";
-import OfferCard from "@/components/Card/OfferCard";
-import ComboBox from "@/components/Form/ComboBox";
 import Card from "@/components/Home/Card";
 import Hero from "@/components/Home/Hero";
 import Slide from "@/components/Home/Slide";
@@ -9,63 +7,15 @@ import { PHASES } from "@/routes/paths";
 import { CardHome, Offer } from "@/types/components/types.t";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
-
-interface SearchScheduleProps {
-  schedule_period: string;
-}
 
 const HomePage: React.FC = () => {
   const [offers, setOffer] = useState<Offer[]>([]);
   const [cards, setCards] = useState<CardHome[]>([]);
 
-  const [formState, setFormState] = useState<SearchScheduleProps>({
-    schedule_period: "",
-  });
-
-  const handleFormChange = (fieldName: string, value: string) => {
-    setFormState({
-      ...formState,
-      [fieldName]: value,
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
-
   const handleClick = () => {
     console.log("El botón verde fue clickeado *conoce el proceso?!*");
-  };
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-    ],
   };
 
   useEffect(() => {
@@ -88,58 +38,14 @@ const HomePage: React.FC = () => {
         title: "Cronograma",
         icon: <Schedule />,
         description:
-          "Planifica tus pasos con nuestro cronograma detallado para no perderte ni una fecha importante.",
+          "Planifica tus pasos con nuestro cronograma detallado para no perderte una fecha importante.",
         root: "/public/schedule",
-      },
-    ];
-
-    const offers: Offer[] = [
-      {
-        title: "Titular Auxiliar 1",
-        specific_field: "ANALISTA DE INFRAESTRUCTURA FÍSICA 2",
-        campus: "SANGOLQUÍ",
-        rmu: "912.00",
-        date: "10/10/2023",
-      },
-      {
-        title: "Titular Agregado 1",
-        specific_field: "ANALISTA DE INFRAESTRUCTURA FÍSICA 2",
-        campus: "SANGOLQUÍ",
-        rmu: "1010.00",
-        date: "10/10/2023",
-      },
-      {
-        title: "Titular Principal",
-        specific_field: "ANALISTA DE INFRAESTRUCTURA FÍSICA 2",
-        campus: "SANGOLQUÍ",
-        rmu: "1412.00",
-        date: "10/10/2023",
-      },
-      {
-        title: "Titular Agregado 1",
-        specific_field: "ANALISTA DE INFRAESTRUCTURA FÍSICA 2",
-        campus: "SANGOLQUÍ",
-        rmu: "1412.00",
-        date: "10/10/2023",
-      },
-      {
-        title: "Titular Agregado 1",
-        specific_field: "ANALISTA DE INFRAESTRUCTURA FÍSICA 2",
-        campus: "SANGOLQUÍ",
-        rmu: "1412.00",
-        date: "10/10/2023",
-      },
-      {
-        title: "Titular Agregado 1",
-        specific_field: "ANALISTA DE INFRAESTRUCTURA FÍSICA 2",
-        campus: "SANGOLQUÍ",
-        rmu: "1412.00",
-        date: "10/10/2023",
       },
     ];
 
     setCards((prevCards) => [...prevCards, ...cardsData]);
     setOffer((prevOffers) => [...prevOffers, ...offers]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -182,28 +88,6 @@ const HomePage: React.FC = () => {
       <Hero />
 
       <div className="container mx-auto mb-10 mt-8 px-10">
-        <div className="flex flex-col items-baseline md:flex-row">
-          <p className="mr-2 text-2xl text-state-press">
-            Consulta las <span className="font-extrabold">ofertas</span>{" "}
-            disponibles
-          </p>
-          <form action="">
-            <ComboBox
-              name={"academic_period"}
-              title={""}
-              defaultOption={"Seleccione un periodo academico"}
-              options={["202351", "202350", "202251", "202250"]}
-              onChange={handleFormChange}
-            />
-          </form>
-        </div>
-
-        <Slider {...settings} className="slick-slider">
-          {offers.map((offer, index) => (
-            <OfferCard key={index} offer={offer} />
-          ))}
-        </Slider>
-
         <div className="items-top md:items-top container mx-auto flex flex-col justify-center space-y-8 py-8 md:flex-row  md:space-y-0 md:py-12">
           <div className="w-full p-4  md:w-1/2 md:p-8">
             <h2 className="mb-4 text-2xl font-semibold text-primary-color md:text-3xl">
@@ -211,8 +95,8 @@ const HomePage: React.FC = () => {
             </h2>
             <p className="mb-4 text-gray-700">
               ¿Quieres conocer en detalle cómo se desarrolla nuestro concurso de
-              selección de docentes en el Departamento de Ciencias de la
-              Computación? Aquí te proporcionamos toda la información que
+              selección de docentes? <br />
+              Aquí te proporcionamos toda la información que
               necesitas para estar preparado. Explora el cronograma completo,
               comprende las distintas fases del concurso y conoce las sedes
               donde tendrán lugar las evaluaciones. Estamos comprometidos con la
@@ -226,7 +110,7 @@ const HomePage: React.FC = () => {
           <div className="relative mt-4 flex w-full flex-col justify-end p-4 md:mt-0 md:w-1/2 md:p-8">
             <div className="z-10 flex flex-col items-end rounded-3xl bg-gradient-to-b from-fill-sucess to-primary-color p-6 text-white drop-shadow md:p-8">
               <p className="pb-6">
-                En el Departamento de Ciencias de la Computación, no solo
+                En la Universidad de las Fuerzas Armadas ESPE no solo
                 buscamos docentes excepcionales, sino que también creemos en la
                 transparencia y la accesibilidad. Te invitamos a embarcarte en
                 este viaje hacia el crecimiento futuro de tu carrera

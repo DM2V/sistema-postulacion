@@ -1,17 +1,15 @@
-import React, { FC, useState, useEffect } from "react";
-import { PersonalData } from "@/types/cv";
 import GreenButton from "@/components/Buttons/GreenButton";
-import InputLabel from "@/components/Form/InputLabel";
-import DateInput from "@/components/Form/DateInput";
-import ComboBox from "@/components/Form/ComboBox";
-import ImageInput from "@/components/Image/ImageInput";
 import CheckBox from "@/components/Form/CheckBox";
-import EasyCrop from "@/components/Image/EasyCrop";
-import ImageUpload from "@/components/Image/ImageUpload";
+import ComboBox from "@/components/Form/ComboBox";
+import DateInput from "@/components/Form/DateInput";
+import InputLabel from "@/components/Form/InputLabel";
+import ImageInput from "@/components/Image/ImageInput";
+import { PersonalData } from "@/types/cv";
+import React, { FC, useEffect, useState } from "react";
 
 import {
-  validateNotEmpty,
   calculateAge,
+  validateNotEmpty,
   validateNumbersOnly,
 } from "@/utils/validations";
 

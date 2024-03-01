@@ -1,74 +1,133 @@
-import GreenButton from "@/components/Buttons/GreenButton";
-import OfferCard from "@/components/Card/OfferCard";
-import ComboBox from "@/components/Form/ComboBox";
-import { FC, useState } from "react";
+import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
+import Footer from "@/components/Layout/Footer";
+import LayoutWithNavbarPublic from "@/components/Layout/LayoutWithNavbarPublic";
+import OffersTable from "@/components/Offers/OffersTable";
+import { Offer, PostulationPeriod, Site } from '@/types/offers';
+import { User } from "@/types/user";
+import { getOffers } from "@/utils/fetch_functions/offer";
+import { getPostulationPeriods } from "@/utils/fetch_functions/periods";
+import { getSites } from "@/utils/fetch_functions/sites";
+import { pb } from "@/utils/pocketbase";
+import { FC, useEffect, useState } from "react";
+import { LuSearch } from "react-icons/lu";
 
 const Offer: FC = () => {
+  const [offers, setOffers] = useState<Offer[]>([])
+  const [periods, setPeriods] = useState<PostulationPeriod[]>([]);
+  const [campus, setCampus] = useState<Site[]>([]);
+  const [selectedPeriod, setSelectedPeriod] = useState<string | undefined>('');
+  const [showOffers, setShowOffers] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+
   interface SearchOfferProps {
     offer_announcement: string;
     offer_campus: string;
   }
 
-  const [formState, setFormState] = useState<SearchOfferProps>({
-    offer_announcement: "",
-    offer_campus: "",
-  });
+  const handleSearch = async () => {
+    try {
+      if (selectedPeriod) {
+        const data = await pb.collection("Offer").getList<User>(1, 50, {
+          filter: `period = "${selectedPeriod}"`,
+        });
+        setUsers(data.items);
+        console.log(data.items)
+      } else {
+        alert("Error: Debe seleccionar un periodo de postulación.");
+      }
+    } catch (error) {
+      alert("Error al realizar la búsqueda");
+    }
+    setShowOffers(true);
 
-  const handleFormChange = (fieldName: string, value: string) => {
-    setFormState({
-      ...formState,
-      [fieldName]: value,
-    });
   };
 
-  const offerData = {
-    title: "Titular Agregado 1",
-    specific_field: "ANALISTA DE INFRAESTRUCTURA FÍSICA 2",
-    campus: "SANGOLQUÍ",
-    rmu: "1412.00",
-    date: "10/10/2023",
-  };
+
+  async function getOffersLocal() {
+    try {
+      const records = await pb.collection('Offer').getFullList<Offer>({
+        sort: '-created',
+        expand: "period,contractType,wideField,specificField,site,department,academicStaff,activity"
+      });
+      setOffers(records)
+    } catch (error) {
+
+    }
+  }
+
+  useEffect(() => {
+    getPostulationPeriods(setPeriods);
+    getSites(setCampus);
+    getOffers(setOffers);
+  }, [])
 
   return (
-    <div className="container mx-auto mb-10 mt-2 px-10">
-      <h2 className="mb-3 mt-5 text-h2 font-bold text-primary-color">
-        Ofertas
-      </h2>
-      <h6 className="text-h6 font-bold text-state-hover">
-        Consulta de Procesos
-      </h6>
-      <form className="mb-5 flex flex-col  items-center  md:flex-row" action="">
-        <div className=" w-full pt-4 md:w-5/6 md:pr-4">
-          <ComboBox
-            name={"offer_announcement"}
-            title={"Convocatoria"}
-            defaultOption={"Selecione"}
-            options={["Departamento de Ciencias de la Computacion"]}
-            onChange={handleFormChange}
-          />
+    <LayoutWithNavbarPublic>
+      <div className="container mx-auto mb-10 mt-2 px-10">
+
+        <h2 className="mb-3 mt-5 text-h2 font-bold text-primary-color">
+          Ofertas
+        </h2>
+
+
+        {/* Search */}
+        <div className="flex flex.row md:flex-row md:gap-x-4 items-center justify-start text-sm">
+          <section>
+            <ComboBoxGeneric
+              name={"applicationPeriod"}
+              title={"Periodo Académico"}
+              options={periods.map((period) => {
+                return { label: period.name, value: period.id };
+              })}
+              onChange={(name, selectedOption) => {
+                setSelectedPeriod(selectedOption.value);
+              }}
+            />
+          </section>
+
+          <section>
+            <ComboBoxGeneric
+              name={"sites"}
+              title={"Campus"}
+              options={campus.map((period) => {
+                return { label: period.name, value: period.id };
+              })}
+              onChange={(name, selectedOption) => {
+                setSelectedPeriod(selectedOption.value);
+              }}
+            />
+          </section>
+
+          <section className="mt-4 flex w-auto items-center justify-center">
+            <button
+              className="mx-1 flex transform items-center gap-2 rounded-xl border
+                border-primary-color bg-primary-color px-3 py-1 font-normal text-white transition-all hover:scale-105 hover:bg-white hover:font-semibold hover:text-primary-color"
+              onClick={handleSearch}
+            >
+              <LuSearch />
+              <p>Buscar</p>
+            </button>
+          </section>
         </div>
-        <div className="w-full  pt-4 md:w-2/4 md:pr-4">
-          <ComboBox
-            name={"offer_campus"}
-            title={"Sede"}
-            defaultOption={"Selecione"}
-            options={["Matriz Sangolquí"]}
-            onChange={handleFormChange}
-          />
-        </div>
-        <div className="mt-3 pt-4 md:w-1/6 md:pr-4">
-          <GreenButton content="Buscar" />
-        </div>
-      </form>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
-        {<OfferCard offer={offerData} />}
-        {<OfferCard offer={offerData} />}
-        {<OfferCard offer={offerData} />}
-        {<OfferCard offer={offerData} />}
-        {<OfferCard offer={offerData} />}
-        {<OfferCard offer={offerData} />}
+
+
+
+        {showOffers && (
+          <>
+            {offers.some((offer) => offer.period === selectedPeriod) ? (
+              <section>
+                <OffersTable getOffers={getOffersLocal} offers={offers} />
+              </section>
+            ) : (
+              <p className="mx-10">No hay ofertas para el periodo seleccionado</p>
+            )
+            }
+          </>
+        )}
+
       </div>
-    </div>
+      <Footer />
+    </LayoutWithNavbarPublic>
   );
 };
 

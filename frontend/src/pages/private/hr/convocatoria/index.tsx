@@ -1,484 +1,57 @@
-import GreenButton from "@/components/Buttons/GreenButton";
-import WhiteButton from "@/components/Buttons/WhiteButton";
-import ComboBox from "@/components/Form/ComboBox";
-import InputLabel from "@/components/Form/InputLabel";
-import { validateNotEmpty } from "@/utils/validations";
+import CallItem from "@/components/Calls/CallItem";
+import LayoutWithSidebar from "@/components/Layout/LayoutWithSidebar";
+import { CONVOCATIONHRCREATE } from "@/routes/paths";
+import { Call } from "@/types/convocatoria";
+import { getCalls } from "@/utils/fetch_functions/calls";
+import { pb } from "@/utils/pocketbase";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-const Convocatoria = () => {
+function HomeConvocatoria() {
+  const [calls, setCalls] = useState<Call[]>([]);
+
+  useEffect(() => {
+    getCalls(setCalls);
+  }, []);
+
+  async function deleteCall(callId: string) {
+    try {
+      await pb.collection("Call").delete(callId);
+      getCalls(setCalls);
+    } catch (error) { }
+  }
+
   return (
-    <>
-      <h2 className="p-3 text-center font-bold text-ter-color  lg:text-start">
-        Convocatoria
-      </h2>
+    <LayoutWithSidebar>
 
-      <div className="pr-2 lg:w-5/6">
-        {/* Periodo de Postulacion */}
-        <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
-          style={{
-            boxShadow:
-              "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
-          }}
-        >
-          <form className="text-sm lg:text-base">
-            <section>
-              <div>
-                <InputLabel
-                  name={"applicationPeriod"}
-                  title="Periodo de postulación:"
-                  onChange={() => {
-                    console.log("periodo");
-                  }}
-                  placeholder="Ejm: 202351"
-                  validationFunction={validateNotEmpty}
-                />
-              </div>
-              <div>
-                <GreenButton
-                  content="Añadir"
-                  onClick={() => console.log("Clic Añadir")}
-                />
-                <WhiteButton
-                  content="Mostrar"
-                  onClick={() => console.log("Clic Mostrar")}
-                />
-              </div>
-            </section>
-          </form>
-        </div>
+      <div className="flex flex-row items-center justify-between mx-5">
+        <h3 className="my-5 ml-5 text-center font-bold text-ter-color lg:text-start">
+          Convocatorias
+        </h3>
+        <section className="mt-4 flex w-auto text-sm">
+          <button
+            className="mx-5 flex transform items-center gap-2 rounded-xl border
+            border-primary-color bg-primary-color px-3 py-1 font-normal text-white transition-all hover:scale-105 hover:bg-white hover:font-semibold hover:text-primary-color">
+            <Link href={CONVOCATIONHRCREATE}>Crear convocatoria</Link>
+          </button>
+        </section>
+      </div>
 
-        {/* Departamento */}
-        <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
-          style={{
-            boxShadow:
-              "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
-          }}
-        >
-          <form className="text-sm lg:text-base">
-            <section>
-              <div>
-                <InputLabel
-                  name={"department"}
-                  title="Departamento:"
-                  onChange={() => {
-                    console.log("department");
-                  }}
-                  placeholder="Ejm: Ciencias de la Computación"
-                  validationFunction={validateNotEmpty}
-                />
-              </div>
-              <div>
-                <GreenButton
-                  content="Añadir"
-                  onClick={() => console.log("Clic Añadir")}
-                />
-                <WhiteButton
-                  content="Mostrar"
-                  onClick={() => console.log("Clic Mostrar")}
-                />
-              </div>
-            </section>
-          </form>
-        </div>
+      <div className="bg-[#f3f3f3] h-screen">
+        <div className="pt-3 mx-10 grid grid-cols-3 gap-1">
+          {calls.map(c => (
+            <div key={c.id} className="p-1 rounded">
+              <CallItem
+                handleDelete={deleteCall}
+                call={c}
+              />
+            </div>
+          ))}
 
-        {/* Tipo de Contratación */}
-        <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
-          style={{
-            boxShadow:
-              "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
-          }}
-        >
-          <form className="text-sm lg:text-base">
-            <section>
-              <div>
-                <InputLabel
-                  name={"typeOfHiring"}
-                  title="Tipo de Contratación:"
-                  onChange={() => {
-                    console.log("typeOfHiring");
-                  }}
-                  placeholder="Ejm: Personal académico que desarrolla actividades de tercer nivel de grado y cuarto nivel"
-                  validationFunction={validateNotEmpty}
-                />
-              </div>
-              <div>
-                <GreenButton
-                  content="Añadir"
-                  onClick={() => console.log("Clic Añadir")}
-                />
-                <WhiteButton
-                  content="Mostrar"
-                  onClick={() => console.log("Clic Mostrar")}
-                />
-              </div>
-            </section>
-          </form>
-        </div>
-
-        {/* Tipo de Personal Académico */}
-        <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
-          style={{
-            boxShadow:
-              "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
-          }}
-        >
-          <form className="text-sm lg:text-base">
-            <section>
-              <div>
-                <InputLabel
-                  name={"typeOfAcademicStaff"}
-                  title="Tipo de Personal Académico:"
-                  onChange={() => {
-                    console.log("typeOfAcademicStaff");
-                  }}
-                  placeholder="Ejm: Titular Auxiliar 1"
-                  validationFunction={validateNotEmpty}
-                />
-                <InputLabel
-                  name={"description"}
-                  title="Descripción:"
-                  onChange={() => {
-                    console.log("description");
-                  }}
-                  placeholder="Ejm: Descripcion"
-                  validationFunction={validateNotEmpty}
-                />
-              </div>
-              <div>
-                <GreenButton
-                  content="Añadir"
-                  onClick={() => console.log("Clic Añadir")}
-                />
-                <WhiteButton
-                  content="Mostrar"
-                  onClick={() => console.log("Clic Mostrar")}
-                />
-              </div>
-            </section>
-          </form>
-        </div>
-
-        {/* Actividad */}
-        <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
-          style={{
-            boxShadow:
-              "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
-          }}
-        >
-          <form className="text-sm lg:text-base">
-            <section>
-              <div>
-                <InputLabel
-                  name={"activity"}
-                  title="Actividad:"
-                  onChange={() => {
-                    console.log("activity");
-                  }}
-                  placeholder="Ejm: Actividad"
-                  validationFunction={validateNotEmpty}
-                />
-                <InputLabel
-                  name={"description"}
-                  title="Descripción:"
-                  onChange={() => {
-                    console.log("description");
-                  }}
-                  placeholder="Ejm: Descripcion"
-                  validationFunction={validateNotEmpty}
-                />
-              </div>
-              <div>
-                <GreenButton
-                  content="Añadir"
-                  onClick={() => console.log("Clic Añadir")}
-                />
-                <WhiteButton
-                  content="Mostrar"
-                  onClick={() => console.log("Clic Mostrar")}
-                />
-              </div>
-            </section>
-          </form>
-        </div>
-
-        {/* Item */}
-        <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
-          style={{
-            boxShadow:
-              "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
-          }}
-        >
-          <form className="text-sm lg:text-base">
-            <section>
-              <div>
-                <InputLabel
-                  name={"description"}
-                  title="Descripción de Item:"
-                  onChange={() => {
-                    console.log("description");
-                  }}
-                  placeholder="Ejm: Formación"
-                  validationFunction={validateNotEmpty}
-                />
-                <ComboBox
-                  name={"AcademicStaff"}
-                  title={"Personal Académico"}
-                  options={["Titular Auxiliar 1", "Titular Agregado 1"]}
-                  onChange={() => {
-                    console.log("AcademicStaff");
-                  }}
-                />
-              </div>
-              <div>
-                <GreenButton
-                  content="Añadir"
-                  onClick={() => console.log("Clic Añadir")}
-                />
-                <WhiteButton
-                  content="Mostrar"
-                  onClick={() => console.log("Clic Mostrar")}
-                />
-              </div>
-            </section>
-          </form>
-        </div>
-
-        {/* Requisito */}
-        <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
-          style={{
-            boxShadow:
-              "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
-          }}
-        >
-          <form className="text-sm lg:text-base">
-            <section>
-              <div>
-                <InputLabel
-                  name={"Requirement"}
-                  title="Descripción de Requisito:"
-                  onChange={() => {
-                    console.log("Requirement");
-                  }}
-                  placeholder="Ejm: Tener al menos grado académico de maestría"
-                  validationFunction={validateNotEmpty}
-                />
-                <ComboBox
-                  name={"item"}
-                  title={"Item"}
-                  options={["Formación", "Docencia"]}
-                  onChange={() => {
-                    console.log("AcademicStaff");
-                  }}
-                />
-              </div>
-              <div>
-                <GreenButton
-                  content="Añadir"
-                  onClick={() => console.log("Clic Añadir")}
-                />
-                <WhiteButton
-                  content="Mostrar"
-                  onClick={() => console.log("Clic Mostrar")}
-                />
-              </div>
-            </section>
-          </form>
-        </div>
-
-        {/* Titulo de Experiencia */}
-        <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
-          style={{
-            boxShadow:
-              "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
-          }}
-        >
-          <form className="text-sm lg:text-base ">
-            <section>
-              <div className="md:grid md:grid-cols-2 md:gap-3">
-                <InputLabel
-                  name={"TitleOfExperience"}
-                  title="Descripción de Título de Experiencia:"
-                  onChange={() => {
-                    console.log("TitleOfExperience");
-                  }}
-                  placeholder="Ejm: Nivel B2 en castellano"
-                  validationFunction={validateNotEmpty}
-                />
-                <InputLabel
-                  name={"detail"}
-                  title="Detalle:"
-                  onChange={() => {
-                    console.log("detail");
-                  }}
-                  placeholder="Ejm: Detalle"
-                  validationFunction={validateNotEmpty}
-                />
-                <InputLabel
-                  name={"minScore"}
-                  title="Puntaje mínimo"
-                  onChange={() => {
-                    console.log("minScore");
-                  }}
-                  placeholder="Ejm: 12"
-                  validationFunction={validateNotEmpty}
-                />
-                <InputLabel
-                  name={"maxScore"}
-                  title="Puntaje máximo:"
-                  onChange={() => {
-                    console.log("maxScore");
-                  }}
-                  placeholder="Ejm: 10"
-                  validationFunction={validateNotEmpty}
-                />
-                <InputLabel
-                  name={"observation"}
-                  title="Observación:"
-                  onChange={() => {
-                    console.log("observation");
-                  }}
-                  placeholder="Ejm: Observacion"
-                  validationFunction={validateNotEmpty}
-                />
-                <ComboBox
-                  name={"requirement"}
-                  title={"Requisito"}
-                  options={[
-                    "Tener al menos grado de maestría",
-                    "128 horas de capacitación",
-                  ]}
-                  onChange={() => {
-                    console.log("AcademicStaff");
-                  }}
-                />
-              </div>
-              <div>
-                <GreenButton
-                  content="Añadir"
-                  onClick={() => console.log("Clic Añadir")}
-                />
-                <WhiteButton
-                  content="Mostrar"
-                  onClick={() => console.log("Clic Mostrar")}
-                />
-              </div>
-            </section>
-          </form>
-        </div>
-
-        {/* Campo Amplio */}
-        <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
-          style={{
-            boxShadow:
-              "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
-          }}
-        >
-          <form className="text-sm lg:text-base">
-            <section>
-              <div>
-                <InputLabel
-                  name={"wideField"}
-                  title="Campo Amplio:"
-                  onChange={() => {
-                    console.log("wideField");
-                  }}
-                  placeholder="Ejm: TECNOLOGÍAS DE LA INFORMACIÓN Y LA COMUNICACIÓN (TIC)"
-                  validationFunction={validateNotEmpty}
-                />
-                <InputLabel
-                  name={"description"}
-                  title="Descripción:"
-                  onChange={() => {
-                    console.log("description");
-                  }}
-                  placeholder="Ejm: Descripción"
-                  validationFunction={validateNotEmpty}
-                />
-              </div>
-              <div>
-                <GreenButton
-                  content="Añadir"
-                  onClick={() => console.log("Clic Añadir")}
-                />
-                <WhiteButton
-                  content="Mostrar"
-                  onClick={() => console.log("Clic Mostrar")}
-                />
-              </div>
-            </section>
-          </form>
-        </div>
-
-        {/* Campo Específico */}
-        <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
-          style={{
-            boxShadow:
-              "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
-          }}
-        >
-          <form className="text-sm lg:text-base">
-            <section>
-              <div>
-                <InputLabel
-                  name={"specificField"}
-                  title="Campo Específico:"
-                  onChange={() => {
-                    console.log("specificField");
-                  }}
-                  placeholder="Ejm TÉCNICO SUPERIOR EN MANTENIMIENTO DE SOFTWARE"
-                  validationFunction={validateNotEmpty}
-                />
-                <ComboBox
-                  name={"wideField"}
-                  title={"Campo Amplio"}
-                  options={["TIC", "Educación", "Administración"]}
-                  onChange={() => {
-                    console.log("wideField");
-                  }}
-                />
-                <InputLabel
-                  name={"description"}
-                  title="Descripción:"
-                  onChange={() => {
-                    console.log("description");
-                  }}
-                  placeholder="Ejm: Descripción"
-                  validationFunction={validateNotEmpty}
-                />
-              </div>
-
-              <div>
-                <GreenButton
-                  content="Añadir"
-                  onClick={() => console.log("Clic Añadir")}
-                />
-                <WhiteButton
-                  content="Mostrar"
-                  onClick={() => console.log("Clic Mostrar")}
-                />
-              </div>
-            </section>
-          </form>
-        </div>
-
-        <div className="my-4 flex justify-end">
-          <Link href="/private/hr/convocatoria/Create">
-            <GreenButton content="Siguiente" />
-          </Link>
         </div>
       </div>
-    </>
+    </LayoutWithSidebar>
   );
-};
+}
 
-export default Convocatoria;
+export default HomeConvocatoria;

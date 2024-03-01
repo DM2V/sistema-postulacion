@@ -3,58 +3,67 @@ import LoginImg from "@/assets/images/login.jpg";
 import GreenButton from "@/components/Buttons/GreenButton";
 import InputLabel from "@/components/Form/InputLabel";
 import Password from "@/components/Form/Password";
-import { REGISTER } from "@/routes/paths";
+import Footer from "@/components/Layout/Footer";
+import LayoutWithNavbarPublic from "@/components/Layout/LayoutWithNavbarPublic";
+import {
+  CANIDADATEOFFERS,
+  EVALUATORHOME,
+  HOMEHR,
+  REGISTER,
+} from "@/routes/paths";
 import { User } from "@/types/user";
 import { pb } from "@/utils/pocketbase";
 import { validateEmail, validatePassword } from "@/utils/validations";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { PERSONALDATA } from "../routes/paths";
+import { FormEvent, useState } from "react";
+
 
 function Login() {
-  const [formState, setFormState] = useState<User>({} as any);
-
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleFormChange = (fieldName: string, value: string) => {
-    setFormState((prevFormState) => ({
-      ...prevFormState,
-      [fieldName]: value,
-    }));
-  };
-
-  function importRecordsInParallel(records: any[]) {
-    const promises = records.map((record) => {
-      return client.records.create("example", record, {
-        $autoCancel: false,
-      });
-    });
-
-    return Promise.all(promises);
-  }
-
-  async function handleSubmit(e: any) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    if (!email || !password) {
+      return;
+    }
+
     try {
       const authData = await pb
         .collection("users")
-        .authWithPassword(formState.email, formState.password);
-      console.log(pb.authStore);
-      if (pb.authStore.baseModel.role === "candidate") {
-        //route to the candidate dashboard
-        console.log("LOGIN candidate");
-        router.push(PERSONALDATA);
+        .authWithPassword<User>(email, password);
+      const role = authData.record.role;
+
+      switch (role) {
+        case "candidate":
+          router.push(CANIDADATEOFFERS);
+          break;
+        case "admin_hr":
+          router.push(HOMEHR);
+          break;
+        case "evaluator":
+          router.push(EVALUATORHOME);
+          break;
+        default:
+          break;
       }
-      console.log(pb.authStore.isValid);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <>
+
+    <LayoutWithNavbarPublic>
       <div className="lg: mx-5 flex-col md:flex md:flex-row">
         <div className="w-full md:w-1/2">
           <Image
@@ -68,8 +77,7 @@ function Login() {
         </div>
         <div className="md:w-1/2 lg:mt-4 lg:px-16">
           <p className="m-4 text-center text-tp-disable-color md:text-sm lg:text-base">
-            Bienvenido(a) al portal de selección de personal académico del
-            Departamento de Ciencias de la Computación, por favor ingrese sus
+            Bienvenido(a) al portal de selección de personal académico, por favor ingrese sus
             datos.
           </p>
 
@@ -82,19 +90,16 @@ function Login() {
               title="Correo Electrónico:"
               errorMessage={"*Campo Requerido"}
               validationFunction={validateEmail}
-              onChange={handleFormChange}
             />
             <Password
               name={"password"}
               title={"Contraseña:"}
               errorMessage={"*Campo Requerido"}
               validationFunction={validatePassword}
-              onChange={handleFormChange}
               helpMessage={""}
-              onPasswordChange={handleFormChange}
             />
 
-            <GreenButton content="Ingresar" />
+            <GreenButton disabled={loading} content="Ingresar" />
           </form>
 
           <div className="m-4 text-center text-sm font-medium text-tp-disable-color lg:text-base">
@@ -179,7 +184,9 @@ function Login() {
           </li>
         </ol>
       </div>
-    </>
+      <Footer />
+    </LayoutWithNavbarPublic>
+
   );
 }
 
