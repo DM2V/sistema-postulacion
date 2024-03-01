@@ -17,7 +17,7 @@ export interface PersonalData {
   disabilityType?: string;
   disabilityPercentage?: string;
   MSPIDNumber?: string;
-  avatar: File | null; // base64
+  avatar?: File | null; // base64
 }
 
 

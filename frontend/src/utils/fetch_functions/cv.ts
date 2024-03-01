@@ -4,28 +4,12 @@ import { CvExpandend, PersonalData, HomeAddress, EmergencyContact, AcademicTrain
 
 export async function getCVs(setCVs: (e: CvExpandend | null) => void, cvId: string): Promise<void> {
     try {
-        const cvRecord = await pb.collection("CV").getOne(cvId, {
-            expand: 'personalData,emergencyContact,academicTraining,languages,publications,trainings,professionalExperience,extraPoints,postulacionDocument'
-        });
-
+        const cvRecord = await pb.collection("CV").getOne(cvId, {});
         if (!cvRecord) {
             console.error("Error retrieving CV data for the user.");
             return;
         }
 
-        // const cv: CV = {
-        //     id: cvRecord.id,
-        //     personalData: cvRecord.personalData ?? null,
-        //     homeAddress: cvRecord.homeAddress ?? null,
-        //     emergencyContact: cvRecord.emergencyContact ?? null,
-        //     academicTraining: cvRecord.academicTraining ?? [],
-        //     languages: cvRecord.languages ?? [],
-        //     publications: cvRecord.publications ?? [],
-        //     trainings: cvRecord.trainings ?? [],
-        //     professionalExperience: cvRecord.professionalExperience ?? [],
-        //     extraPoints: cvRecord.extraPoints ?? [],
-        //     postulacionDocument: cvRecord.postulacionDocument ?? null
-        // };
         const cv: CvExpandend = {
             id: cvRecord.id,
             personalData: await fetchPersonalData(cvRecord.personalData),
@@ -37,31 +21,41 @@ export async function getCVs(setCVs: (e: CvExpandend | null) => void, cvId: stri
             trainings: await fetchTrainings(cvRecord.trainings),
             professionalExperience: await fetchProfessionalExperience(cvRecord.professionalExperience),
             extraPoints: await fetchExtraPoints(cvRecord.extraPoints),
-            //postulacionDocument: await fetchPostulacionDocument(cvRecord.postulacionDocument)
+            postulacionDocument: await fetchPostulacionDocument(cvRecord.postulacionDocument)
         };
-
         setCVs(cv);
-
     } catch (error) {
         console.error("Error retrieving CV data for the user:", error);
         setCVs(null);
     }
 }
 
-
 export async function fetchPersonalData(personalDataId: string): Promise<PersonalData> {
     try {
-        const record = await pb.collection("users").getOne(personalDataId, {
-            expand: "cv,cv.personalData",
-            fields: "expand.cv.expand.personalData",
-        });
-
-        const personalData = record?.expand?.cv?.personalData;
-
+        const record = await pb.collection("PersonalData").getOne(personalDataId);
+        const personalData: PersonalData = {
+            name: record.name,
+            lastName1: record.lastName1,
+            lastName2: record.lastName2,
+            birthDate: record.birthDate,
+            gender: record.gender,
+            bloodType: record.bloodType,
+            maritalStatus: record.maritalStatus,
+            nationality: record.nationality,
+            residenceYears: record.residenceYears,
+            ethnicIdentification: record.ethnicIdentification,
+            ethnicGroup: record.ethnicGroup,
+            specialCapacity: record.catastrophicDisease,
+            catastrophicDisease: record.disabilityType,
+            catastrophicDiseaseType: record.catastrophicDiseaseType,
+            disabilityType: record.disabilityType,
+            disabilityPercentage: record.disabilityPercentage,
+            MSPIDNumber: record.MSPIDNumber,
+            avatar: record.avatar
+        }
         if (!personalData) {
             throw new Error("No personal data found");
         }
-
         return personalData;
     } catch (error) {
         console.error("Error fetching personal data:", error);
@@ -72,15 +66,24 @@ export async function fetchPersonalData(personalDataId: string): Promise<Persona
 
 export async function fetchHomeAddress(homeAddressId: string): Promise<HomeAddress> {
     try {
-        const record = await pb.collection("users").getOne(homeAddressId, {
-            expand: "cv,cv.homeAddress",
-            fields: "expand.cv.expand.homeAddress",
-        });
-        const homeAddress = record?.expand?.cv?.homeAddress;
-        if (!homeAddress) {
+        const record = await pb.collection("HomeAddress").getOne(homeAddressId);
+        const homeData: HomeAddress = {
+            province: record.province,
+            canton: record.canton,
+            parish: record.parish,
+            mainStreet: record.mainStreet,
+            secondaryStreet: record.secondaryStreet,
+            reference: record.reference,
+            number: record.number,
+            homePhone: record.homePhone,
+            cellPhone: record.cellPhone,
+            workPhone: record.workPhone,
+            extencion: record.extencion
+        }
+        if (!homeData) {
             console.log("No home address found for user");
         }
-        return homeAddress;
+        return homeData;
     } catch (error) {
         console.error("Error fetching personal data:", error);
         throw new Error("Failed to fetch personal data");
@@ -89,15 +92,28 @@ export async function fetchHomeAddress(homeAddressId: string): Promise<HomeAddre
 
 export async function fetchEmergencyContact(emergencyContactId: string): Promise<EmergencyContact> {
     try {
-        const record = await pb.collection("users").getOne(emergencyContactId, {
-            expand: "cv,cv.emergencyContact",
-            fields: "expand.cv.expand.emergencyContact",
-        });
-        const emergencyContact = record?.expand?.cv?.emergencyContact;
-        if (!emergencyContact) {
+        const record = await pb.collection("EmergencyContact").getOne(emergencyContactId);
+        const emergencyData: EmergencyContact = {
+            name: record.name,
+            lastName1: record.lastName1,
+            lastName2: record.lastName2,
+            typeIdentification: record.typeIdentification,
+            identification: record.identification,
+            relationship: record.relationship,
+            province: record.province,
+            canton: record.canton,
+            parish: record.parish,
+            mainStreet: record.mainStreet,
+            secondaryStreet: record.secondaryStreet,
+            reference: record.reference,
+            number: record.number,
+            homePhone: record.homePhone,
+            cellPhone: record.cellPhone
+        }
+        if (!emergencyData) {
             console.log("No emergency contact found for user");
         }
-        return emergencyContact;
+        return emergencyData;
     } catch (error) {
         console.error("Error fetching personal data:", error);
         throw new Error("Failed to fetch personal data");
@@ -178,15 +194,26 @@ export async function fetchAcademicTraining(academicTrainingIds: string[]): Prom
 
 export async function fetchExtraPoints(extraPointsId: string): Promise<ExtraPoints> {
     try {
-        const record = await pb.collection("users").getOne(extraPointsId, {
-            expand: "cv,cv.extraPoints",
-            fields: "expand.cv.expand.extraPoints",
-        });
-        const extraPoints = record?.expand?.cv?.extraPoints;
-        if (!extraPoints) {
+        const record = await pb.collection("ExtraPoints").getOne(extraPointsId);
+        const extraPointsData: ExtraPoints = {
+            professionalExperienceEspe: record.professionalExperienceEspe,
+            fileProfessionalExperienceEspe: record.fileProfessionalExperienceEspe,
+            fileNationalInternationalAwards: record.fileNationalInternationalAwards,
+            fileProfessionalAcademicRecognition: record.fileProfessionalAcademicRecognition,
+            twonsNationalities: record.twonsNationalities,
+            fileTwonsNationalities: record.fileTwonsNationalities,
+            disability: record.disability,
+            fileDisability: record.fileDisability,
+            warHeroes: record.warHeroes,
+            filewarHeroes: record.filewarHeroes,
+            vulnerableSituations: record.vulnerableSituations,
+            fileVulnerableSituations: record.fileVulnerableSituations,
+            genderWomen: record.genderWomen
+        };
+        if (!extraPointsData) {
             console.log("No extra points found for user");
         }
-        return extraPoints;
+        return extraPointsData;
     } catch (error) {
         console.error("Error fetching extra points:", error);
         throw new Error("Failed to fetch extra points");
@@ -195,12 +222,19 @@ export async function fetchExtraPoints(extraPointsId: string): Promise<ExtraPoin
 
 export async function fetchPostulacionDocument(postulacionDocumentId: string): Promise<PostulacionDocument> {
     try {
-        const record = await pb.collection("users").getOne(postulacionDocumentId, {
-            expand: "cv,cv.postulacionDocument",
-            fields: "expand.cv.expand.postulacionDocument",
-        });
+        const record = await pb.collection("PostulacionDocument").getOne(postulacionDocumentId);
+        const postulationData: PostulacionDocument = {
+            offerId: record.offerId,
+            resume: record.resume,
+            idCopy: record.idCopy,
+            votingCert: record.votingCert,
+            degreeCert: record.degreeCert,
+            mecanizadoIess: record.mecanizadoIess,
+            noImpedimentCert: record.noImpedimentCert,
+            noAdminResponsibilityCert: record.noAdminResponsibilityCert
+        }
 
-        return record?.expand?.cv?.postulacionDocument ?? null;
+        return postulationData ?? null;
     } catch (error) {
         console.error("Error fetching postulacion document:", error);
         throw new Error("Failed to fetch personal document");

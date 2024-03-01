@@ -17,6 +17,15 @@ const tw = createTw(tailwindConfig);
 import { getCVs } from "@/utils/fetch_functions/cv";
 
 const styles = StyleSheet.create({
+  container: {
+    // Define your container styles here (e.g., margin, padding)
+    width: "70%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    padding: 10,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 5,
+  },
   page: {
     flexDirection: "row",
     position: "relative",
@@ -51,6 +60,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 5,
+    marginRight: 20,
   },
   sectionDescription: {
     fontSize: 14,
@@ -78,6 +88,10 @@ const styles = StyleSheet.create({
   },
 });
 
+const Container = ({ children, style }) => (
+  <View style={{ ...styles.container, ...style }}>{children}</View>
+);
+
 const PageWrapper = ({
   children,
   bgImage,
@@ -99,6 +113,13 @@ const PageWrapper = ({
   </Page>
 );
 
+const Section = <T extends string>(props: { title: T; description: T }) => (
+  <View style={tw("flex flex-row items-start align-middle")}>
+    <Text style={styles.sectionTitle}>{props.title}:</Text>
+    <Text style={styles.sectionDescription}>{props.description}</Text>
+  </View>
+);
+
 const PdfTemplate = () => {
   const [user, setUser] = useState<User | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
@@ -109,18 +130,16 @@ const PdfTemplate = () => {
   useEffect(() => {
     getUserInfo(userId, setUser);
 
-    if (user && user.cv) {
-      // console.log("user: "+user, "userID: "+user.id, "user values: "+user.cv.values, user.cv);
-      // getCVs(setUserCV, user?.cv?.values[0]);
+    if (user) {
       getCVs(setUserCV, user?.expand?.cv?.id);
     }
   }, []);
 
-  console.log(user?.expand?.cv?.id);
-    console.log(userCV);
+  console.log("CV" + userCV);
+
   useEffect(() => {
     if (user) {
-      if (user.avatar instanceof File) {
+      if (userCV?.personalData instanceof File) {
         const reader = new FileReader();
         reader.onload = () => {
           setAvatarUrl(reader.result as string);
@@ -142,9 +161,9 @@ const PdfTemplate = () => {
     <Document>
       <PageWrapper>
         <View style={tw("w-full")}>
-          <View style={tw("flex flex-col justify-center items-center")}>
+          <Container style={tw("flex flex-col justify-center items-center")}>
             <Text
-              style={tw("text-red-500  text-center font-bold text-2xl mb-5")}
+              style={tw("text-red-500 text-center font-bold text-2xl mb-5")}
             >
               ¡Por favor para continuar verifique que la información sea
               correcta!
@@ -160,74 +179,176 @@ const PdfTemplate = () => {
               VERIFIQUE QUE SUS DATOS ESTEN CORRECTOS
             </Text>
             <Text style={styles.sectionTitle}>DATOS PERSONALES</Text>
-          </View>
-          {user && (
-            <View style={tw("flex flex-row justify-around")}>
+          </Container>
+          {userCV && (
+            <Container style={tw("flex flex-row justify-around")}>
               <View style={tw("flex flex-col")}>
-                <View>
-                  <Text style={styles.sectionTitle}>
-                    Numero de identificación:
-                  </Text>
-                  <Text style={styles.sectionDescription}>
-                    {user?.identificationNumber}
-                  </Text>
-                </View>
-
-                <View style={styles.sectionItem}>
-                  <Text style={styles.sectionTitle}>Nombre:</Text>
-                  <Text style={styles.sectionDescription}>
-                    {userCV?.personalData?.name}
-                  </Text>
-                </View>
-
-                <View style={styles.sectionItem}>
-                  <Text style={styles.sectionTitle}>Apellido:</Text>
-                  <Text style={styles.sectionDescription}>
-                    {/* {userCV?.personalData?.lastName1 + " " + userCV?.personalData?.lastName2} */}
-                  </Text>
-                </View>
-                <View style={styles.sectionItem}>
-                  <Text style={styles.sectionTitle}>Email:</Text>
-                  <Text style={styles.sectionDescription}>{user?.email}</Text>
-                </View>
+                <Section
+                  title="NÚMERO DE DOCUMENTO"
+                  description={user?.identificationNumber || ""}
+                />
+                <Section
+                  title="NOMBRE"
+                  description={userCV?.personalData?.name || ""}
+                />
+                <Section
+                  title="APELLIDO"
+                  description={
+                    userCV?.personalData?.lastName1 +
+                      " " +
+                      userCV?.personalData?.lastName2 || ""
+                  }
+                />
+                <Section
+                  title="AUTO IDENTIFICACIÓN ÉTNICA"
+                  description={userCV?.personalData?.ethnicIdentification || ""}
+                />
+                <Section
+                  title="NACIONALIDAD"
+                  description={userCV?.personalData?.nationality || ""}
+                />
               </View>
-
               {avatarUrl && (
                 <img src={avatarUrl} style={styles.avatar} alt="Avatar" />
               )}
-            </View>
+            </Container>
           )}
+          <Container style={tw("flex flex-col")}>
+            <Text style={tw("text-center py-4 mb-4 font-bold w-full")}>
+              INFORMACIÓN ADICIONAL DISCAPACIDAD Y/O ENFERMEDAD CATASTRÓFICA{" "}
+            </Text>
+            <Section
+              title="CAPACIDAD ESPECIAL"
+              description={
+                userCV?.personalData?.specialCapacity === "0"
+                  ? "NO"
+                  : userCV?.personalData?.specialCapacity || "NO"
+              }
+            />
+            <Section
+              title="ENFERMEDAD CATASTROFICA"
+              description={
+                userCV?.personalData?.catastrophicDisease === "0"
+                  ? "NO"
+                  : userCV?.personalData?.catastrophicDisease || "SÍ"
+              }
+            />
+          </Container>
+          <Container style={tw("flex flex-col")}>
+            <Text style={tw("text-center py-4 mb-4 font-bold w-full")}>
+              DIRECCIÓN DOMICILIARÍA PERMANENTE{" "}
+            </Text>
+            <Section
+              title="PROVINCIA"
+              description={userCV?.homeAddress?.province || ""}
+            />
+            <Section
+              title="CANTÓN"
+              description={userCV?.homeAddress?.canton || ""}
+            />
+            <Section
+              title="PARROQUIA"
+              description={userCV?.homeAddress?.parish || ""}
+            />
+            <Section
+              title="CALLE PRINCIPAL"
+              description={userCV?.homeAddress?.mainStreet || ""}
+            />
+            <Section
+              title="CALLE SECUNDARIA"
+              description={userCV?.homeAddress?.secondaryStreet || ""}
+            />
+            <Section
+              title="NÚMERO DE CASA"
+              description={userCV?.homeAddress?.number || ""}
+            />
+            <Section
+              title="REFERENCIA"
+              description={userCV?.homeAddress?.reference || ""}
+            />
+            <Section
+              title="TELÉFONO DOMICILIARIO"
+              description={userCV?.homeAddress?.homePhone || ""}
+            />
+            <Section
+              title="TELÉFONO CELULAR"
+              description={userCV?.homeAddress?.cellPhone || ""}
+            />
+            <Section
+              title="TELÉFONO TRABAJO"
+              description={userCV?.homeAddress?.workPhone || ""}
+            />
+            <Section
+              title="EXTENSIÓN"
+              description={userCV?.homeAddress?.extencion || ""}
+            />
+          </Container>
+
+          <Container style={tw("flex flex-col")}>
+            <Text style={tw("text-center py-4 mb-4 font-bold w-full")}>
+              CONTACTO DE EMERGENCIA{" "}
+            </Text>
+            <Section
+              title="APELLIDO"
+              description={
+                userCV?.emergencyContact?.lastName1 +
+                  " " +
+                  userCV?.emergencyContact?.lastName2 || ""
+              }
+            />
+            <Section
+              title="TIPO DE DOCUMENTO"
+              description={userCV?.emergencyContact?.typeIdentification || ""}
+            />
+            <Section
+              title="NÚMERO DE DOCUMENTO"
+              description={userCV?.emergencyContact?.identification || ""}
+            />
+            <Section
+              title="PARENTESCO"
+              description={userCV?.emergencyContact?.relationship || ""}
+            />
+            <Section
+              title="PROVINCIA"
+              description={userCV?.emergencyContact?.province || ""}
+            />
+            <Section
+              title="CANTÓN"
+              description={userCV?.emergencyContact?.canton || ""}
+            />
+            <Section
+              title="PARROQUIA"
+              description={userCV?.emergencyContact?.parish || ""}
+            />
+            <Section
+              title="CALLE PRINCIPAL"
+              description={userCV?.emergencyContact?.mainStreet || ""}
+            />
+            <Section
+              title="CALLE SECUNDARIA"
+              description={userCV?.emergencyContact?.secondaryStreet || ""}
+            />
+            <Section
+              title="NÚMERO DE CASA"
+              description={userCV?.emergencyContact?.number || ""}
+            />
+            <Section
+              title="REFERENCIA"
+              description={userCV?.emergencyContact?.reference || ""}
+            />
+            <Section
+              title="TELÉFONO DOMICILIARIO"
+              description={userCV?.emergencyContact?.homePhone || ""}
+            />
+            <Section
+              title="TELÉFONO CELULAR"
+              description={userCV?.emergencyContact?.cellPhone || ""}
+            />
+          </Container>
         </View>
       </PageWrapper>
     </Document>
   );
 };
-//   return (
-//     <Document>
-//       <Page size="A4" style={styles.page}>
-//         {user.length > 0 && (
-//           <View style={styles.section}>
-//             <Text style={styles.text}>ID: {user[0].id}</Text>
-//             <Text style={styles.text}>Period: {user[0].period}</Text>
-//             <Text style={styles.text}>
-//               Identification Number: {user[0].identificationNumber}
-//             </Text>
-//             <Text style={styles.text}>Name: {user[0].name}</Text>
-//             <Text style={styles.text}>Last Name: {user[0].lastName}</Text>
-//             <Text style={styles.text}>Email: {user[0].email}</Text>
-//             {avatarUrl && (
-//               <img src={avatarUrl} style={styles.image} alt="Avatar" />
-//             )}
-//             <Text style={styles.text}>Role: {user[0].role}</Text>
-//             <Text style={styles.text}>
-//               Phase Status: {user[0].phaseStatus}
-//             </Text>
-//             <Text style={styles.text}>Offer: {user[0].offer}</Text>
-//           </View>
-//         )}
-//       </Page>
-//     </Document>
-//   );
-// };
 
 export default PdfTemplate;
