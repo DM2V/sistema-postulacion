@@ -11,6 +11,7 @@
   "dependencies": {
     "@fontsource/poppins": "^5.0.8",
     "@fontsource/raleway": "^5.0.15",
+    "@react-pdf/renderer": "^3.3.8",
     "date-fns": "^2.30.0",
     "leaflet": "^1.9.4",
     "next": "^14.0.4",
@@ -25,6 +26,7 @@
     "react-leaflet": "^4.2.1",
     "react-modal": "^3.16.1",
     "react-pdf": "^7.6.0",
+    "react-pdf-tailwind": "^2.3.0",
     "react-router-dom": "^6.18.0",
     "react-select": "^5.8.0",
     "react-slick": "^0.29.0",
