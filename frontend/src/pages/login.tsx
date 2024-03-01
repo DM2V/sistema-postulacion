@@ -5,12 +5,7 @@ import InputLabel from "@/components/Form/InputLabel";
 import Password from "@/components/Form/Password";
 import Footer from "@/components/Layout/Footer";
 import LayoutWithNavbarPublic from "@/components/Layout/LayoutWithNavbarPublic";
-import {
-  CANIDADATEOFFERS,
-  EVALUATORHOME,
-  HOMEHR,
-  REGISTER,
-} from "@/routes/paths";
+import { CANIDADATEOFFERS, EVALUATORHOME, HOMEHR, REGISTER, } from "@/routes/paths";
 import { User } from "@/types/user";
 import { pb } from "@/utils/pocketbase";
 import { validateEmail, validatePassword } from "@/utils/validations";

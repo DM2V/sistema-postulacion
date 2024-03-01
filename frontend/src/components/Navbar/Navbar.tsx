@@ -1,5 +1,6 @@
 import { HOME } from "@/routes/paths";
 import { pb } from "@/utils/pocketbase";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { GoSignOut } from "react-icons/go";
@@ -36,10 +37,12 @@ function Navbar({ labels }: NavbarProps) {
 
       <Userdata />
 
-      <button onClick={handleSignOut} className="flex items-center text-sm font-sans m-4">
-        <GoSignOut />
-        <p className="m-2 font-bold text-[#888888]">Salir</p>
-      </button>
+      <Link href={HOME}>
+        <button onClick={handleSignOut} className="flex items-center text-sm font-sans m-4">
+          <GoSignOut />
+          <p className="m-2 font-bold text-[#888888]">Salir</p>
+        </button>
+      </Link>
 
     </div>
   );
