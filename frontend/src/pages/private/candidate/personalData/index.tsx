@@ -104,7 +104,7 @@ const PersonalDataPage: FC = () => {
 
   const router = useRouter();
   //const id = router.query.id as string;
-  const { id } = useParams();
+  // const { id } = useParams();
 
   useEffect(() => {
     fetchPersonalDataForUser();
