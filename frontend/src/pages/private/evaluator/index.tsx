@@ -1,9 +1,10 @@
 import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
 import LayoutWithSidebarEvaluator from "@/components/Layout/LayoutWithSidebarEvaluator";
 import { USERSEVALUATORVIEW } from "@/routes/paths";
-import { PostulationPeriod } from "@/types/offers";
+import { PostulationPeriod, Site } from "@/types/offers";
 import { User } from "@/types/user";
 import { getPostulationPeriods } from "@/utils/fetch_functions/periods";
+import { getSites } from "@/utils/fetch_functions/sites";
 import { pb } from "@/utils/pocketbase";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -16,22 +17,25 @@ const Home = () => {
 
   const [periods, setPeriods] = useState<PostulationPeriod[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<string | undefined>('');
+  const [campus, setCampus] = useState<Site[]>([]);
+  const [selectedCampus, setSelectedCampus] = useState<string | undefined>('');
 
   useEffect(() => {
     getPostulationPeriods(setPeriods);
+    getSites(setCampus);
   }, []);
 
   const handleSearch = async () => {
     try {
-      if (selectedPeriod) {
+      if (selectedPeriod && selectedCampus) {
         const data = await pb.collection("users").getList<User>(1, 50, {
-          filter: `role = "candidate" && period = "${selectedPeriod}"`,
+          filter: `role = "candidate" && period = "${selectedPeriod}" && site = "${selectedCampus}"`,
         });
         console.log(selectedPeriod)
         setUsers(data.items);
         console.log(data.items)
       } else {
-        alert("Error: Debe seleccionar un periodo de postulación.");
+        alert("Error: Debe seleccionar un periodo de postulación y un campus.");
       }
     } catch (error) {
       console.error("Error al realizar la búsqueda:", error);
@@ -46,11 +50,11 @@ const Home = () => {
       </h3>
 
       {/* Search */}
-      <div className="flex flex-col md:flex-row md:gap-x-4 mx-5">
-        <section className="">
+      <div className="flex flex-col md:flex-row md:gap-x-4 items-center justify-start mx-10 text-sm">
+        <section className="w-full md:w-1/6">
           <ComboBoxGeneric
             name={"applicationPeriod"}
-            title={"Periodo de Postulación"}
+            title={"Periodo Académico"}
             options={periods.map((period) => {
               return { label: period.name, value: period.id };
             })}
@@ -59,10 +63,23 @@ const Home = () => {
             }}
           />
         </section>
-        <section className="mt-4 flex w-auto items-center justify-center">
+
+        <section className="w-full md:w-1/3 mt-4 md:mt-0">
+          <ComboBoxGeneric
+            name={"sites"}
+            title={"Campus"}
+            options={campus.map((period) => {
+              return { label: period.name, value: period.id };
+            })}
+            onChange={(name, selectedOption) => {
+              setSelectedCampus(selectedOption.value);
+            }}
+          />
+        </section>
+
+        <section className="w-full md:w-auto mt-4 md:mt-0 flex items-center justify-center">
           <button
-            className="mx-1 flex transform items-center gap-2 rounded-xl border
-                border-primary-color bg-primary-color px-3 py-1 font-normal text-white transition-all hover:scale-105 hover:bg-white hover:font-semibold hover:text-primary-color"
+            className=" mt-3 mx-1 flex transform items-center gap-2 rounded-xl border border-primary-color bg-primary-color px-3 py-1 font-normal text-white transition-all hover:scale-105 hover:bg-white hover:font-semibold hover:text-primary-color"
             onClick={handleSearch}
           >
             <LuSearch />

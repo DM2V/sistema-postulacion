@@ -1,4 +1,4 @@
-import { EVALUATORHOME } from '@/routes/paths';
+import { EVALUATORHOME, USERSEVALUATORVIEW } from '@/routes/paths';
 import React from 'react';
 import { LuHome } from "react-icons/lu";
 import Sidebar from '../Sidebar/Sidebar';
@@ -16,6 +16,11 @@ function LayoutWithSidebarEvaluator({ children }: { children: React.ReactNode })
                 displayName: "Inicio",
                 icon: <LuHome />,
                 route: EVALUATORHOME
+              },
+              {
+                displayName: "Usuarios",
+                icon: <LuHome />,
+                route: USERSEVALUATORVIEW
               }
             ]
           }

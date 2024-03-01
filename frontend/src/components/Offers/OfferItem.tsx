@@ -1,7 +1,6 @@
 import { OfferCardIcon } from "@/assets/icons";
 import { OFFERSHREDIT } from "@/routes/paths";
 import { Offer } from "@/types/offers";
-import { User } from "@/types/user";
 import { pb } from "@/utils/pocketbase";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -26,7 +25,7 @@ function OfferItem({ offer, getOffers, }: { offer: Offer; getOffers: () => Promi
   const router = useRouter();
   const { id } = router.query;
   const [modalIsOpen, setIsOpen] = React.useState(false);
-  const [userCv, setUserCv] = useState<User[]>([]);
+  const [userCv, setUserCv] = useState<Offer[]>([]);
 
 
   function openModal() {
@@ -51,9 +50,8 @@ function OfferItem({ offer, getOffers, }: { offer: Offer; getOffers: () => Promi
   useEffect(() => {
     async function getUserCv() {
 
-      const record = await pb.collection("users").getFullList<User>({
+      const record = await pb.collection("Offer").getFullList<Offer>({
         sort: '-created',
-        filter: `role = "admin_hr"`,
         expand: "period,contractType,wideField,specificField,site,department,academicStaff,activity"
       });
       setUserCv(record);

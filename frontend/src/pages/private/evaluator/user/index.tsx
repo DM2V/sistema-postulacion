@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const User = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const headerName = ["Cédula/Pasaporte", "Nombre", "Apellido", "Rol"];
+  const headerName = ["Cédula/Pasaporte", "Nombre", "Apellido", "Rol", "Estado"];
 
   const fetchData = async () => {
     try {
@@ -83,6 +83,9 @@ const User = () => {
                           <td className="border-b px-4 py-2 md:table-cell lg:table-cell">
                             {user.role === "candidate" ? "Postulante" : null}
                           </td>
+                          <td className="border-b px-4 py-2 md:table-cell lg:table-cell">
+                            {user?.expand?.phaseStatus?.status}
+                          </td>
                         </tr>
                       ))
                     : null}
@@ -100,6 +103,7 @@ const getAllUsers = async (): Promise<User[]> => {
   const data = await pb.collection("users").getFullList<User>({
     sort: "-created",
     role: "candidate",
+    expand: "phaseStatus",
   });
 
   return data;
