@@ -18,7 +18,7 @@ function LayoutWithSidebarEvaluator({ children }: { children: React.ReactNode })
                 route: EVALUATORHOME
               },
               {
-                displayName: "Usuarios",
+                displayName: "Postulantes",
                 icon: <LuHome />,
                 route: USERSEVALUATORVIEW
               }
