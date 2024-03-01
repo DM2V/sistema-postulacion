@@ -54,7 +54,9 @@ function ViewUser() {
     const scoreMerits = record?.expand?.phaseStatus?.score;
     console.log(record);
 
-    if (scoreMerits == null || scoreMerits == 0) {
+    if (score == null || score < 1 || score > 50) {
+      alert("El puntaje debe ser maximo de 50.");
+    } else if (scoreMerits == null || scoreMerits == 0) {
       const data = {
         score: score,
         user: id,
@@ -64,6 +66,7 @@ function ViewUser() {
       console.log(data);
       alert("Exitoso");
       const idPhaseStatus = newPhase.id;
+
 
       //update user with the new phaseStatus
       const data2 = {
@@ -168,7 +171,7 @@ function ViewUser() {
               </button>
             </div>
             <iframe
-              src={`${BACKEND_ADDRESS}/api/files/Calendar/1ku7dn1hx5m5egj/calificacion_meritos_kKTpEBSDoh.pdf`}
+              src={`${BACKEND_ADDRESS}/api/files/Calendar/ruhh0pe3ezjx0m8/calificacion_meritos_pzycvU5WMQ.pdf`}
               title="PDF Viewer"
               width="100%"
               className="h-[80vh]"
