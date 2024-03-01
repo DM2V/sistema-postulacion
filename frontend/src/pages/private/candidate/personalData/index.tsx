@@ -1,43 +1,45 @@
-import React, { FC, FormEvent, useState, useEffect } from "react";
-import { PersonalData } from "@/types/cv";
 import GreenButton from "@/components/Buttons/GreenButton";
-import InputLabel from "@/components/Form/InputLabel";
-import DateInput from "@/components/Form/DateInput";
-import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
-import ImageInput from "@/components/Image/ImageInput";
 import CheckBox from "@/components/Form/CheckBox";
+import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
+import DateInput from "@/components/Form/DateInput";
+import InputLabel from "@/components/Form/InputLabel";
+import ImageInput from "@/components/Image/ImageInput";
+import { PersonalData } from "@/types/cv";
+import { useRouter } from 'next/router';
+import { FC, FormEvent, useEffect, useState } from "react";
+
 // import EasyCrop from "@/components/Image/EasyCrop";
 // import ImageUpload from "@/components/Image/ImageUpload";
 
 import {
-  Gender,
   BloodType,
-  MaritalStatus,
+  CatastrophicIllnessType,
   Country,
+  DisabilityType,
   EthnicGroup,
   EthnicIdentification,
-  DisabilityType,
-  CatastrophicIllnessType,
+  Gender,
+  MaritalStatus,
 } from "@/types/staticData";
 import {
-  getGender,
   getBloodType,
-  getMaritalStatus,
+  getCatastrophicIllnessType,
   getCountry,
+  getDisabilityType,
   getEthnicGroup,
   getEthnicIdentification,
-  getDisabilityType,
-  getCatastrophicIllnessType,
+  getGender,
+  getMaritalStatus,
 } from "@/utils/fetch_functions/staticData";
 
+import { PERSONALINFORMATION } from "@/routes/paths";
+import { pb } from "@/utils/pocketbase";
 import {
-  validateNotEmpty,
   calculateAge,
+  validateNotEmpty,
   validateNumbersOnly,
 } from "@/utils/validations";
-import { useRouter } from "next/router";
-import { pb } from "@/utils/pocketbase";
-import { PERSONALINFORMATION } from "@/routes/paths";
+import { useParams } from "next/navigation";
 
 const PersonalDataPage: FC = () => {
   const [personalData, setPersonalData] = useState<PersonalData>();
@@ -101,6 +103,9 @@ const PersonalDataPage: FC = () => {
   };
 
   const router = useRouter();
+  //const id = router.query.id as string;
+  const { id } = useParams();
+
   useEffect(() => {
     fetchPersonalDataForUser();
     getGender(setGender);
@@ -172,6 +177,8 @@ const PersonalDataPage: FC = () => {
     createPersonalData(formData);
   }
 
+
+
   return (
     <div className="my-8 flex min-h-screen flex-col items-center lg:p-4">
       <div className="rounded-2xl bg-gray-bg p-8 shadow-lg md:w-1/2">
@@ -242,6 +249,7 @@ const PersonalDataPage: FC = () => {
                     // Handle invalid date selection
                     console.error("Invalid date selected:", selectedOption);
                   }
+                  console.log(id)
                 }}
               />
               <InputLabel
@@ -262,6 +270,7 @@ const PersonalDataPage: FC = () => {
                 })}
                 onChange={(name, selectedOption) => {
                   setSelectedGender(selectedOption.label);
+
                 }}
               />
               <ComboBoxGeneric

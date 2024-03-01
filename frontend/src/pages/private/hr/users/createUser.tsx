@@ -9,6 +9,7 @@ import { USERSHR } from "@/routes/paths";
 import { pb } from "@/utils/pocketbase";
 import {
   validateEcuadorianID,
+  validateEmail,
   validateNotEmpty,
   validatePassword,
 } from "@/utils/validations";
@@ -76,6 +77,7 @@ const createUser = () => {
     console.log("first")
 
     const data = {
+      "identificationNumber": identificationNumber.trim(),
       "username": username.trim(),
       "email": email.trim(),
       "emailVisibility": true,
@@ -83,27 +85,27 @@ const createUser = () => {
       "passwordConfirm": password.trim(),
       "name": name.trim(),
       "role": role,
-      "identificationNumber": identificationNumber.trim(),
       "lastName": lastName.trim()
-  };
-  const formData = new FormData()
-  formData.append("username", data.username)
-  formData.append("email", data.email)
-  formData.append("emailVisibility", ""+data.emailVisibility)
-  formData.append("password", data.password)
-  formData.append("passwordConfirm", data.passwordConfirm)
-  formData.append("name", data.name)
-  formData.append("role", data.role)
-  formData.append("identificationNumber", data.identificationNumber)
-  formData.append("lastName", data.lastName)
-  formData.append("avatar", avatar as Blob)
-  
-  try {
-    const record = await pb.collection('users').create(formData);
-    router.push(USERSHR)
-  } catch (error) {
-    alert("Error al crear el usuario")
-  }
+    };
+    const formData = new FormData()
+    formData.append("identificationNumber", data.identificationNumber)
+    formData.append("username", data.username)
+    formData.append("email", data.email)
+    formData.append("emailVisibility", "" + data.emailVisibility)
+    formData.append("password", data.password)
+    formData.append("passwordConfirm", data.passwordConfirm)
+    formData.append("name", data.name)
+    formData.append("role", data.role)
+    formData.append("lastName", data.lastName)
+    formData.append("avatar", avatar as Blob)
+
+    try {
+      const record = await pb.collection('users').create(formData);
+      router.push(USERSHR)
+      console.log(record)
+    } catch (error) {
+      alert("Error al crear el usuario")
+    }
 
   }
 
@@ -140,7 +142,7 @@ const createUser = () => {
                     title={"Número de identificación:"}
                     errorMessage={"El numero de identificación es necesario."}
                     validationFunction={validateEcuadorianID}
-                    onChange={(name, value)=>{
+                    onChange={(name, value) => {
                       setIdentificationNumber(value)
                     }}
                   />
@@ -154,7 +156,7 @@ const createUser = () => {
                     title="Nombre:"
                     errorMessage={"*Campo Requerido"}
                     validationFunction={validateNotEmpty}
-                    onChange={(name, selected)=>{
+                    onChange={(name, selected) => {
                       setName(selected)
                     }}
                   />
@@ -165,7 +167,7 @@ const createUser = () => {
                     title="Apellido:"
                     errorMessage={"*Campo Requerido"}
                     validationFunction={validateNotEmpty}
-                    onChange={(name, selected)=>{
+                    onChange={(name, selected) => {
                       setLastName(selected)
                     }}
                   />
@@ -180,7 +182,7 @@ const createUser = () => {
                     validationFunction={validatePassword}
                     onChange={handleFormChange}
                     helpMessage={""}
-                    onPasswordChange={(name, value)=>{
+                    onPasswordChange={(name, value) => {
                       setPassword(value)
                     }}
                   />
@@ -201,42 +203,42 @@ const createUser = () => {
                 </div>
               </div>
               <div className="w-1/2">
-                  <InputLabel
-                    name="username"
-                    title="Nombre de usuario:"
-                    errorMessage={"*Campo Requerido"}
-                    validationFunction={validateNotEmpty}
-                    onChange={(name, selected)=>{
-                      setUsername(selected)
-                    }}
-                  />
-                </div>
+                <InputLabel
+                  name="username"
+                  title="Nombre de usuario:"
+                  errorMessage={"*Campo Requerido"}
+                  validationFunction={validateNotEmpty}
+                  onChange={(name, selected) => {
+                    setUsername(selected)
+                  }}
+                />
+              </div>
               <div className="w-1/2 pl-3">
-                  <InputLabel
-                    name="email"
-                    title="Correo electrónico:"
-                    errorMessage={"*Campo Requerido"}
-                    validationFunction={validateNotEmpty}
-                    onChange={(name, selected)=>{
-                      setEmail(selected)
-                    }}
-                  />
-                </div>
-                <div className="w-full">
-                    <FileInput
-                    name="avatar"
-                    title="Avatar (en jpg): "
-                      accept=".jpg"
-                      onChange={(name, selected)=>{
-                        setAvatar(selected);
-                      }}
-                    />
-                    
-                </div>
+                <InputLabel
+                  name="email"
+                  title="Correo electrónico:"
+                  errorMessage={"*Campo Requerido"}
+                  validationFunction={validateEmail}
+                  onChange={(name, selected) => {
+                    setEmail(selected)
+                  }}
+                />
+              </div>
+              <div className="w-full">
+                <FileInput
+                  name="avatar"
+                  title="Avatar (en jpg): "
+                  accept=".jpg"
+                  onChange={(name, selected) => {
+                    setAvatar(selected);
+                  }}
+                />
 
-                <button onClick={handleCreateUser} className="focus:shadow-outline hover:t rounded-2xl bg-state-press p-2 px-4 text-white transition-transform hover:scale-110 hover:bg-primary-color focus:outline-none md:mt-4">
-                  + Crear
-                </button>
+              </div>
+
+              <button onClick={handleCreateUser} className="focus:shadow-outline hover:t rounded-2xl bg-state-press p-2 px-4 text-white transition-transform hover:scale-110 hover:bg-primary-color focus:outline-none md:mt-4">
+                + Crear
+              </button>
             </div>
           </section>
         </div>

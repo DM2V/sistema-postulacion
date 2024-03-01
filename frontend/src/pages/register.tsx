@@ -1,14 +1,72 @@
 import GreenButton from "@/components/Buttons/GreenButton";
-import CheckBox from "@/components/Form/CheckBox";
 import ComboBox from "@/components/Form/ComboBox";
 import InputLabel from "@/components/Form/InputLabel";
-import { validateEcuadorianID, validateEmail } from "@/utils/validations";
+import Password from "@/components/Form/Password";
+import { PERSONALDATA } from "@/routes/paths";
+import { PostulationPeriod } from "@/types/offers";
+import { getPostulationPeriods } from "@/utils/fetch_functions/periods";
+import { pb } from "@/utils/pocketbase";
+import { validateEcuadorianID, validateNotEmpty, validatePassword } from "@/utils/validations";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import signupImg from "../assets/images/signup.png";
 import LayoutWithNavbarPublic from "../components/Layout/LayoutWithNavbarPublic";
 
 function Register() {
   const idType = ["Cédula", "Pasaporte"];
+  const [identificationNumber, setIdentificationNumber] = useState<string>("");
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [role, setRole] = useState<string>("");
+  const [periods, setPeriods] = useState<PostulationPeriod[]>([]);
+  const router = useRouter();
+
+
+  const handleFormChange = (
+    fieldName: string,
+    value: string | string[] | File | null,
+  ) => { };
+
+  async function handleCreateUser() {
+    console.log("first")
+
+    const data = {
+      "identificationNumber": identificationNumber.trim(),
+      "email": email.trim(),
+      "emailVisibility": true,
+      "password": password.trim(),
+      "passwordConfirm": password.trim(),
+      "role": role,
+      "period": periods[0].id
+    };
+
+    const formData = new FormData()
+    formData.append("identificationNumber", data.identificationNumber)
+    formData.append("email", data.email)
+    formData.append("emailVisibility", "" + data.emailVisibility)
+    formData.append("password", data.password)
+    formData.append("passwordConfirm", data.passwordConfirm)
+    formData.append("role", data.role)
+    formData.append("period", data.period)
+
+    try {
+      const record = await pb.collection('users').create(formData);
+      const userId = record?.id;
+      router.push({
+        pathname: PERSONALDATA,
+        query: record?.id // Pasar el ID como un query parameter
+      });
+      console.log(userId);
+      alert("Usuario creado correctamente")
+    } catch (error) {
+      alert("Error al crear el usuario")
+    }
+  }
+
+  useEffect(() => {
+    getPostulationPeriods(setPeriods);
+  }, [])
 
   return (
     <LayoutWithNavbarPublic>
@@ -18,14 +76,16 @@ function Register() {
             Registro de Postulante
           </h4>
 
-          <form className="w-full text-sm lg:text-base">
+          <div className="w-full text-sm lg:text-base">
             <ComboBox
               name={"id_type"}
               title={"Tipo de identificación:"}
               options={idType}
               onChange={() => {
+                setRole("candidate")
                 console.log("type id");
               }}
+
             />
 
             <InputLabel
@@ -33,22 +93,34 @@ function Register() {
               title={"Número de identificación:"}
               errorMessage={"El numero de identificación es necesario."}
               validationFunction={validateEcuadorianID}
+              onChange={(name, value) => {
+                setIdentificationNumber(value)
+              }}
             />
 
             <InputLabel
-              name={"email"}
-              title={"Correo Electrónico:"}
-              errorMessage="*Campo Requerido"
-              validationFunction={validateEmail}
-            />
-            <InputLabel
-              name={"email_confirm"}
-              title={"Confirmar Correo:"}
-              errorMessage="*Campo Requerido"
-              validationFunction={validateEmail}
+              name="email"
+              title="Correo electrónico:"
+              errorMessage={"*Campo Requerido"}
+              validationFunction={validateNotEmpty}
+              onChange={(name, selected) => {
+                setEmail(selected)
+              }}
             />
 
-            <div className="mb-5 w-[35rem] md:w-max">
+            <Password
+              name={"password"}
+              title={"Contraseña:"}
+              errorMessage={"*Campo Requerido"}
+              validationFunction={validatePassword}
+              onChange={handleFormChange}
+              helpMessage={""}
+              onPasswordChange={(name, value) => {
+                setPassword(value)
+              }}
+            />
+
+            {/*             <div className="mb-5 w-[35rem] md:w-max">
               <div>Captcha</div>
 
               <CheckBox
@@ -60,10 +132,10 @@ function Register() {
                   console.log("privacy policy");
                 }}
               />
-            </div>
-          </form>
+            </div> */}
+          </div>
 
-          <GreenButton content="Enviar" />
+          <GreenButton onClick={handleCreateUser} content="Enviar" />
         </div>
 
         <div className="relative -ml-5 hidden h-96 w-96 md:block " dir="rtl">
