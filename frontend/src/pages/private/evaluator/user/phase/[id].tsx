@@ -65,7 +65,13 @@ function Phase() {
   }
 
   const handleScore = async () => {
-    const totalScore = (score1 || 0) + (score2 || 0);
+    const totalScore = ((score1 ?? 0) || 0) + ((score2 ?? 0) || 0);
+
+    // Verificación adicional para score1 y score2
+    if (((score1 ?? 0) < 17.5 || (score1 ?? 0) > 25) || ((score2 ?? 0) < 17.5 || (score2 ?? 0) > 25)) {
+      alert("El puntaje debe estar entre 17.5 y 25.");
+      return; // Salir de la función si no cumple con la condición
+    }
 
     const record = await pb.collection("users").getOne<User>(id as string, {
       expand: "phaseStatus",
@@ -92,6 +98,8 @@ function Phase() {
       alert("Ya existe un puntaje");
     }
   };
+
+
 
 
   return (

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const User = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const headerName = ["Cédula/Pasaporte", "Nombre", "Apellido", "Rol", "Estado"];
+  const headerName = ["Cédula/Pasaporte", "Nombre", "Apellido", "Rol", "Estado", "Puntaje Total"];
 
   const fetchData = async () => {
     try {
@@ -29,7 +29,7 @@ const User = () => {
 
   return (
     <LayoutWithSidebarEvaluator>
-      <div className="pr-2 lg:w-5/6">
+      <div className="pr-2 lg:w-5/6 mt-7">
         <div
           className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
           style={{
@@ -85,6 +85,9 @@ const User = () => {
                           </td>
                           <td className="border-b px-4 py-2 md:table-cell lg:table-cell">
                             {user?.expand?.phaseStatus?.status}
+                          </td>
+                          <td className="border-b px-4 py-2 md:table-cell lg:table-cell">
+                            {user?.expand?.phaseStatus?.totalScore}
                           </td>
                         </tr>
                       ))
