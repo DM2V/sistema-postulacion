@@ -3,13 +3,46 @@ import { EmergencyContact } from "@/types/cv";
 import { validateNotEmpty, validateNumbersOnly } from "@/utils/validations";
 import InputLabel from "@/components/Form/InputLabel";
 import ComboBox from "@/components/Form/ComboBox";
+import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
+
+import {
+  IdentificationType,
+  Canton,
+  Province,
+  Parish,
+  emergencyContactData,
+} from "@/types/staticData";
+
+import {
+  getIdentificationType,
+  getProvince,
+  getCanton,
+  getParish,
+  getEmergencyContactData,
+} from "@/utils/fetch_functions/staticData";
 
 interface Props {
   onChange: (name: string, selectedOption: string) => void;
 }
 
 const EmergencyContactForm: React.FC<Props> = ({ onChange }) => {
-  const gender = ["hombre", "mujer"];
+  const [province, setProvince] = useState<Province[]>([]);
+  const [canton, setCanton] = useState<Canton[]>([]);
+  const [parish, setParish] = useState<Parish[]>([]);
+  const [relationship, setRelationship] = useState<emergencyContactData[]>([]);
+  const [identificationType, setIdentificationType] = useState<
+    IdentificationType[]
+  >([]);
+
+  const [selectedIdentificationType, setSelectedIdentificationType] = useState<
+    string[]
+  >([]);
+  const [selectedRelationship, setSelectedRelationship] = useState<string[]>(
+    [],
+  );
+  const [selectedProvince, setSelectedProvince] = useState<string[]>([]);
+  const [selectedCanton, setSelectedCanton] = useState<string[]>([]);
+  const [selectedParish, setSelectedParish] = useState<string[]>([]);
 
   const [formData, setFormData] = useState<EmergencyContact>({
     name: "",
@@ -42,8 +75,12 @@ const EmergencyContactForm: React.FC<Props> = ({ onChange }) => {
   };
 
   useEffect(() => {
+    getIdentificationType(setIdentificationType);
+    getProvince(setProvince);
+    getCanton(setCanton);
+    getParish(setParish);
+    getEmergencyContactData(setRelationship);
   }, [formData]);
-
 
   return (
     <form onSubmit={handleSubmit}>
@@ -70,11 +107,16 @@ const EmergencyContactForm: React.FC<Props> = ({ onChange }) => {
             onChange={handleFormChange}
             validationFunction={validateNotEmpty}
           />
-          <ComboBox
+          <ComboBoxGeneric
             name="typeIdentification"
             title="Tipo de identificación:"
-            options={gender}
-            onChange={handleFormChange}
+            options={identificationType.map((d) => {
+              return { label: d.name, value: d.id };
+            })}
+            onChange={(name, selectedOption) => {
+              setSelectedIdentificationType([selectedOption.label]);
+               handleFormChange(name, selectedOption.label);
+            }}
           />
           <InputLabel
             name="identification"
@@ -82,31 +124,51 @@ const EmergencyContactForm: React.FC<Props> = ({ onChange }) => {
             onChange={handleFormChange}
             validationFunction={validateNumbersOnly}
           />
-          <ComboBox
+          <ComboBoxGeneric
             name="relationship"
             title="Parentesco:"
-            options={gender}
-            onChange={handleFormChange}
+            options={relationship.map((d) => {
+              return { label: d.relationship, value: d.id };
+            })}
+            onChange={(name, selectedOption) => {
+              setSelectedRelationship([selectedOption.label]);
+              handleFormChange(name, selectedOption.label);
+            }}
           />
         </div>
         <div className="grid grid-cols-1 gap-4 pb-4 lg:grid-cols-3">
-          <ComboBox
-            name="province"
-            title="Provincia:"
-            options={gender}
-            onChange={handleFormChange}
+          <ComboBoxGeneric
+            name={"province"}
+            title={"Provincia:"}
+            options={province.map((d) => {
+              return { label: d.province, value: d.province };
+            })}
+            onChange={(name, selectedOption) => {
+              setSelectedProvince([selectedOption.label]);
+              handleFormChange(name, selectedOption.label);
+            }}
           />
-          <ComboBox
-            name="canton"
-            title="Cantón:"
-            options={gender}
-            onChange={handleFormChange}
+          <ComboBoxGeneric
+            name={"canton"}
+            title={"Cantón:"}
+            options={canton.map((d) => {
+              return { label: d.canton, value: d.canton };
+            })}
+            onChange={(name, selectedOption) => {
+              setSelectedCanton([selectedOption.label]);
+              handleFormChange(name, selectedOption.label);
+            }}
           />
-          <ComboBox
-            name="parish"
-            title="Parroquia:"
-            options={gender}
-            onChange={handleFormChange}
+          <ComboBoxGeneric
+            name={"parish"}
+            title={"Parroquia:"}
+            options={parish.map((d) => {
+              return { label: d.parish, value: d.parish };
+            })}
+            onChange={(name, selectedOption) => {
+              setSelectedParish([selectedOption.label]);
+              handleFormChange(name, selectedOption.label);
+            }}
           />
           <InputLabel
             name="mainStreet"

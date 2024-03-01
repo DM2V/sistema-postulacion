@@ -1,109 +1,176 @@
-import GreenButton from "@/components/Buttons/GreenButton";
-import CheckBox from "@/components/Form/CheckBox";
-import ComboBox from "@/components/Form/ComboBox";
-import DateInput from "@/components/Form/DateInput";
-import InputLabel from "@/components/Form/InputLabel";
-import ImageInput from "@/components/Image/ImageInput";
+import React, { FC, FormEvent, useState, useEffect } from "react";
 import { PersonalData } from "@/types/cv";
-import React, { FC, useEffect, useState } from "react";
+import GreenButton from "@/components/Buttons/GreenButton";
+import InputLabel from "@/components/Form/InputLabel";
+import DateInput from "@/components/Form/DateInput";
+import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
+import ImageInput from "@/components/Image/ImageInput";
+import CheckBox from "@/components/Form/CheckBox";
+// import EasyCrop from "@/components/Image/EasyCrop";
+// import ImageUpload from "@/components/Image/ImageUpload";
 
 import {
-  calculateAge,
+  Gender,
+  BloodType,
+  MaritalStatus,
+  Country,
+  EthnicGroup,
+  EthnicIdentification,
+  DisabilityType,
+  CatastrophicIllnessType,
+} from "@/types/staticData";
+import {
+  getGender,
+  getBloodType,
+  getMaritalStatus,
+  getCountry,
+  getEthnicGroup,
+  getEthnicIdentification,
+  getDisabilityType,
+  getCatastrophicIllnessType,
+} from "@/utils/fetch_functions/staticData";
+
+import {
   validateNotEmpty,
+  calculateAge,
   validateNumbersOnly,
 } from "@/utils/validations";
+import { useRouter } from "next/router";
+import { pb } from "@/utils/pocketbase";
+import { PERSONALINFORMATION } from "@/routes/paths";
 
 const PersonalDataPage: FC = () => {
+  const [personalData, setPersonalData] = useState<PersonalData>();
+  async function fetchPersonalDataForUser() {
+    try {
+      const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
+        expand: "cv,cv.personalData",
+        fields: "expand.cv.expand.personalData",
+      });
+
+      setPersonalData(record?.expand?.cv.expand.languages);
+    } catch (error) {
+      console.error("Error fetching personal data:", error);
+    }
+  }
+
   const [isSpecialCapacityVisible, setSpecialCapacityVisible] = useState(true);
   const [isDiseaseVisible, setDiseaseVisible] = useState(true);
   const [isResidenceYearsVisible, setResidenceYearsVisible] = useState(true);
-  const gender = ["hombre", "mujer"];
-  const nacionality = [
-    "Ecuatoriano",
-    "Mexicano",
-    "Colombiano",
-    "Peruano",
-    "Cubano",
-  ];
+  const [isethnicIdentificationVisible, setEthnicIdentificationVisible] =
+    useState(true);
 
-  const [formState, setFormState] = useState<PersonalData>({
-    avatar: null as File | null,
-    name: "",
-    lastName1: "",
-    lastName2: "",
-    birthDate: "",
-    gender: "",
-    bloodType: "",
-    maritalStatus: "",
-    nationality: "",
-    residenceYears: "",
-    ethnicIdentification: "",
-    ethnicGroup: "",
-    specialCapacity: "",
-    catastrophicDisease: "",
-    catastrophicDiseaseType: "",
-    disabilityType: "",
-    disabilityPercentage: "",
-    MSPIDNumber: "",
-  });
+  const [avatar, setAvatar] = useState<File>();
+  const [name, setName] = useState<string>("");
+  const [lastName1, setLastName1] = useState<string>("");
+  const [lastName2, setLastName2] = useState<string>("");
+  const [birthDate, setBirthDate] = useState<string>("");
+  const [gender, setGender] = useState<Gender[]>([]);
+  const [bloodType, setBloodType] = useState<BloodType[]>([]);
+  const [maritalStatus, setMaritalStatus] = useState<MaritalStatus[]>([]);
+  const [nationality, setNationality] = useState<Country[]>([]);
+  const [residenceYears, setResidenceYears] = useState<string>("");
+  const [ethnicIdentification, setEthnicIdentification] = useState<
+    EthnicGroup[]
+  >([]);
+  const [ethnicGroup, setEthnicGroup] = useState<EthnicIdentification[]>([]);
+  const [specialCapacity, setSpecialCapacity] = useState<string>("");
+  const [catastrophicDisease, setCatastrophicDisease] = useState<string>("");
+  const [CatastrophicIllnessType, setCatastrophicIllnessType] = useState<
+    CatastrophicIllnessType[]
+  >([]);
+  const [disabilityType, setDisabilityType] = useState<DisabilityType[]>([]);
+  const [disabilityPercentage, setDisabilityPercentage] = useState<string>("");
+  const [MSPIDNumber, setMSPIDNumber] = useState<string>("");
+  const [selectedNationality, setSelectedNationality] = useState<string>("");
+  const [selectedMaritalStatus, setSelectedMaritalStatus] =
+    useState<string>("");
+  const [selectedGender, setSelectedGender] = useState<string>("");
+  const [selectedBloodType, setSelectedBloodType] = useState<string>("");
+  const [selectedEthnicIdentification, setSelectedEthnicIdentification] =
+    useState<string>("");
+  const [selectedEthnicGroup, setSelectedEthnicGroup] = useState<string>("");
+  const [selectedCatastrophicDiseaseType, setSelectedCatastrophicDiseaseType] =
+    useState<string>("");
+  const [selectedDisabilityType, setSelectedDisabilityType] =
+    useState<string>("");
 
-  const handleFormChange = (
-    fieldName: string,
-    value: string | string[] | File | null,
-  ) => {
-    if (fieldName === "specialCapacity") {
-      setSpecialCapacityVisible(value === "Si");
-      if (value === "No") {
-        setSpecialCapacityVisible(false);
-      } else {
-        setSpecialCapacityVisible(true);
-      }
-    }
-
-    if (fieldName === "catastrophicDisease") {
-      setDiseaseVisible(value === "Si");
-
-      if (value === "No") {
-        setDiseaseVisible(false);
-      } else {
-        setDiseaseVisible(true);
-      }
-    }
-
-    if (fieldName === "nationality") {
-      setResidenceYearsVisible(value === "Ecuatoriano");
-      if (value !== "Ecuatoriano") {
-        setResidenceYearsVisible(true);
-      } else {
-        setResidenceYearsVisible(false);
-      }
-    }
-
-    if (Array.isArray(value)) {
-      setFormState((prevFormState) => ({
-        ...prevFormState,
-        [fieldName]: value[0],
-      }));
-    } else {
-      setFormState((prevFormState) => ({
-        ...prevFormState,
-        [fieldName]: value,
-      }));
-    }
-  };
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
   const handleImageSelect = (imageUrl: string) => {
     setSelectedImage(imageUrl);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
-
+  const router = useRouter();
   useEffect(() => {
-    console.log("Form state updated:", formState);
-  }, [formState]);
+    fetchPersonalDataForUser();
+    getGender(setGender);
+    getBloodType(setBloodType);
+    getCountry(setNationality);
+    getMaritalStatus(setMaritalStatus);
+    getEthnicGroup(setEthnicGroup);
+    getEthnicIdentification(setEthnicIdentification);
+    getDisabilityType(setDisabilityType);
+    getCatastrophicIllnessType(setCatastrophicIllnessType);
+  }, []);
+
+  async function createPersonalData(formData: FormData) {
+    const personalData = {
+      avatar: avatar || "",
+      name: name,
+      lastName1: lastName1,
+      lastName2: lastName2,
+      birthDate: birthDate,
+      gender: selectedGender,
+      bloodType: selectedBloodType,
+      maritalStatus: selectedMaritalStatus,
+      nationality: selectedNationality,
+      residenceYears: residenceYears || "0",
+      ethnicIdentification: selectedEthnicIdentification,
+      ethnicGroup: selectedEthnicGroup || "0",
+      specialCapacity: specialCapacity,
+      catastrophicDisease: catastrophicDisease,
+      catastrophicDiseaseType: selectedCatastrophicDiseaseType || "0",
+      disabilityType: selectedDisabilityType || "0",
+      disabilityPercentage: disabilityPercentage || "0",
+      MSPIDNumber: MSPIDNumber || "0",
+    };
+
+    const isFilled = Object.values(personalData).every(
+      (value) => value !== null && value !== undefined && value !== "",
+    );
+
+    if (!isFilled) {
+      console.error("Please fill in all required fields.");
+      console.log(personalData);
+      return;
+    }
+
+    try {
+      const { cv } = await pb
+        .collection("users")
+        .getOne("msof6xv1zl55pof", { fields: "cv" });
+      if (!cv) {
+        console.error("Error retrieving CV data.");
+        return;
+      }
+
+      const personalDataCreated = await pb
+        .collection("PersonalData")
+        .create(personalData);
+      const dataCV = { "personalData+": personalDataCreated.id };
+      await pb.collection("CV").update(cv, dataCV);
+
+      router.push(PERSONALINFORMATION);
+    } catch (error) {
+      console.error("Error creating personal data:", error);
+    }
+  }
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    createPersonalData(formData);
+  }
 
   return (
     <div className="my-8 flex min-h-screen flex-col items-center lg:p-4">
@@ -118,72 +185,115 @@ const PersonalDataPage: FC = () => {
 
             <ImageInput
               title="Fotografía"
-              width={ 254  }
-              height={ 318 }
-              onChange={(file) => handleFormChange("avatar", file)}
+              name="avatar"
+              width={254}
+              height={318}
+              onChange={(name, selected) => {
+                if (selected !== null) {
+                  setAvatar(selected);
+                } else {
+                  setAvatar(undefined);
+                }
+              }}
             />
             <InputLabel
-              name="name"
-              title="Nombres:"
+              name={"name"}
+              title={"Nombres:"}
               errorMessage={"*Campo Requerido"}
               validationFunction={validateNotEmpty}
-              onChange={handleFormChange}
+              onChange={(name, selectedOption) => {
+                setName(selectedOption);
+              }}
             />
 
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <InputLabel
-                name="lastName1"
-                title="Apellido Paterno:"
+                name={"lastName1"}
+                title={"Apellido Paterno:"}
                 errorMessage={"*Campo Requerido"}
+                onChange={(name, selectedOption) => {
+                  setLastName1(selectedOption);
+                }}
                 validationFunction={validateNotEmpty}
-                onChange={handleFormChange}
               />
               <InputLabel
-                name="lastName2"
-                title="Apellido Materno:"
+                name={"lastName2"}
+                title={"Apellido Materno:"}
                 errorMessage={"*Campo Requerido"}
+                onChange={(name, selectedOption) => {
+                  setLastName2(selectedOption);
+                }}
                 validationFunction={validateNotEmpty}
-                onChange={handleFormChange}
               />
               <DateInput
-                name="birthDate"
-                title="Fecha de Nacimiento:"
-                onChange={handleFormChange}
+                name={"birthDate"}
+                title={"Fecha de Nacimiento:"}
+                onChange={(name, selectedOption) => {
+                  // selectedOption.setSeconds(30);
+                  // setBirthDate(selectedOption.toISOString());
+                  if (
+                    selectedOption instanceof Date &&
+                    !isNaN(selectedOption.getTime())
+                  ) {
+                    const modifiedDate = new Date(selectedOption);
+                    modifiedDate.setSeconds(30);
+                    setBirthDate(modifiedDate.toISOString());
+                  } else {
+                    // Handle invalid date selection
+                    console.error("Invalid date selected:", selectedOption);
+                  }
+                }}
               />
               <InputLabel
                 name="age"
                 title="Edad:"
                 placeholder={
-                  isNaN(calculateAge(formState.birthDate)) ||
-                  calculateAge(formState.birthDate) < 19
+                  isNaN(calculateAge(birthDate)) || calculateAge(birthDate) < 19
                     ? ""
-                    : calculateAge(formState.birthDate)?.toString() || ""
+                    : calculateAge(birthDate)?.toString() || ""
                 }
                 disabled={true}
               />
-              <ComboBox
+              <ComboBoxGeneric
                 name="gender"
                 title="Genero:"
-                options={gender}
-                onChange={handleFormChange}
+                options={gender.map((d) => {
+                  return { label: d.name, value: d.id };
+                })}
+                onChange={(name, selectedOption) => {
+                  setSelectedGender(selectedOption.label);
+                }}
               />
-              <ComboBox
+              <ComboBoxGeneric
                 name="bloodType"
                 title="Tipo de Sangre:"
-                options={gender}
-                onChange={handleFormChange}
+                options={bloodType.map((c) => {
+                  return { label: c.name, value: c.id };
+                })}
+                onChange={(name, selectedOption) => {
+                  setSelectedBloodType(selectedOption.label);
+                }}
               />
-              <ComboBox
+              <ComboBoxGeneric
                 name="maritalStatus"
                 title="Estado Civil:"
-                options={gender}
-                onChange={handleFormChange}
+                options={maritalStatus.map((c) => {
+                  return { label: c.name, value: c.id };
+                })}
+                onChange={(name, selectedOption) => {
+                  setSelectedMaritalStatus(selectedOption.label);
+                }}
               />
-              <ComboBox
-                name="nationality"
-                title="Nacionalidad:"
-                options={nacionality}
-                onChange={handleFormChange}
+              <ComboBoxGeneric
+                name={"nationality"}
+                title={"País:"}
+                options={nationality.map((c) => {
+                  return { label: c.description, value: c.id };
+                })}
+                onChange={(name, selectedOption) => {
+                  setSelectedNationality(selectedOption.label);
+                  setResidenceYearsVisible(selectedOption.label !== "Ecuador");
+                }}
               />
             </div>
             {isResidenceYearsVisible && (
@@ -192,35 +302,56 @@ const PersonalDataPage: FC = () => {
                 title="En caso de ser extranjero, indicar años de residencia:"
                 errorMessage={"Solo se permiten números"}
                 validationFunction={validateNumbersOnly}
-                onChange={handleFormChange}
+                onChange={(name, selectedOption) => {
+                  setResidenceYears(selectedOption);
+                }}
               />
             )}
-            <ComboBox
-              name="ethnicIdentification"
-              title="Auto identificación étnica:"
-              options={gender}
-              onChange={handleFormChange}
+
+            <ComboBoxGeneric
+              name={"ethnicIdentification"}
+              title={"Auto identificación étnica:"}
+              options={ethnicIdentification.map((c) => {
+                return { label: c.name, value: c.id };
+              })}
+              onChange={(name, selectedOption) => {
+                setSelectedEthnicIdentification(selectedOption.label);
+                setEthnicIdentificationVisible(
+                  selectedOption.label === "INDÍGENA",
+                );
+              }}
             />
-            <ComboBox
-              name="ethnicGroup"
-              title="En caso de ser indigena, indique el grupo étnico:"
-              options={gender}
-              onChange={handleFormChange}
-            />
+
+            {isethnicIdentificationVisible && (
+              <ComboBoxGeneric
+                name={"ethnicGroup"}
+                title={"En caso de ser indigena, indique el grupo étnico:"}
+                options={ethnicGroup.map((c) => {
+                  return { label: c.name, value: c.id };
+                })}
+                onChange={(name, selectedOption) => {
+                  setSelectedEthnicGroup(selectedOption.label);
+                }}
+              />
+            )}
           </div>
           <div>
             <h2 className="mb-4 font-bold text-state-press">
               Información adicional discapacidad y/o enfermedad catastrófica{" "}
             </h2>
+
             <div className="grid grid-cols-1 gap-4 pb-4 lg:grid-cols-2">
               <div>
                 <p>Capacidad Especial:</p>
                 <CheckBox
                   name="specialCapacity"
                   options={["Si", "No"]}
-                  selectedOptions={formState.specialCapacity}
+                  selectedOptions={[specialCapacity]}
                   allowMultipleSelection={false}
-                  onChange={handleFormChange}
+                  onChange={(name, selectedOption) => {
+                    setSpecialCapacity(selectedOption === "Si" ? "Si" : "No");
+                    setSpecialCapacityVisible(selectedOption === "Si");
+                  }}
                 />
               </div>
               <div>
@@ -228,27 +359,39 @@ const PersonalDataPage: FC = () => {
                 <CheckBox
                   name="catastrophicDisease"
                   options={["Si", "No"]}
-                  selectedOptions={[formState.catastrophicDisease]}
+                  selectedOptions={[catastrophicDisease]}
                   allowMultipleSelection={false}
-                  onChange={handleFormChange}
+                  onChange={(name, selectedOption) => {
+                    setCatastrophicDisease(
+                      selectedOption === "Si" ? "Si" : "No",
+                    );
+                    setDiseaseVisible(selectedOption === "Si");
+                  }}
                 />
               </div>
+
               {isSpecialCapacityVisible && (
-                <ComboBox
-                  name="disabilityType"
-                  title="Tipo de discapacidad:"
-                  defaultOption={""}
-                  options={gender}
-                  onChange={handleFormChange}
+                <ComboBoxGeneric
+                  name={"disabilityType"}
+                  title={"Tipo de discapacidad:"}
+                  options={disabilityType.map((c) => {
+                    return { label: c.name, value: c.id };
+                  })}
+                  onChange={(name, selectedOption) => {
+                    setSelectedDisabilityType(selectedOption.label);
+                  }}
                 />
               )}
               {isDiseaseVisible && (
-                <ComboBox
-                  name="catastrophicDiseaseType"
-                  title="Tipo de enfermedad catastrófica:"
-                  defaultOption={""}
-                  options={gender}
-                  onChange={handleFormChange}
+                <ComboBoxGeneric
+                  name={"catastrophicDiseaseType"}
+                  title={"Tipo de enfermedad catastrófica:"}
+                  options={CatastrophicIllnessType.map((c) => {
+                    return { label: c.name, value: c.id };
+                  })}
+                  onChange={(name, selectedOption) => {
+                    setSelectedCatastrophicDiseaseType(selectedOption.label);
+                  }}
                 />
               )}
               {isSpecialCapacityVisible && (
@@ -257,7 +400,9 @@ const PersonalDataPage: FC = () => {
                   title="% de discapacidad:"
                   errorMessage={"Solo se permiten números"}
                   validationFunction={validateNumbersOnly}
-                  onChange={handleFormChange}
+                  onChange={(name, value) => {
+                    setDisabilityPercentage(value);
+                  }}
                 />
               )}
               {isDiseaseVisible && (
@@ -266,7 +411,9 @@ const PersonalDataPage: FC = () => {
                   title="No. Carnet M.S.P.:"
                   errorMessage={"Solo se permiten números"}
                   validationFunction={validateNumbersOnly}
-                  onChange={handleFormChange}
+                  onChange={(name, value) => {
+                    setMSPIDNumber(value);
+                  }}
                 />
               )}
             </div>
