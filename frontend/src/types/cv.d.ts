@@ -1,4 +1,5 @@
 export interface PersonalData {
+  id?: string;
   name: string;
   lastName1: string;
   lastName2: string;
@@ -20,6 +21,7 @@ export interface PersonalData {
 }
 
 export interface HomeAddress {
+  id?: string;
   province: string;
   canton: string;
   parish: string;
@@ -34,6 +36,7 @@ export interface HomeAddress {
 }
 
 export interface EmergencyContact {
+  id?: string;
   name: string;
   lastName1: string;
   lastName2: string;
@@ -52,6 +55,7 @@ export interface EmergencyContact {
 }
 
 export interface AcademicTraining {
+  id?: string;
   educationLevel: string;
   institution: string;
   degree: string;
@@ -65,6 +69,7 @@ export interface AcademicTraining {
 }
 
 export interface Language {
+  id?: string;
   language: string;
   europeanFrameworkLevel: string;
   certificationDate: string;
@@ -72,6 +77,7 @@ export interface Language {
 }
 
 export interface Publications {
+  id?: string;
   researchType: string;
   fullTitle: string;
   publisher: string;
@@ -86,6 +92,7 @@ export interface Publications {
 }
 
 export interface Training{
+  id?: string;
   eventType: string;
   eventTheme: string;
   institutionName: string;
@@ -99,6 +106,7 @@ export interface Training{
 }
 
 export interface ProfessionalExperience {
+  id?: string;
   institutionName: string;
   position: string;
   administrativeUnit: string;
@@ -112,17 +120,25 @@ export interface ProfessionalExperience {
   employmentCertificates: File | null; // base64
 }
 
-export interface ExtraPoints{
-  professionalExperienceEspe: File | null; // base64
-  nationalInternationalAwards: File | null; // base64
-  professionalAcademicRecognition: File | null; // base64
-  twonsNationalities: File | null; // base64
-  disability: File | null; // base64
-  warHeroes: File | null; // base64
-  vulnerableSituations: File | null; // base64
+export interface ExtraPoints {
+  id?: string;
+  professionalExperienceEspe: string; // base64
+  fileProfessionalExperienceEspe?: File | null;
+  fileNationalInternationalAwards?: File | null; // base64
+  fileProfessionalAcademicRecognition?: File | null; // base64
+  twonsNationalities: string;
+  fileTwonsNationalities?: File | null; // base64
+  disability: string;
+  fileDisability?: File | null; // base64
+  warHeroes: string;
+  filewarHeroes?: File | null; // base64
+  vulnerableSituations: string; // base64
+  fileVulnerableSituations?: File | null;
+  genderWomen: string
 }
 
 export interface PostulacionDocument{
+  id?: string;
   offerId: string;
   resume: string;
   idCopy: string;
@@ -134,8 +150,9 @@ export interface PostulacionDocument{
 }
 
 export type CV = {
+  id?: string;
   personalData: string;
-  HomeAddress: string;
+  homeAddress: string;
   emergencyContact: string;
   academicTraining: string[];
   languages: string[];
