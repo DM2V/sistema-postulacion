@@ -12,6 +12,7 @@ const InputLabel: React.FC<InputProps> = ({
     autocomplete,
     showErrorIcon = true,
     validationFunction,
+    defaultValue,
     onChange,
   }) => {
     const [isFocused, setFocused] = useState(false);
@@ -68,12 +69,14 @@ const InputLabel: React.FC<InputProps> = ({
   
     return (
       <div className="relative mb-3">
-        <label className="block text-tp-body-color font-semibold mb-1">
+        <label htmlFor={name} className="block text-tp-body-color font-semibold mb-1">
           {title}
         </label>
         <div style={inputContainerStyle}>
           <input
             id={name}
+            name={name}
+            defaultValue={defaultValue}
             type="text"
             className={`rounded-lg p-2 outline-none w-full ${inputBorderColor}`}
             placeholder={placeholder}

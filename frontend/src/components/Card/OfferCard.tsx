@@ -1,7 +1,7 @@
-import React from "react";
-import { format } from "date-fns";
-import { OfferCardProps } from "../../types/components/types.t";
 import { OfferCardIcon } from "@/assets/icons";
+import { format } from "date-fns";
+import React from "react";
+import { OfferCardProps } from "../../types/components/types.t";
 
 const OfferCard: React.FC<OfferCardProps> = ({ offer, onClick }) => {
   const formattedDate = format(new Date(offer.date), "d LLLL y");
@@ -40,7 +40,7 @@ const OfferCard: React.FC<OfferCardProps> = ({ offer, onClick }) => {
           {offer.title}
         </h6>
 
-        <div className="text-body-small text-tp-body-color leading-6 py-2 text-body-small">
+        <div className="text-tp-body-color leading-6 py-2 text-body-small">
           {fields.map((field, index) => (
             <div key={index}>
               <span className="font-semibold inline">{field.label}:</span>{" "}

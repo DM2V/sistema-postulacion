@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { ComboBoxProps, ValueType } from "@/types/components/types.t";
+import { ComboBoxGenericProps, Option, ValueType } from "@/types/components/types.t";
 
-const ComboBox: React.FC<ComboBoxProps> = ({
+const ComboBoxGeneric: React.FC<ComboBoxGenericProps> = ({
   name,
   title,
   defaultOption,
@@ -10,23 +10,33 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   onChange,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
-
-  const [selectedOption, setSelectedOption] = useState<string>(
-    defaultOption || "",
+  const [selectedOption, setSelectedOption] = useState<Option | undefined>(
+    options.find((op)=>op.value===defaultOption)
   );
+
+  useEffect(() => {
+    setIsMounted(true);
+
+    // Set the selected option based on the defaultOption value
+    if (defaultOption && !selectedOption) {
+      const defaultOptionObject = options.find((op) => op.value === defaultOption);
+      if (defaultOptionObject) {
+        setSelectedOption(defaultOptionObject);
+      }
+    }
+  }, [defaultOption, options, selectedOption]);
+
   const handleSelect = (
     selectedOption: ValueType<{ label: string; value: string }>,
   ) => {
     if (selectedOption && "value" in selectedOption) {
-      setSelectedOption(selectedOption.value);
+      setSelectedOption(selectedOption);
       if (onChange) {
-        onChange(name, selectedOption.value);
+        onChange(name, selectedOption);
       }
     }
   };
   
-  useEffect(() => setIsMounted(true), []);
-
   const customStyles = {
     control: (styles: any, { isFocused }: any) => ({
       ...styles,
@@ -47,20 +57,22 @@ const ComboBox: React.FC<ComboBoxProps> = ({
     }),
   };
 
-  return isMounted ?(
+  return isMounted ? (
     <div className="mb-3">
       <label className="mb-1 block font-semibold text-tp-body-color">
         {title}
       </label>
       <Select
         id={name}
-        value={{ label: selectedOption, value: selectedOption }}
+        name={name}
+        value={{ label: selectedOption?.label, value: selectedOption?.value }}
         onChange={handleSelect}
-        options={  options.map((option) => ({ label: option, value: option }))}
+        options={options}
+        defaultValue={defaultOption ? selectedOption : undefined}
         styles={customStyles}
       />
     </div>
-  ): null;
+  ) : null;
 };
 
-export default ComboBox;
+export default ComboBoxGeneric;

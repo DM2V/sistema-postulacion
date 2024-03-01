@@ -65,6 +65,7 @@ const Password: React.FC<PasswordProps> = ({
       <div className={`relative rounded-lg p-2 ${borderStyle}`}>
         <input
           id={name}
+          name={name}
           type={inputType}
           className="w-full pr-10 outline-none"
           onFocus={handleFocus}

@@ -13,13 +13,13 @@ const Hero: React.FC = () => {
         </h5>
 
         <h5 className="mt-4 text-center">
-          Inicia el proceso creando una cuenta.{" "}
+          Inicia el proceso <i>creando una cuenta</i>
         </h5>
 
         <div className="mt-6 space-x-4">
           <Link
             href={OFFER}
-            className="rounded bg-fill-warning px-4 py-2 text-tp-body-color hover:bg-yellow-600"
+            className="rounded bg-fill-warning px-4 py-2 text-black hover:bg-yellow-600"
           >
             Ver Ofertas
           </Link>

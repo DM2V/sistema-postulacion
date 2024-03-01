@@ -1,8 +1,7 @@
-import React from "react";
 import Image from "next/image";
 import logoImage from "../../assets/images/dcco-logo.png";
 
-function  Slide () {
+function Slide() {
   return (
     <div className="relative h-[38rem]">
       <div
@@ -28,6 +27,7 @@ function  Slide () {
             alt="Logo del departamento de ciencias de la Computación"
             className="w-20 h-20 mb-2"
           />
+          {/* <div className="w-20 h-20 mb-2"></div> */}
 
           <div className="bg-white rounded-full inline-block p-2 mb-2">
             <p className="text-tp-heading-color font-extrabold text-h4 md:text-h3 lg:text-h2">
