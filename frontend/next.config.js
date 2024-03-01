@@ -7,6 +7,8 @@ const nextConfig = {
       "espe-el.espe.edu.ec",
       "santodomingo.espe.edu.ec",
       "i.pinimg.com",
+      "127.0.0.1",
+      "miespe.espe.edu.ec"
     ],
   },
 };
