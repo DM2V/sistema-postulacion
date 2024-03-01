@@ -18,6 +18,7 @@ const Offer: FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<string | undefined>('');
   const [showOffers, setShowOffers] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
+  const [selectedCampus, setSelectedCampus] = useState<string | undefined>('');
 
   interface SearchOfferProps {
     offer_announcement: string;
@@ -26,20 +27,20 @@ const Offer: FC = () => {
 
   const handleSearch = async () => {
     try {
-      if (selectedPeriod) {
-        const data = await pb.collection("Offer").getList<User>(1, 50, {
-          filter: `period = "${selectedPeriod}"`,
+      if (selectedPeriod && selectedCampus) {
+        const data = await pb.collection("Offer").getList<Offer>(1, 50, {
+          filter: `period = "${selectedPeriod}" && site = "${selectedCampus}"`,
+          expand: "period,contractType,wideField,specificField,site,department,academicStaff,activity"
         });
-        setUsers(data.items);
-        console.log(data.items)
+
+        setOffers(data.items);
+        setShowOffers(true);
       } else {
-        alert("Error: Debe seleccionar un periodo de postulación.");
+        alert("Error: Debe seleccionar un periodo de postulación y un campus.");
       }
     } catch (error) {
       alert("Error al realizar la búsqueda");
     }
-    setShowOffers(true);
-
   };
 
 
@@ -71,8 +72,8 @@ const Offer: FC = () => {
 
 
         {/* Search */}
-        <div className="flex flex.row md:flex-row md:gap-x-4 items-center justify-start text-sm">
-          <section>
+        <div className="flex flex-col md:flex-row md:gap-x-4 items-center justify-start mx-5 text-sm">
+          <section className="w-full md:w-1/6">
             <ComboBoxGeneric
               name={"applicationPeriod"}
               title={"Periodo Académico"}
@@ -85,7 +86,7 @@ const Offer: FC = () => {
             />
           </section>
 
-          <section>
+          <section className="w-full md:w-1/4 mt-4 md:mt-0">
             <ComboBoxGeneric
               name={"sites"}
               title={"Campus"}
@@ -93,15 +94,14 @@ const Offer: FC = () => {
                 return { label: period.name, value: period.id };
               })}
               onChange={(name, selectedOption) => {
-                setSelectedPeriod(selectedOption.value);
+                setSelectedCampus(selectedOption.value);
               }}
             />
           </section>
 
-          <section className="mt-4 flex w-auto items-center justify-center">
+          <section className="w-full md:w-auto mt-4 md:mt-0 flex items-center justify-center">
             <button
-              className="mx-1 flex transform items-center gap-2 rounded-xl border
-                border-primary-color bg-primary-color px-3 py-1 font-normal text-white transition-all hover:scale-105 hover:bg-white hover:font-semibold hover:text-primary-color"
+              className="mt-3 mx-1 flex transform items-center gap-2 rounded-xl border border-primary-color bg-primary-color px-3 py-1 font-normal text-white transition-all hover:scale-105 hover:bg-white hover:font-semibold hover:text-primary-color"
               onClick={handleSearch}
             >
               <LuSearch />
@@ -114,14 +114,13 @@ const Offer: FC = () => {
 
         {showOffers && (
           <>
-            {offers.some((offer) => offer.period === selectedPeriod) ? (
+            {offers.length > 0 ? (
               <section>
                 <OffersTable getOffers={getOffersLocal} offers={offers} />
               </section>
             ) : (
-              <p className="mx-10">No hay ofertas para el periodo seleccionado</p>
-            )
-            }
+              <p className="mx-5">No hay ofertas para los campos seleccionados</p>
+            )}
           </>
         )}
 
