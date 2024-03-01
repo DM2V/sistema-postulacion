@@ -14,6 +14,26 @@ export const INTERNALSERVER = "internalServer";
 export const FORBIDDEN = "forbidden";
 export const CHANGEPASS = "change-password";
 
-export const PERSONALDATA = "/private/candidate/personalData";
-export const PERSONALINFORMATION = "/private/candidate/personalInformation";
+export const PERSONALDATA = "personal-data";
+export const PERSONALINFORMATION = "personal-information";
 export const CANDIDATEPANEL = "candidate-panel";
+
+export const HOMEHR = "/private/hr/home"
+export const CANIDADATEOFFERS = "/private/candidate/offers"
+
+export const EVALUATORHOME =  "/private/evaluator"
+export const USERSEVALUATORVIEW = "/private/evaluator/user"
+export const USERSEVALUAOPOSITION = "/private/evaluator/user/phase"
+
+export const OFFERSHR = "/private/hr/offers"
+export const OFFERSHRCREATE = "/private/hr/offers/create"
+export const OFFERSHREDIT = "/private/hr/offers"
+
+export const CALENDARHR = "/private/hr/calendar"
+
+export const USERSHR = "/private/hr/users"
+
+
+export const CONVOCATIONHR = "/private/hr/convocatoria"
+export const CONVOCATIONHRCREATE = "/private/hr/convocatoria/Create"
+export const CONVOCATIONHRVIEW = "/private/hr/convocatoria"
