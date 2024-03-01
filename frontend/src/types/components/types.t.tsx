@@ -165,6 +165,7 @@ export interface SearchScheduleProps {
 
 //Image
 export interface ImageInputProps {
+  name: string;
   title: string;
   width: number;
   height: number;

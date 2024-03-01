@@ -14,10 +14,15 @@ export const INTERNALSERVER = "internalServer";
 export const FORBIDDEN = "forbidden";
 export const CHANGEPASS = "change-password";
 
-export const PERSONALDATA = "personal-data";
-export const PERSONALINFORMATION = "personal-information";
-export const CANDIDATEPANEL = "candidate-panel";
+export const PERSONALDATA = "/private/candidate/personalData";
+export const PERSONALINFORMATION = "/private/candidate/personalInformation";
+export const TRAININGPUBLICATIONS = "/private/candidate/trainingPublications";
+export const EDUCATIONPUBLICATIONS = "/private/candidate/educationPublications";
+export const EXTRAPOINTS = "/private/candidate/extraPoints";
+export const CVGENERATOR = "/private/candidate/cvGenerator";
 
+export const CANDIDATEPANEL = "candidate-panel";
+export const ACADEMICTRANING = "trainingPublications";
 export const HOMEHR = "/private/hr/home"
 export const CANIDADATEOFFERS = "/private/candidate/offers"
 
