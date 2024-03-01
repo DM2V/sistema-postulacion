@@ -249,7 +249,6 @@ const PersonalDataPage: FC = () => {
                     // Handle invalid date selection
                     console.error("Invalid date selected:", selectedOption);
                   }
-                  console.log(id)
                 }}
               />
               <InputLabel
