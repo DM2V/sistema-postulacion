@@ -8,6 +8,7 @@ import { EDUCATIONPUBLICATIONS } from "@/routes/paths";
 import { useRouter } from "next/router";
 import CreateFormPublications from "@/components/CRUDSection/CRUDForm/Publications/CreateForm";
 import GreenButton from "@/components/Buttons/GreenButton";
+import NavBar from "@/components/Navbar/NavbarUser";
 
 function TrainingPublications() {
   const router = useRouter();
@@ -32,7 +33,7 @@ function TrainingPublications() {
       } else {
         console.log("No languages found for user");
       }
-      console.log('Fetched languages:', languages);
+      console.log("Fetched languages:", languages);
     } catch (error) {
       console.error("Error fetching languages:", error);
     }
@@ -44,12 +45,11 @@ function TrainingPublications() {
         fields: "expand.cv.expand.publications",
       });
       setPublications(record?.expand?.cv.expand.publications);
-      console.log('Fetched publications:', publications);
+      console.log("Fetched publications:", publications);
     } catch (error) {
       console.error("Error fetching publications:", error);
     }
   }
-
 
   async function fetchAcademicTrainingForUser() {
     try {
@@ -68,7 +68,6 @@ function TrainingPublications() {
     const europeanFrameworkLevel = formData.get("europeanFrameworkLevel");
     const certificationDate = formData.get("certificationDate");
     const certificate = formData.get("certificate");
-
 
     const data = {
       language,
@@ -154,17 +153,17 @@ function TrainingPublications() {
 
   async function updatePublication(formData: FormData, id: string) {
     await pb.collection("Publications").update(id, {
-       researchType : formData.get("researchType"),
-       fullTitle : formData.get("fullTitle"),
-       publisher : formData.get("publisher"),
-       issnIsbnDoi : formData.get("issnIsbnDoi"),
-       participation : formData.get("participation"),
-       language : formData.get("language"),
-       publicationStatus : formData.get("publicationStatus"),
-       publicationDate : formData.get("publicationDate"),
-       volumeNumber : formData.get("volumeNumber"),
-       peerReviewed : formData.get("peerReviewed"),
-       additionalDocuments : formData.get("additionalDocuments"),
+      researchType: formData.get("researchType"),
+      fullTitle: formData.get("fullTitle"),
+      publisher: formData.get("publisher"),
+      issnIsbnDoi: formData.get("issnIsbnDoi"),
+      participation: formData.get("participation"),
+      language: formData.get("language"),
+      publicationStatus: formData.get("publicationStatus"),
+      publicationDate: formData.get("publicationDate"),
+      volumeNumber: formData.get("volumeNumber"),
+      peerReviewed: formData.get("peerReviewed"),
+      additionalDocuments: formData.get("additionalDocuments"),
     });
   }
 
@@ -173,7 +172,6 @@ function TrainingPublications() {
   }
 
   async function createAcademicTraining(formData: FormData) {
-
     const educationLevel = formData.get("educationLevel");
     const institution = formData.get("institution");
     const degree = formData.get("degree");
@@ -246,143 +244,146 @@ function TrainingPublications() {
     await pb.collection("AcademicTraining").delete(id);
   }
 
-useEffect(() => {
-  if (languages.length === 0) {
-    fetchLanguagesForUser();
-  }
-  if (publications.length === 0) {
-    fetchPublicationsForUser();
-  }
-  if (academicTraining.length === 0) {
-    fetchAcademicTrainingForUser();
-  }
-});
+  useEffect(() => {
+    if (languages.length === 0) {
+      fetchLanguagesForUser();
+    }
+    if (publications.length === 0) {
+      fetchPublicationsForUser();
+    }
+    if (academicTraining.length === 0) {
+      fetchAcademicTrainingForUser();
+    }
+  });
   return (
-    <div className="py-5">
-      <div>
-        <CRUDSection
-          title="Formación Adacémica"
-          description="Detalles sobre los niveles de instrucción que has alcanzado, comenzando con el nivel de instrucción que tenga mayor relevancia para la postulación."
-          elements={academicTraining}
-          fetchElements={fetchAcademicTrainingForUser}
-          addForm={<CreateFormAcademicTraining />}
-          editForm={<CreateFormAcademicTraining />}
-          createElement={createAcademicTraining}
-          deleteElement={deleteAcademicTraining}
-          editElement={updateAcademicTraining}
-          headers={[
-            {
-              value: "educationLevel",
-              label: "Nivel de Instrucción",
-              type: "string",
-            },
-            {
-              value: "institution",
-              label: "Institución",
-              type: "string",
-            },
-            {
-              value: "degree",
-              label: "Titulo Obtenido",
-              type: "string",
-            },
-            // {
-            //   value: "studyDuration",
-            //   label: "Tiempo de Estudio",
-            //   type: "string",
-            // },{
-            //   value: "studyDurationType",
-            //   label: "Tipo",
-            //   type: "string",
-            // },
-            {
-              value: "country",
-              label: "País",
-              type: "string",
-            },
-            {
-              value: "senescytRegistrationNumber",
-              label: "No. de Registro SENESCYT",
-              type: "string",
-            },
-            // ,{
-            //   value: "senescytRegistrationDate",
-            //   label: "Fecha de Registro SENESCYT",
-            //   type: "string",
-            // },{
-            //   value: "graduationDate",
-            //   label: "Fecha de Graduación",
-            //   type: "string",
-            // },{
-            //   value: "certificate",
-            //   label: "Nivel de Instrucción",
-            //   type: "string",
-            // },
-          ]}
-        />
-      </div>
+    <div>
+      <NavBar />
+      <div className="py-5">
+        <div>
+          <CRUDSection
+            title="Formación Adacémica"
+            description="Detalles sobre los niveles de instrucción que has alcanzado, comenzando con el nivel de instrucción que tenga mayor relevancia para la postulación."
+            elements={academicTraining}
+            fetchElements={fetchAcademicTrainingForUser}
+            addForm={<CreateFormAcademicTraining />}
+            editForm={<CreateFormAcademicTraining />}
+            createElement={createAcademicTraining}
+            deleteElement={deleteAcademicTraining}
+            editElement={updateAcademicTraining}
+            headers={[
+              {
+                value: "educationLevel",
+                label: "Nivel de Instrucción",
+                type: "string",
+              },
+              {
+                value: "institution",
+                label: "Institución",
+                type: "string",
+              },
+              {
+                value: "degree",
+                label: "Titulo Obtenido",
+                type: "string",
+              },
+              // {
+              //   value: "studyDuration",
+              //   label: "Tiempo de Estudio",
+              //   type: "string",
+              // },{
+              //   value: "studyDurationType",
+              //   label: "Tipo",
+              //   type: "string",
+              // },
+              {
+                value: "country",
+                label: "País",
+                type: "string",
+              },
+              {
+                value: "senescytRegistrationNumber",
+                label: "No. de Registro SENESCYT",
+                type: "string",
+              },
+              // ,{
+              //   value: "senescytRegistrationDate",
+              //   label: "Fecha de Registro SENESCYT",
+              //   type: "string",
+              // },{
+              //   value: "graduationDate",
+              //   label: "Fecha de Graduación",
+              //   type: "string",
+              // },{
+              //   value: "certificate",
+              //   label: "Nivel de Instrucción",
+              //   type: "string",
+              // },
+            ]}
+          />
+        </div>
 
-      <div>
-        <CRUDSection
-          title="Idiomas"
-          description="Indique su nivel de habilidad en los idiomas que posea."
-          elements={languages}
-          fetchElements={fetchLanguagesForUser}
-          addForm={<CreateFormLanguage />}
-          editForm={<CreateFormLanguage />}
-          createElement={createLanguage}
-          deleteElement={deleteLanguage}
-          editElement={updateLanguage}
-          headers={[
-            { value: "language", label: "Idioma", type: "string" },
-            {
-              value: "europeanFrameworkLevel",
-              label:
-                "Nivel según el Marco Común Europeo de Referencia para las lenguas",
-              type: "string",
-            },
-            {
-              value: "certificationDate",
-              label: "Fecha de certificación",
-              type: "date",
-            },
-          ]}
-        />
-      </div>
+        <div>
+          <CRUDSection
+            title="Idiomas"
+            description="Indique su nivel de habilidad en los idiomas que posea."
+            elements={languages}
+            fetchElements={fetchLanguagesForUser}
+            addForm={<CreateFormLanguage />}
+            editForm={<CreateFormLanguage />}
+            createElement={createLanguage}
+            deleteElement={deleteLanguage}
+            editElement={updateLanguage}
+            headers={[
+              { value: "language", label: "Idioma", type: "string" },
+              {
+                value: "europeanFrameworkLevel",
+                label:
+                  "Nivel según el Marco Común Europeo de Referencia para las lenguas",
+                type: "string",
+              },
+              {
+                value: "certificationDate",
+                label: "Fecha de certificación",
+                type: "date",
+              },
+            ]}
+          />
+        </div>
 
-      <div>
-        <CRUDSection
-          title="Publicaciones"
-          description="Indique su participación en publicaciones, revistas, libros, capítulos de libros, entre otros."
-          elements={publications}
-          fetchElements={fetchPublicationsForUser}
-          addForm={<CreateFormPublications />}
-          editForm={<CreateFormPublications />}
-          createElement={createPublication}
-          deleteElement={deletePublication}
-          editElement={updatePublication}
-          headers={[
-            {
-              value: "researchType",
-              label: "Tipo de Investigación",
-              type: "string",
-            },
-            { value: "fullTitle", label: "Título Completo", type: "string" },
-            { value: "publisher", label: "Editorial", type: "string" },
-            { value: "issnIsbnDoi", label: "ISSN/ISBN/DOI", type: "string" },
-            // { value: "participation", label: "Participación", type: "string" },
-            // { value: "language", label: "Idioma", type: "string" },
-            // { value: "publicationStatus", label: "Estado de Publicación", type: "string" },
-            // { value: "publicationDate", label: "Fecha de Publicación", type: "date" },
-            // { value: "volumeNumber", label: "No. de Volumen", type: "string" },
-            // { value: "peerReviewed", label: "Revisión por Pares", type: "string" },
-            // { value: "additionalDocuments", label: "Documentos Adicionales", type: "string" },
-          ]}
-        />
-      </div>
-      <div className="my-4 flex justify-end">
+        <div>
+          <CRUDSection
+            title="Publicaciones"
+            description="Indique su participación en publicaciones, revistas, libros, capítulos de libros, entre otros."
+            elements={publications}
+            fetchElements={fetchPublicationsForUser}
+            addForm={<CreateFormPublications />}
+            editForm={<CreateFormPublications />}
+            createElement={createPublication}
+            deleteElement={deletePublication}
+            editElement={updatePublication}
+            headers={[
+              {
+                value: "researchType",
+                label: "Tipo de Investigación",
+                type: "string",
+              },
+              { value: "fullTitle", label: "Título Completo", type: "string" },
+              { value: "publisher", label: "Editorial", type: "string" },
+              { value: "issnIsbnDoi", label: "ISSN/ISBN/DOI", type: "string" },
+              // { value: "participation", label: "Participación", type: "string" },
+              // { value: "language", label: "Idioma", type: "string" },
+              // { value: "publicationStatus", label: "Estado de Publicación", type: "string" },
+              // { value: "publicationDate", label: "Fecha de Publicación", type: "date" },
+              // { value: "volumeNumber", label: "No. de Volumen", type: "string" },
+              // { value: "peerReviewed", label: "Revisión por Pares", type: "string" },
+              // { value: "additionalDocuments", label: "Documentos Adicionales", type: "string" },
+            ]}
+          />
+        </div>
+        <div className="my-4 flex justify-end">
           <GreenButton onClick={handleSubmit} content="Siguiente" />
         </div>
+      </div>
     </div>
   );
 }

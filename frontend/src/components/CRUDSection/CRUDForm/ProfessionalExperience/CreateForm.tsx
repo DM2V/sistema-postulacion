@@ -140,11 +140,13 @@ function CreateFormProfessionalExperience({
           name="startDate"
           title="Fecha de ingreso"
           defaultValue={selectedElement?.startDate!.slice(0, 10) ?? ""}
+          placeholder={selectedElement?.startDate!.slice(0, 10) ?? ""}
         />
         <DateInput
           name="endDate"
           title="Fecha de salida "
           defaultValue={selectedElement?.endDate!.slice(0, 10) ?? ""}
+          placeholder={selectedElement?.endDate!.slice(0, 10) ?? ""}
         />
         <FileInput
           name={"employmentCertificate"}

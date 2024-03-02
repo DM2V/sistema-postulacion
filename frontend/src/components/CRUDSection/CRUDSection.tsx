@@ -212,7 +212,7 @@ function CRUDSection<T extends Record<string, any>>({
           </div>
         </form>
       </Modal>
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex  items-center justify-center">
         <Modal
           isOpen={isUpdateModalOpen}
           onRequestClose={closeUpdateModal}

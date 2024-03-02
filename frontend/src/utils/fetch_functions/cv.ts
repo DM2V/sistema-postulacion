@@ -242,6 +242,25 @@ export async function fetchPostulacionDocument(postulacionDocumentId: string): P
 }
 
 // The same but for the users
+  export async function fetchPersonalDataForUser(userId: string) {
+    try {
+      const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
+        expand: "cv,cv.personalData",
+        fields: "expand.cv.expand.personalData",
+      });
+      if (record?.expand?.cv?.expand?.personalData) {
+        return record.expand.cv.expand.personalData;
+      } else {
+        console.log("No personal data found for user");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching personal data:", error);
+        return null;
+    }
+  }
+
+
 export async function fetchLanguagesForUser(userId: string) {
     try {
         const record = await pb.collection("users").getOne(userId, {
