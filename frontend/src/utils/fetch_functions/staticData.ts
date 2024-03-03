@@ -102,12 +102,12 @@ export async function getEthnicGroup(setEthnicGroup: (e: any[]) => void) {
     } catch (error) { }
 }
 
-export async function getEmergencyContactData(setEmergencyContactData: (e: any[]) => void) {
+export async function getEmergencyRelationship(setEmergencyRelationship: (e: any[]) => void) {
     try {
         const records = await pb.collection('EmergencyContactData').getFullList({
             sort: '-created',
         });
-        setEmergencyContactData(records);
+        setEmergencyRelationship(records);
     } catch (error) { }
 }
 

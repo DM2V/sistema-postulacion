@@ -55,7 +55,7 @@ export type EthnicGroup = {
 }
 
 
-export type emergencyContactData = {
+export type EmergencyRelationship = {
     id: string
     relationship: string
 }

@@ -12,8 +12,8 @@ const NavBar = () => {
   const router = useRouter();
 
   return (
-    <nav className="h-16 bg-primary-color">
-      <ul className="flex h-full items-center justify-center text-center align-middle">
+    <nav className="py-6 bg-primary-color">
+      <ul className="flex flex-wrap justify-center">
         <NavItem
           href={PERSONALDATA}
           label="DATOS PERSONALES"
@@ -55,7 +55,7 @@ const NavItem = ({
 }) => {
   const activeClass = isActive ? "border-b-2 border-white" : "";
   return (
-    <li className="mr-6">
+    <li className="mx-5 text-center">
       <Link
         href={href}
         className={`text-white hover:text-gray-200 ${activeClass}`}

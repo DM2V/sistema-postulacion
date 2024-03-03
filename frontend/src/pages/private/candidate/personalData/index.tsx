@@ -9,6 +9,8 @@ import { useRouter } from "next/router";
 import { FC, FormEvent, useEffect, useState } from "react";
 import { fetchPersonalDataForUser } from "@/utils/fetch_functions/cv";
 import NavBar from "@/components/Navbar/NavbarUser";
+import Notification from "@/components/Form/Notification";
+
 // import EasyCrop from "@/components/Image/EasyCrop";
 // import ImageUpload from "@/components/Image/ImageUpload";
 
@@ -43,6 +45,7 @@ import {
 
 const PersonalDataPage: FC = () => {
   const userId = "msof6xv1zl55pof";
+  const [notificationMessage, setNotificationMessage] = useState("");
   const [personalData, setPersonalData] = useState<PersonalData>();
   const [isSpecialCapacityVisible, setSpecialCapacityVisible] = useState(true);
   const [isDiseaseVisible, setDiseaseVisible] = useState(true);
@@ -92,7 +95,6 @@ const PersonalDataPage: FC = () => {
 
   const router = useRouter();
 
-  console.log("userId", personalData);
 
   useEffect(() => {
     fetchPersonalDataForUser(userId).then((data) => {
@@ -135,8 +137,7 @@ const PersonalDataPage: FC = () => {
     );
 
     if (!isFilled) {
-      console.error("Please fill in all required fields.");
-      console.log(personalData);
+      setNotificationMessage('Por favor, completa los datos antes de enviar.');
       return;
     }
 
@@ -154,8 +155,11 @@ const PersonalDataPage: FC = () => {
         .create(personalData);
       const dataCV = { "personalData+": personalDataCreated.id };
       await pb.collection("CV").update(cv, dataCV);
+      setNotificationMessage('¡El formulario ha sido enviado!');
 
-      router.push(PERSONALINFORMATION);
+      setTimeout(() => {
+        router.push(PERSONALINFORMATION);
+      }, 2000);
     } catch (error) {
       console.error("Error creating personal data:", error);
     }
@@ -185,9 +189,16 @@ const PersonalDataPage: FC = () => {
                 name="avatar"
                 width={254}
                 height={318}
-                onChange={(name, selected) => {
-                  if (selected !== null) {
-                    setAvatar(selected);
+                // onChange={(name, selected) => {
+                //   if (selected !== null) {
+                //     setAvatar(selected);
+                //   } else {
+                //     setAvatar(undefined);
+                //   }
+                // }}
+                onChange={(file) => {
+                  if (file !== null) {
+                    setAvatar(file);
                   } else {
                     setAvatar(undefined);
                   }
@@ -428,9 +439,10 @@ const PersonalDataPage: FC = () => {
               </div>
             </div>
             <div className="flex  justify-center">
-              <GreenButton content="Continuar" />
+              <GreenButton content="Guardar" />
             </div>
           </form>
+          <Notification message={notificationMessage} />
         </div>
       </div>
     </div>

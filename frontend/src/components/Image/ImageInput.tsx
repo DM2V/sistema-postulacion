@@ -12,6 +12,10 @@ const ImageInput: React.FC<ImageInputProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  ImageInput.defaultProps = {
+    onChange: () => {}, 
+  };
+
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
@@ -27,12 +31,12 @@ const ImageInput: React.FC<ImageInputProps> = ({
           // Validate image size
           if (img.width === width && img.height === height) {
             setImagePreview(reader.result as string);
-            onChange(file);
+            onChange?.(file);
             setErrorMessage(null);
           } else {
             // Reset if the file doesn't meet the conditions
             setImagePreview(null);
-            onChange(null);
+            onChange?.(null);
             event.target.value = "";
             setErrorMessage(
               `Invalid image dimensions. Required: ${width}x${height}`,
@@ -42,14 +46,14 @@ const ImageInput: React.FC<ImageInputProps> = ({
       };
     } else {
       setImagePreview(null);
-      onChange(null);
+      onChange?.(null);
       setErrorMessage(null);
     }
   };
 
   const handleRemoveImage = () => {
     setImagePreview(null);
-    onChange(null);
+    onChange?.(null);
     const fileInput = document.getElementById("fileInput") as HTMLInputElement;
     if (fileInput) {
       fileInput.value = "";

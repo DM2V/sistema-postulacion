@@ -85,8 +85,8 @@ export async function fetchHomeAddress(homeAddressId: string): Promise<HomeAddre
         }
         return homeData;
     } catch (error) {
-        console.error("Error fetching personal data:", error);
-        throw new Error("Failed to fetch personal data");
+        console.error("Error fetching home data:", error);
+        throw new Error("Failed to fetch home data");
     }
 }
 
@@ -242,24 +242,176 @@ export async function fetchPostulacionDocument(postulacionDocumentId: string): P
 }
 
 // The same but for the users
-  export async function fetchPersonalDataForUser(userId: string) {
+export async function fetchPersonalDataForUser(userId: string) {
     try {
-      const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
-        expand: "cv,cv.personalData",
-        fields: "expand.cv.expand.personalData",
-      });
-      if (record?.expand?.cv?.expand?.personalData) {
-        return record.expand.cv.expand.personalData;
-      } else {
-        console.log("No personal data found for user");
-        return null;
-      }
+        const record = await pb.collection("users").getOne(userId, {
+            expand: "cv,cv.personalData",
+            fields: "expand.cv.expand.personalData",
+        });
+        if (record?.expand?.cv?.expand?.personalData) {
+            return record.expand.cv.expand.personalData;
+        } else {
+            console.log("No personal data found for user");
+            return null;
+        }
     } catch (error) {
-      console.error("Error fetching personal data:", error);
+        console.error("Error fetching personal data:", error);
         return null;
     }
-  }
+}
 
+// export async function fetchEmergencyContactForUser(userId: string) {
+//     try {
+//     const record = await pb.collection("users").getOne(userId, {
+//         expand: "cv,cv.emergencyContact",
+//         fields: "expand.cv.expand.emergencyContact",
+//     });
+//     console.log("record",record.expand?.cv?.expand.emergencyContact)
+//     if (record?.expand?.cv?.expand?.emergencyContact) {
+//         return record.expand.cv.expand.emergencyContact;
+//     } else {
+//         console.log("No emergency contact data found for user");
+//         return null;
+//     }
+//     } catch (error) {
+//     console.error("Error fetching emergency data:", error);
+//         return null;
+//     }
+// }
+
+export async function fetchEmergencyContactForUser(userId: string): Promise<EmergencyContact | null> {
+    try {
+        const record = await pb.collection("users").getOne(userId, {
+            expand: "cv,cv.emergencyContact",
+            fields: "expand.cv.expand.emergencyContact",
+        });
+        const emergencyData: EmergencyContact = {
+            name: record?.expand?.cv?.expand?.emergencyContact.name,
+            lastName1: record?.expand?.cv?.expand?.emergencyContact.lastName1,
+            lastName2: record?.expand?.cv?.expand?.emergencyContact.lastName2,
+            typeIdentification: record?.expand?.cv?.expand?.emergencyContact.typeIdentification,
+            identification: record?.expand?.cv?.expand?.emergencyContact.identification,
+            relationship: record?.expand?.cv?.expand?.emergencyContact.relationship,
+            province: record?.expand?.cv?.expand?.emergencyContact.province,
+            canton: record?.expand?.cv?.expand?.emergencyContact.canton,
+            parish: record?.expand?.cv?.expand?.emergencyContact.parish,
+            mainStreet: record?.expand?.cv?.expand?.emergencyContact.mainStreet,
+            secondaryStreet: record?.expand?.cv?.expand?.emergencyContact.secondaryStreet,
+            reference: record?.expand?.cv?.expand?.emergencyContact.reference,
+            number: record?.expand?.cv?.expand?.emergencyContact.number,
+            homePhone: record?.expand?.cv?.expand?.emergencyContact.homePhone,
+            cellPhone: record?.expand?.cv?.expand?.emergencyContact.cellPhone,
+        };
+        console.log("emergencyData", emergencyData)
+        return emergencyData; // If data is found, return it
+    } catch (error) {
+        console.error("Error fetching emergency contact:", error);
+        // Consider adding more specific error handling here if needed
+        throw new Error("Failed to fetch emergency contact"); // Re-throw a generic error for now
+    }
+}
+
+
+// export async function fetchHomeAddressForUser(userId: string) {
+//     try {
+//         const record = await pb.collection("users").getOne(userId, {
+//             expand: "cv,cv.homeAddress",
+//             fields: "expand.cv.expand.homeAddress",
+//         });
+//         if (record?.expand?.cv?.expand?.homeAddress) {
+//             return record.expand.cv.expand.homeAddress;
+//         } else {
+//             console.log("No home address found for user");
+//             return null;
+//         }
+//     } catch (error) {
+//         console.error("Error fetching home address data:", error);
+//         return null;
+//     }
+// }
+export async function fetchHomeAddressForUser(userId: string): Promise<HomeAddress | null> {
+    try {
+        const record = await pb.collection("users").getOne(userId, {
+            expand: "cv,cv.homeAddress",
+            fields: "expand.cv.expand.homeAddress",
+        });
+        const homeData: HomeAddress = {
+            province: record?.expand?.cv?.expand?.homeAddress.province,
+            canton: record?.expand?.cv?.expand?.homeAddress.canton,
+            parish: record?.expand?.cv?.expand?.homeAddress.parish,
+            mainStreet: record?.expand?.cv?.expand?.homeAddress.mainStreet,
+            secondaryStreet: record?.expand?.cv?.expand?.homeAddress.secondaryStreet,
+            reference: record?.expand?.cv?.expand?.homeAddress.reference,
+            number: record?.expand?.cv?.expand?.homeAddress.number,
+            homePhone: record?.expand?.cv?.expand?.homeAddress.homePhone,
+            cellPhone: record?.expand?.cv?.expand?.homeAddress.cellPhone,
+            workPhone: record?.expand?.cv?.expand?.homeAddress.workPhone,
+            extencion: record?.expand?.cv?.expand?.homeAddress.extencion
+        }
+        return homeData;
+
+    } catch (error) {
+        console.error("Error fetching home address data:", error);
+        return null;
+    }
+}
+
+export async function fetchUserData(userId: string): Promise<{
+    emergencyContact: EmergencyContact | null;
+    homeAddress: HomeAddress | null;
+}> {
+    try {
+        const record = await pb.collection("users").getOne(userId, {
+            expand: "cv,cv.emergencyContact,cv.homeAddress",
+            fields: "expand.cv.expand.emergencyContact,expand.cv.expand.homeAddress",
+        });
+        console.log("record", record)
+
+        return {
+
+            homeAddress: record?.expand?.cv?.expand?.homeAddress
+                ? {
+                    province: record.expand.cv.expand.homeAddress.province,
+                    canton: record.expand.cv.expand.homeAddress.canton,
+                    parish: record.expand.cv.expand.homeAddress.parish,
+                    mainStreet: record.expand.cv.expand.homeAddress.mainStreet,
+                    secondaryStreet: record.expand.cv.expand.homeAddress.secondaryStreet,
+                    reference: record.expand.cv.expand.homeAddress.reference,
+                    number: record.expand.cv.expand.homeAddress.number,
+                    homePhone: record.expand.cv.expand.homeAddress.homePhone,
+                    cellPhone: record.expand.cv.expand.homeAddress.cellPhone,
+                    workPhone: record.expand.cv.expand.homeAddress.workPhone,
+                    extencion: record.expand.cv.expand.homeAddress.extencion,
+                }
+                : null,
+            emergencyContact: record?.expand?.cv?.expand?.emergencyContact
+                ? {
+                    name: record?.expand?.cv?.expand?.emergencyContact.name  || "",
+                    lastName1: record?.expand?.cv?.expand?.emergencyContact.lastName1  || "",
+                    lastName2: record?.expand?.cv?.expand?.emergencyContact.lastName2  || "",
+                    typeIdentification: record?.expand?.cv?.expand?.emergencyContact.typeIdentification  || "",
+                    identification: record?.expand?.cv?.expand?.emergencyContact.identification  || "",
+                    relationship: record?.expand?.cv?.expand?.emergencyContact.relationship  || "",
+                    province: record?.expand?.cv?.expand?.emergencyContact.province  || "",
+                    canton: record?.expand?.cv?.expand?.emergencyContact.canton  || "",
+                    parish: record?.expand?.cv?.expand?.emergencyContact.parish  || "",
+                    mainStreet: record?.expand?.cv?.expand?.emergencyContact.mainStreet  || "",
+                    secondaryStreet: record?.expand?.cv?.expand?.emergencyContact.secondaryStreet  || "",
+                    reference: record?.expand?.cv?.expand?.emergencyContact.reference  || "",
+                    number: record?.expand?.cv?.expand?.emergencyContact.number  || "",
+                    homePhone: record?.expand?.cv?.expand?.emergencyContact.homePhone  || "",
+                    cellPhone: record?.expand?.cv?.expand?.emergencyContact.cellPhone  || "",
+                }
+                : null,
+        };
+    } catch (error) {
+        console.error("Error fetching user personal data:", error);
+        return {
+            emergencyContact: null,
+            homeAddress: null,
+        };
+    }
+}
 
 export async function fetchLanguagesForUser(userId: string) {
     try {
