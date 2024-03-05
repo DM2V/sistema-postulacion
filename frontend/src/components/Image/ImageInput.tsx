@@ -17,12 +17,12 @@ const ImageInput: React.FC<ImageInputProps> = ({
  useEffect(() => {
   if (defaultValue) {
    if (typeof defaultValue === 'string') {
-    setImagePreview(defaultValue);
+    setImagePreview("http://127.0.0.1:8090/api/files/"+defaultValue);
    } else {
     const reader = new FileReader();
     reader.readAsDataURL(defaultValue);
     reader.onload = () => {
-     setImagePreview(reader.result as string);
+     setImagePreview("http://127.0.0.1:8090/api/files/"+defaultValue as string);
     };
    }
   }
