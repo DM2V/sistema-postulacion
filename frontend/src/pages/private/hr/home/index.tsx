@@ -96,7 +96,7 @@ const Home = ({ callNumber, candidateNumber, evaluatorNumber, processNumber, }: 
           </div>
 
           <p className="text-h4 font-bold">{number}</p>
-          <p className="text-h6 font-medium">Convocatorias Activas</p>
+          <p className="text-h6 font-medium">Convocatorias</p>
         </section>
 
         <section className="flex h-[170px] w-[250px] flex-col items-center justify-center gap-4 rounded-2xl bg-bg-warning font-poppins text-[#BEA337]">
