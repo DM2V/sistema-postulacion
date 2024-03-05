@@ -113,7 +113,7 @@ const PersonalDataPage: FC = () => {
           <form onSubmit={handleSubmit}>
             
           </form>
-          <Notification message={notificationMessage} />
+          
         </div>
       </div> */}
 
@@ -137,7 +137,7 @@ const PersonalDataPage: FC = () => {
           </button>
         </div>
       </form>
-
+      <Notification message={notificationMessage} />
     </div>
   );
 };
