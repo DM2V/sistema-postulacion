@@ -54,8 +54,8 @@ function ViewUser() {
     const scoreMerits = record?.expand?.phaseStatus?.score;
     console.log(record);
 
-    if (score == null || score < 1 || score > 50) {
-      alert("El puntaje debe ser maximo de 50.");
+    if (score == null || score < 35 || score > 60) {
+      alert("El puntaje debe ser mínimo 35 y máximo 50.");
     } else if (scoreMerits == null || scoreMerits == 0) {
       const data = {
         score: score,
