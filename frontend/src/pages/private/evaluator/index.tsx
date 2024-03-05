@@ -29,7 +29,7 @@ const Home = () => {
     try {
       if (selectedPeriod && selectedCampus) {
         const data = await pb.collection("users").getList<User>(1, 50, {
-          filter: `role = "candidate" && period = "${selectedPeriod}" && site = "${selectedCampus}"`,
+          filter: `role = "candidate" && period = "${selectedPeriod}"`,
         });
         console.log(selectedPeriod)
         setUsers(data.items);
