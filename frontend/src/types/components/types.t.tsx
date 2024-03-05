@@ -170,6 +170,8 @@ export interface ImageInputProps {
   width: number;
   height: number;
   onChange ?: (file: File | null) => void;
+  defaultValue ?: string | null;
+  // defaultValue ?: File | null;
 }
 
 //Offer

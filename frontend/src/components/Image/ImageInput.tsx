@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import { ImageInputProps } from "@/types/components/types.t";
 import { ExclamationIcon, Eye, DeleteIcon } from "@/assets/icons/index";
 
@@ -7,14 +7,26 @@ const ImageInput: React.FC<ImageInputProps> = ({
   width,
   height,
   onChange,
+  defaultValue,
 }) => {
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+ const [imagePreview, setImagePreview] = useState<string | null>(null);
+ const [errorMessage, setErrorMessage] = useState<string | null>(null);
+ const [isModalOpen, setIsModalOpen] = useState(false);
+ 
 
-  ImageInput.defaultProps = {
-    onChange: () => {}, 
-  };
+ useEffect(() => {
+  if (defaultValue) {
+   if (typeof defaultValue === 'string') {
+    setImagePreview(defaultValue);
+   } else {
+    const reader = new FileReader();
+    reader.readAsDataURL(defaultValue);
+    reader.onload = () => {
+     setImagePreview(reader.result as string);
+    };
+   }
+  }
+ }, [defaultValue]);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -22,27 +34,29 @@ const ImageInput: React.FC<ImageInputProps> = ({
     if (file) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-
+   
       reader.onload = () => {
-        const img = new Image();
-        img.src = reader.result as string;
-
-        img.onload = () => {
-          // Validate image size
-          if (img.width === width && img.height === height) {
-            setImagePreview(reader.result as string);
-            onChange?.(file);
-            setErrorMessage(null);
-          } else {
-            // Reset if the file doesn't meet the conditions
-            setImagePreview(null);
-            onChange?.(null);
-            event.target.value = "";
-            setErrorMessage(
-              `Invalid image dimensions. Required: ${width}x${height}`,
-            );
-          }
-        };
+       const img = new Image();
+       img.src = reader.result as string;
+   
+       img.onload = () => {
+        if (img.width === width && img.height === height) {
+         setImagePreview(reader.result as string);
+         onChange?.(file);
+         setErrorMessage(null);
+        } else {
+         const canvas = document.createElement('canvas');
+         const ctx = canvas.getContext('2d')!;
+         canvas.width = width;
+         canvas.height = height;
+         ctx.drawImage(img, 0, 0, width, height);
+         const resizedImage = canvas.toDataURL('image/jpeg');
+         
+         setImagePreview(resizedImage);
+         onChange?.(file);
+         setErrorMessage(null);
+        }
+       };
       };
     } else {
       setImagePreview(null);

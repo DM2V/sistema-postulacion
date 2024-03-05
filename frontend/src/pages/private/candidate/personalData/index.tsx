@@ -189,6 +189,7 @@ const PersonalDataPage: FC = () => {
                 name="avatar"
                 width={254}
                 height={318}
+                defaultValue={personalData?.id && personalData?.avatar ? `a7upmrm44olwz6l/${personalData.id}/${personalData.avatar}` : undefined}
                 // onChange={(name, selected) => {
                 //   if (selected !== null) {
                 //     setAvatar(selected);
@@ -212,6 +213,8 @@ const PersonalDataPage: FC = () => {
                 onChange={(name, selectedOption) => {
                   setName(selectedOption);
                 }}
+                defaultValue={personalData?.name}
+                placeholder={personalData?.name}
                 // defaultValue={personalData?.name || ""}
                 // placeholder={personalData?.name || ""}
               />
@@ -225,6 +228,8 @@ const PersonalDataPage: FC = () => {
                     setLastName1(selectedOption);
                   }}
                   validationFunction={validateNotEmpty}
+                  defaultValue={personalData?.name}
+                placeholder={personalData?.name}
                   // defaultValue={personalData?.lastName1  || ""}
                   // placeholder={personalData?.lastName1 || ""}
                 />
@@ -236,6 +241,8 @@ const PersonalDataPage: FC = () => {
                     setLastName2(selectedOption);
                   }}
                   validationFunction={validateNotEmpty}
+                  defaultValue={personalData?.name}
+                placeholder={personalData?.name}
                   // defaultValue={personalData?.lastName2 || ""}
                   // placeholder={personalData?.lastName2 || ""}
                 />
@@ -257,8 +264,12 @@ const PersonalDataPage: FC = () => {
                       console.error("Invalid date selected:", selectedOption);
                     }
                   }}
-                  // defaultValue={personalData?.birthDate!.slice(0, 10) ?? ""}
-                  // placeholder={personalData?.birthDate!.slice(0, 10) ?? ""}
+                  defaultValue={
+                    personalData && personalData.birthDate
+                      ? new Date(personalData.birthDate.slice(0, 10) + "T00:00:00")
+                      : undefined
+                  }
+                  placeholder={personalData && personalData.birthDate ? personalData.birthDate.slice(0, 10) : ""}
                 />
                 <InputLabel
                   name="age"
@@ -280,6 +291,7 @@ const PersonalDataPage: FC = () => {
                   onChange={(name, selectedOption) => {
                     setSelectedGender(selectedOption.label);
                   }}
+                  defaultOption={personalData?.gender}
                   // defaultOption={personalData?.gender || ""}
                 />
                 <ComboBoxGeneric

@@ -35,6 +35,8 @@ import { fetchUserData } from "@/utils/fetch_functions/cv";
 
 const PersonalInformationPage: FC = () => {
   const userId = "msof6xv1zl55pof";
+
+  
   const [formData, setFormData] = useState({
     homeAddressData: {
       province: "",
@@ -202,19 +204,27 @@ const PersonalInformationPage: FC = () => {
     console.log(userId);
 
     fetchUserData(userId).then((data) => {
-      if (data.emergencyContact) {
-        setFormData({
-          ...formData,
-          emergencyContactData: data.emergencyContact,
-        });
-      }
-      if (data.homeAddress) {
-        setFormData({
-          ...formData,
-          homeAddressData: data.homeAddress,
-        });
-      }
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        emergencyContactData: data.emergencyContact ? { ...prevFormData.emergencyContactData, ...data.emergencyContact } : prevFormData.emergencyContactData,
+        homeAddressData: data.homeAddress ? { ...prevFormData.homeAddressData, ...data.homeAddress } : prevFormData.homeAddressData,
+      }));
     });
+
+    // fetchUserData(userId).then((data) => {
+    //   if (data.emergencyContact) {
+    //     setFormData({
+    //       ...formData,
+    //       emergencyContactData: data.emergencyContact,
+    //     });
+    //   }
+    //   if (data.homeAddress) {
+    //     setFormData({
+    //       ...formData,
+    //       homeAddressData: data.homeAddress,
+    //     });
+    //   }
+    // });
     
     getEmergencyRelationship(setRelationship);
     getProvince(setProvince);
