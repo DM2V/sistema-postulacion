@@ -13,7 +13,7 @@ import { LuSearch } from "react-icons/lu";
 const Home = () => {
   const [number, setNumber] = useState(1);
   const [users, setUsers] = useState<User[]>([]);
-  const headerName = ["Nombre", "Apellido", "Rol"];
+  const headerName = ["Nombre", "Apellido", "Rol", "Estado"];
 
   const [periods, setPeriods] = useState<PostulationPeriod[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<string | undefined>('');
@@ -29,7 +29,9 @@ const Home = () => {
     try {
       if (selectedPeriod && selectedCampus) {
         const data = await pb.collection("users").getList<User>(1, 50, {
+          sort: "-created",
           filter: `role = "candidate" && period = "${selectedPeriod}"`,
+          expand: "phaseStatus",
         });
         console.log(selectedPeriod)
         setUsers(data.items);
@@ -88,6 +90,12 @@ const Home = () => {
         </section>
       </div>
 
+      <div className="mt-4 flex items-center justify-between text-xs ml-10">
+        <p className="py-1 text-h6 font-bold text-state-press md:text-2xl">
+          Lista de Postulantes
+        </p>
+      </div>
+
       <div className="pr-2 lg:w-5/6 mb-5 p-3">
         <div
           className="mb-4 rounded-3xl bg-gray-bg p-3 shadow-md"
@@ -96,26 +104,17 @@ const Home = () => {
               "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
           }}
         >
-
-
-          <div className="my-4 flex items-center justify-between text-xs ">
-            <p className="py-1 text-h6 font-bold text-state-press md:text-2xl">
-              Lista de Postulantes
-            </p>
-          </div>
-
           {/* Tabla de Usuarios */}
           <div className="max-h-[350px] overflow-x-auto text-start text-sm md:text-center md:text-base">
             <div className="max-h-[calc(40vh)] md:max-h-[calc(70vh)] lg:max-h-[calc(90vh)]">
               <table className="w-full overflow-x-scroll rounded-lg border border-gray-300 bg-white">
-                {users.length > 0 && (
-                  <thead className="sticky top-0 bg-gray-200">
-                    <tr className="sm:table-row">
-                      {headerName
+                <thead className="sticky top-0 bg-gray-200">
+                  <tr className="sm:table-row">
+                    {users.length > 0 ? (
+                      headerName
                         .filter(
                           (header) =>
-                            header !==
-                            "id && header !== 'username' && header !== 'email'",
+                            header !== "id && header !== 'username' && header !== 'email'"
                         )
                         .map((header) => (
                           <th
@@ -124,13 +123,28 @@ const Home = () => {
                           >
                             {header.charAt(0).toUpperCase() + header.slice(1)}
                           </th>
-                        ))}
-                      <th className="border-b py-2 md:table-cell lg:table-cell">
-                        Acciones
-                      </th>
-                    </tr>
-                  </thead>
-                )}
+                        ))
+                    ) : (
+                      headerName
+                        .filter(
+                          (header) =>
+                            header !== "id && header !== 'username' && header !== 'email'"
+                        )
+                        .map((header) => (
+                          <th
+                            key={header}
+                            className="border-b py-2 md:table-cell lg:table-cell"
+                          >
+                            {header.charAt(0).toUpperCase() + header.slice(1)}
+                          </th>
+                          
+                        ))                        
+                    )}
+                    <th className="border-b py-2 md:table-cell lg:table-cell">
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
                 <tbody>
                   {users.length > 0
                     ? users.map((user) => (
@@ -145,6 +159,9 @@ const Home = () => {
                           {user.role === "candidate" ? "Postulante" : null}
                         </td>
                         <td className="border-b px-4 py-2 md:table-cell lg:table-cell">
+                          {user?.expand?.phaseStatus?.status}
+                        </td>
+                        <td className="border-b px-4 py-2 md:table-cell lg:table-cell">
                           <div className="flex justify-center text-xs">
                             <Link href={`${USERSEVALUATORVIEW}/${user.id}`}>
                               <p className="focus:shadow-outline hover:t rounded-2xl bg-state-press p-2 text-white transition-transform hover:scale-110 hover:bg-primary-color focus:outline-none">
@@ -152,7 +169,6 @@ const Home = () => {
                               </p>
                             </Link>
                           </div>
-
                         </td>
                       </tr>
                     ))
@@ -161,6 +177,7 @@ const Home = () => {
               </table>
             </div>
           </div>
+
         </div>
       </div>
     </LayoutWithSidebarEvaluator>

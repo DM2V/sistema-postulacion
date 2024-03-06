@@ -1,7 +1,7 @@
 import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
 import Footer from "@/components/Layout/Footer";
 import LayoutWithNavbarPublic from "@/components/Layout/LayoutWithNavbarPublic";
-import OffersTable from "@/components/Offers/OffersTable";
+import OffersTable from "@/components/Offers/OffersPublic/OffersTable";
 import { Offer, PostulationPeriod, Site } from '@/types/offers';
 import { User } from "@/types/user";
 import { getOffers } from "@/utils/fetch_functions/offer";

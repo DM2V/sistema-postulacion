@@ -54,8 +54,8 @@ function ViewUser() {
     const scoreMerits = record?.expand?.phaseStatus?.score;
     console.log(record);
 
-    if (score == null || score < 1 || score > 50) {
-      alert("El puntaje debe ser maximo de 50.");
+    if (score == null || score < 35 || score > 60) {
+      alert("El puntaje debe ser mínimo 35 y máximo 50.");
     } else if (scoreMerits == null || scoreMerits == 0) {
       const data = {
         score: score,
@@ -171,7 +171,7 @@ function ViewUser() {
               </button>
             </div>
             <iframe
-              src={`${BACKEND_ADDRESS}/api/files/Calendar/ruhh0pe3ezjx0m8/calificacion_meritos_pzycvU5WMQ.pdf`}
+              src={`${BACKEND_ADDRESS}/api/files/Calendar/ptevqfawl3xgxj6/calificacion_meritos_JztLicJsOs.pdf`}
               title="PDF Viewer"
               width="100%"
               className="h-[80vh]"
