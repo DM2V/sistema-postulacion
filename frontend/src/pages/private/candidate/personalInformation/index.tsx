@@ -1,7 +1,5 @@
 import React, { FC, FormEvent, useEffect, useState } from "react";
 import GreenButton from "@/components/Buttons/GreenButton";
-import HomeAddressForm from "./HomeAddress";
-import EmergencyContactForm from "./EmergencyContact";
 import { pb } from "@/utils/pocketbase";
 import { ACADEMICTRANING } from "@/routes/paths";
 
@@ -36,7 +34,6 @@ import { fetchUserData } from "@/utils/fetch_functions/cv";
 const PersonalInformationPage: FC = () => {
   const userId = "msof6xv1zl55pof";
 
-  
   const [formData, setFormData] = useState({
     homeAddressData: {
       province: "",
@@ -178,54 +175,22 @@ const PersonalInformationPage: FC = () => {
     }
   }
 
-  console.log("FORM DATA", formData);
-
-  // useEffect(() => {
-  //   fetchEmergencyContactForUser(userId).then((data) => {
-  //     if (data) {
-  //       setFormData({
-  //         ...formData,
-  //         emergencyContactData: data,
-  //       });
-  //     }
-  //   });
-
-  //   fetchHomeAddressForUser(userId).then((data) => {
-  //     if (data) {
-  //       setFormData({
-  //         ...formData,
-  //         homeAddressData: data,
-  //       });
-  //     }
-  //   });
-  // });
 
   useEffect(() => {
-    console.log(userId);
-
     fetchUserData(userId).then((data) => {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        emergencyContactData: data.emergencyContact ? { ...prevFormData.emergencyContactData, ...data.emergencyContact } : prevFormData.emergencyContactData,
-        homeAddressData: data.homeAddress ? { ...prevFormData.homeAddressData, ...data.homeAddress } : prevFormData.homeAddressData,
+        emergencyContactData: data.emergencyContact
+          ? { ...prevFormData.emergencyContactData, ...data.emergencyContact }
+          : prevFormData.emergencyContactData,
+        homeAddressData: data.homeAddress
+          ? { ...prevFormData.homeAddressData, ...data.homeAddress }
+          : prevFormData.homeAddressData,
       }));
     });
+  }, [userId]);
 
-    // fetchUserData(userId).then((data) => {
-    //   if (data.emergencyContact) {
-    //     setFormData({
-    //       ...formData,
-    //       emergencyContactData: data.emergencyContact,
-    //     });
-    //   }
-    //   if (data.homeAddress) {
-    //     setFormData({
-    //       ...formData,
-    //       homeAddressData: data.homeAddress,
-    //     });
-    //   }
-    // });
-    
+  useEffect(() => {
     getEmergencyRelationship(setRelationship);
     getProvince(setProvince);
     getCanton(setCanton);
@@ -251,8 +216,6 @@ const PersonalInformationPage: FC = () => {
                   options={province.map((d) => {
                     return { label: d.province, value: d.province };
                   })}
-                  // setSelectedProvince(selectedOption.label);
-                  // handleFormChange(name, selectedOption.label);
                   onChange={(name, value) => {
                     setFormData({
                       ...formData,
@@ -262,6 +225,7 @@ const PersonalInformationPage: FC = () => {
                       },
                     });
                   }}
+                  defaultOption={formData.homeAddressData.province || ""}
                 />
                 <ComboBoxGeneric
                   name={"canton"}
@@ -278,6 +242,7 @@ const PersonalInformationPage: FC = () => {
                       },
                     });
                   }}
+                  defaultOption={formData.homeAddressData.canton || ""}
                 />
                 <ComboBoxGeneric
                   name={"parish"}
@@ -294,6 +259,7 @@ const PersonalInformationPage: FC = () => {
                       },
                     });
                   }}
+                  defaultOption={formData.homeAddressData.parish || ""}
                 />
                 <InputLabel
                   name="mainStreet"
@@ -305,6 +271,8 @@ const PersonalInformationPage: FC = () => {
                     });
                   }}
                   validationFunction={validateNotEmpty}
+                  defaultValue={formData.homeAddressData.mainStreet || ""}
+                  placeholder={formData.homeAddressData?.mainStreet || ""} 
                 />
                 <InputLabel
                   name="secondaryStreet"
@@ -319,6 +287,8 @@ const PersonalInformationPage: FC = () => {
                     });
                   }}
                   validationFunction={validateNotEmpty}
+                  defaultValue={formData.homeAddressData.secondaryStreet || ""}
+                  placeholder={formData.homeAddressData?.secondaryStreet || ""}
                 />
                 <InputLabel
                   name="reference"
@@ -333,6 +303,8 @@ const PersonalInformationPage: FC = () => {
                     });
                   }}
                   validationFunction={validateNotEmpty}
+                  defaultValue={formData.homeAddressData.reference || ""}
+                  placeholder={formData.homeAddressData?.reference || ""}
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 pb-4 lg:w-5/6 lg:grid-cols-5">
@@ -350,6 +322,8 @@ const PersonalInformationPage: FC = () => {
                   }}
                   validationFunction={validateNumbersOnly}
                   showErrorIcon={false}
+                  defaultValue={formData.homeAddressData.number || ""}
+                  placeholder={formData.homeAddressData?.number || ""}
                 />
                 <InputLabel
                   name="homePhone"
@@ -365,6 +339,8 @@ const PersonalInformationPage: FC = () => {
                   }}
                   validationFunction={validateNumbersOnly}
                   showErrorIcon={false}
+                  defaultValue={formData.homeAddressData.homePhone || ""}
+                  placeholder={formData.homeAddressData?.homePhone || ""}
                 />
                 <InputLabel
                   name="cellPhone"
@@ -380,6 +356,8 @@ const PersonalInformationPage: FC = () => {
                   }}
                   validationFunction={validateNumbersOnly}
                   showErrorIcon={false}
+                  defaultValue={formData.homeAddressData.cellPhone || ""}
+                  placeholder={formData.homeAddressData?.cellPhone || ""}
                 />
                 <InputLabel
                   name="workPhone"
@@ -395,6 +373,8 @@ const PersonalInformationPage: FC = () => {
                   }}
                   validationFunction={validateNumbersOnly}
                   showErrorIcon={false}
+                  defaultValue={formData.homeAddressData.workPhone || ""}
+                  placeholder={formData.homeAddressData?.workPhone || ""}
                 />
                 <InputLabel
                   name="extencion"
@@ -410,6 +390,8 @@ const PersonalInformationPage: FC = () => {
                   }}
                   validationFunction={validateNumbersOnly}
                   showErrorIcon={false}
+                  defaultValue={formData.homeAddressData.extencion || ""}
+                  placeholder={formData.homeAddressData?.extencion || ""}
                 />
               </div>
             </div>
@@ -470,7 +452,7 @@ const PersonalInformationPage: FC = () => {
                   name="typeIdentification"
                   title="Tipo de identificación:"
                   options={identificationType.map((d) => {
-                    return { label: d.name, value: d.id };
+                    return { label: d.name, value:  d.name };
                   })}
                   onChange={(name, value) => {
                     setFormData({
@@ -482,7 +464,7 @@ const PersonalInformationPage: FC = () => {
                     });
                   }}
                   defaultOption={
-                    formData.emergencyContactData.typeIdentification
+                    formData.emergencyContactData.typeIdentification || ""
                   }
                 />
                 <InputLabel
@@ -504,7 +486,7 @@ const PersonalInformationPage: FC = () => {
                   name="relationship"
                   title="Parentesco:"
                   options={relationship.map((d) => {
-                    return { label: d.relationship, value: d.id };
+                    return { label: d.relationship, value: d.relationship };
                   })}
                   onChange={(name, value) => {
                     setFormData({
@@ -515,7 +497,7 @@ const PersonalInformationPage: FC = () => {
                       },
                     });
                   }}
-                  defaultOption={formData.emergencyContactData.relationship}
+                  defaultOption={formData.emergencyContactData.relationship || ""}
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 pb-4 lg:grid-cols-3">
@@ -671,11 +653,11 @@ const PersonalInformationPage: FC = () => {
                 />
               </div>
             </div>
+          </form>
+          <Notification message={notificationMessage} />
             <div className="my-4 flex justify-end">
               <GreenButton content="Guardar" />
             </div>
-          </form>
-          <Notification message={notificationMessage} />
         </div>
       </div>
     </div>
