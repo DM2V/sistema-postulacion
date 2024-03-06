@@ -38,6 +38,8 @@ import {
   validateNotEmpty,
   validateNumbersOnly,
 } from "@/utils/validations";
+import { ca } from "date-fns/locale";
+import { set } from "date-fns";
 
 const PersonalDataPage: FC = () => {
   const userId = "msof6xv1zl55pof";
@@ -84,15 +86,10 @@ const PersonalDataPage: FC = () => {
     useState<string>("");
   const [selectedDisabilityType, setSelectedDisabilityType] =
     useState<string>("");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
-  const handleImageSelect = (imageUrl: string) => {
-    setSelectedImage(imageUrl);
-  };
 
   async function createPersonalData(formData: FormData) {
     const data = {
-      avatar: (formData.get("avatar") as File) || "",
+      avatar: (avatar as File) || "",
       name: formData.get("name") as string,
       lastName1: formData.get("lastName1") as string,
       lastName2: formData.get("lastName2") as string,
@@ -104,15 +101,17 @@ const PersonalDataPage: FC = () => {
       residenceYears: formData.get("residenceYears") || "0",
       ethnicIdentification: formData.get("ethnicIdentification") as string,
       ethnicGroup: formData.get("ethnicGroup") || "0",
-      specialCapacity: formData.get("specialCapacity") as string,
-      catastrophicDisease: formData.get("catastrophicDisease") as string,
-      catastrophicDiseaseType: formData.get(
-        "catastrophicDiseaseType",
-      ) as string,
-      disabilityType: formData.get("disabilityType") as string,
+      specialCapacity: (formData.get("specialCapacity") as string) || "0",
+      catastrophicDisease:
+        (formData.get("catastrophicDisease") as string) || "0",
+      catastrophicDiseaseType:
+        (formData.get("catastrophicDiseaseType") as string) || "0",
+      disabilityType: (formData.get("disabilityType") as string) || "0",
       disabilityPercentage: formData.get("disabilityPercentage") || "0",
       MSPIDNumber: formData.get("MSPIDNumber") || "0",
     };
+    console.log("data", data);
+    // console.log("avartar", avatar);
 
     const isFilled = Object.values(data).every(
       (value) => value !== null && value !== undefined && value !== "",
@@ -124,39 +123,45 @@ const PersonalDataPage: FC = () => {
     }
 
     try {
-      const { cv } = await pb
-        .collection("users")
-        .getOne(userId, { fields: "cv" });
-      if (!cv) {
-        console.error("Error retrieving CV data.");
-        return;
+      if (personalData?.id) {
+        // await pb.collection("PersonalData").update(personalData.id, { data });
+        await pb.collection("PersonalData").update(personalData.id, data);
+        console.log(personalData.id);
+      } else {
+        const { cv } = await pb
+          .collection("users")
+          .getOne(userId, { fields: "cv" });
+        if (!cv) {
+          console.error("Error retrieving CV data.");
+          return;
+        }
+
+        const personalDataCreated = await pb
+          .collection("PersonalData")
+          .create(data);
+        const dataCV = { "personalData+": personalDataCreated.id };
+        await pb.collection("CV").update(cv, dataCV);
+        setTimeout(() => {
+          router.push(PERSONALINFORMATION);
+        }, 2000);
       }
-
-      const personalDataCreated = await pb
-        .collection("PersonalData")
-        .create(data);
-      const dataCV = { "personalData+": personalDataCreated.id };
-      await pb.collection("CV").update(cv, dataCV);
       setNotificationMessage("¡El formulario ha sido enviado!");
-
-      setTimeout(() => {
-        router.push(PERSONALINFORMATION);
-      }, 2000);
     } catch (error) {
-      console.error("Error creating personal data:", error);
+      console.error("Error creating or updating personal data:", error);
     }
   }
 
-  console.log("personalData", selectedGender, personalData?.gender);
-
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
     const formData = new FormData(e.currentTarget);
     createPersonalData(formData);
   }
 
   useEffect(() => {
+    setResidenceYearsVisible(personalData?.nationality !== "Ecuador");
+    setEthnicIdentificationVisible(
+      personalData?.ethnicIdentification !== "INDÍGENA",
+    );
     getGender(setGender);
     getBloodType(setBloodType);
     getCountry(setNationality);
@@ -173,8 +178,6 @@ const PersonalDataPage: FC = () => {
     });
   }, [userId]);
 
-  console.log("personalData", personalData);
-
   return (
     <div>
       <NavBar />
@@ -190,14 +193,11 @@ const PersonalDataPage: FC = () => {
                 name="avatar"
                 width={254}
                 height={318}
-                defaultValue={personalData?.id && personalData?.avatar ? `a7upmrm44olwz6l/${personalData.id}/${personalData.avatar}` : undefined}
-                // onChange={(name, selected) => {
-                //   if (selected !== null) {
-                //     setAvatar(selected);
-                //   } else {
-                //     setAvatar(undefined);
-                //   }
-                // }}
+                defaultValue={
+                  personalData?.id && personalData?.avatar
+                    ? `a7upmrm44olwz6l/${personalData.id}/${personalData.avatar}`
+                    : undefined
+                }
                 onChange={(file) => {
                   if (file !== null) {
                     setAvatar(file);
@@ -252,7 +252,7 @@ const PersonalDataPage: FC = () => {
                       !isNaN(selectedOption.getTime())
                     ) {
                       const modifiedDate = new Date(selectedOption);
-                      modifiedDate.setSeconds(30);
+                      // modifiedDate.setSeconds(30);
                       setBirthDate(modifiedDate.toISOString());
                     } else {
                       // Handle invalid date selection
@@ -459,11 +459,11 @@ const PersonalDataPage: FC = () => {
                 )}
               </div>
             </div>
+            <div className="my-4 flex justify-end">
+              <GreenButton content="Guardar" />
+            </div>
           </form>
           <Notification message={notificationMessage} />
-        <div className="my-4 flex justify-end">
-          <GreenButton content="Guardar" />
-        </div>
         </div>
       </div>
     </div>

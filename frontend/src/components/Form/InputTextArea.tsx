@@ -82,6 +82,7 @@ const InputTextArea: React.FC<InputProps> = ({
           autoComplete={autocomplete}
           onBlur={handleBlur}
           onChange={handleInputChange}
+          style={{ textTransform: 'uppercase' }} 
         />
         <div style={errorIconStyle}>
           {/* Replace CircleXmark with your error icon component */}

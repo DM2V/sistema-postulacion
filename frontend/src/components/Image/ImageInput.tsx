@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState, useEffect } from "react";
 import { ImageInputProps } from "@/types/components/types.t";
 import { ExclamationIcon, Eye, DeleteIcon } from "@/assets/icons/index";
+import FileInput from "../Form/FileLabel";
 
 const ImageInput: React.FC<ImageInputProps> = ({
   title,
@@ -9,56 +10,56 @@ const ImageInput: React.FC<ImageInputProps> = ({
   onChange,
   defaultValue,
 }) => {
- const [imagePreview, setImagePreview] = useState<string | null>(null);
- const [errorMessage, setErrorMessage] = useState<string | null>(null);
- const [isModalOpen, setIsModalOpen] = useState(false);
- 
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [imageName, setImageName] = useState<string | null>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
- useEffect(() => {
-  if (defaultValue) {
-    if (typeof defaultValue === "string") {
-      setImagePreview("http://127.0.0.1:8090/api/files/" + defaultValue);
-    } else {
-      const reader = new FileReader();
-      reader.readAsDataURL(defaultValue);
-      reader.onload = () => {
-        setImagePreview(
-          ("http://127.0.0.1:8090/api/files/" + defaultValue) as string,
-        );
-      };
+  useEffect(() => {
+    if (defaultValue) {
+      if (typeof defaultValue === "string") {
+        setImagePreview("http://127.0.0.1:8090/api/files/" + defaultValue);
+      } else {
+        const reader = new FileReader();
+        reader.readAsDataURL(defaultValue);
+        reader.onload = () => {
+          setImagePreview(
+            ("http://127.0.0.1:8090/api/files/" + defaultValue) as string,
+          );
+          
+        };
+      }
     }
-  }
- }, [defaultValue]);
+  }, [defaultValue]);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-
+  
     if (file) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-   
-      reader.onload = () => {
-       const img = new Image();
-       img.src = reader.result as string;
-   
-       img.onload = () => {
-        if (img.width === width && img.height === height) {
-         setImagePreview(reader.result as string);
-         onChange?.(file);
-         setErrorMessage(null);
-        } else {
-         const canvas = document.createElement('canvas');
-         const ctx = canvas.getContext('2d')!;
-         canvas.width = width;
-         canvas.height = height;
-         ctx.drawImage(img, 0, 0, width, height);
-         const resizedImage = canvas.toDataURL('image/jpeg');
-         
-         setImagePreview(resizedImage);
-         onChange?.(file);
-         setErrorMessage(null);
-        }
-       };
+  
+      reader.onload = async () => {
+        const img = new Image();
+        img.src = reader.result as string;
+  
+        img.onload = async () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d")!;
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          const resizedImage = canvas.toDataURL("image/jpeg");
+  
+          // Convertir la imagen redimensionada a un archivo
+          const response = await fetch(resizedImage);
+          const blob = await response.blob();
+          const resizedFile = new File([blob], file.name, { type: "image/jpeg" });
+  
+          setImagePreview(resizedImage);
+          onChange?.(resizedFile);
+          setErrorMessage(null);
+        };
       };
     } else {
       setImagePreview(null);
@@ -66,6 +67,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
       setErrorMessage(null);
     }
   };
+  
 
   const handleRemoveImage = () => {
     setImagePreview(null);
@@ -86,7 +88,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
   return (
     <div className="mb-3">
-      <div  className="sm:flex items-center">
+      <div className="items-center sm:flex">
         <label className="block font-semibold text-gray-700">{title}</label>
         <div className=" ml-2 flex items-center text-xs">
           <ExclamationIcon />
@@ -97,12 +99,12 @@ const ImageInput: React.FC<ImageInputProps> = ({
         </div>
       </div>
       <div className="rounded-lg border-2 border-gray-300  p-2">
-        <div className="flex flex-col sm:flex-row items-center sm:justify-between">
+        <div className="flex flex-col items-center sm:flex-row sm:justify-between">
           <input
             type="file"
             accept=".png, .jpg, .jpeg"
             onChange={handleFileChange}
-            className="text-gray-600 w-full sm:w-auto mb-2 sm:mb-0"
+            className="mb-2 w-full text-gray-600 sm:mb-0 sm:w-auto"
             id="fileInput"
           />
           {imagePreview && (
@@ -110,7 +112,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
               <div>
                 <button
                   onClick={openModal}
-                  className=" rounded  px-4 py-2 text-white  mr-2"
+                  className=" mr-2  rounded px-4 py-2  text-white"
                 >
                   <Eye />
                 </button>
