@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactNode } from "react";
 import { User } from "@/types/user";
 import { getUserInfo } from "@/utils/fetch_functions/user";
 import { BACKEND_ADDRESS } from "@/utils/pocketbase";
@@ -15,6 +15,7 @@ import { createTw } from "react-pdf-tailwind";
 import tailwindConfig from "../../../../../tailwind.config";
 const tw = createTw(tailwindConfig);
 import { getCVs } from "@/utils/fetch_functions/cv";
+import { StylesConfig } from "react-select";
 
 const styles = StyleSheet.create({
   container: {
@@ -88,10 +89,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const Container = ({ children, style }) => (
+interface ContainerProps {
+  children: ReactNode;
+  style?: object;
+}
+
+const Container: React.FC<ContainerProps> = ({ children, style }) => (
   <View style={{ ...styles.container, ...style }}>{children}</View>
 );
-
 const PageWrapper = ({
   children,
   bgImage,
@@ -129,7 +134,7 @@ const PdfTemplate = () => {
   // Para obtener la información del usuario
   useEffect(() => {
     getUserInfo(userId, setUser);
-
+    console.log(user);
     if (user) {
       getCVs(setUserCV, user?.expand?.cv?.id);
     }
@@ -155,12 +160,13 @@ const PdfTemplate = () => {
         );
       }
     }
+    console.log(userCV?.academicTraining);
   }, [user]);
 
   return (
     <Document>
       <PageWrapper>
-      {userCV && (
+        {/* {userCV && ( */}
         <View style={tw("w-full")}>
           <Container style={tw("flex flex-col justify-center items-center")}>
             <Text
@@ -182,38 +188,37 @@ const PdfTemplate = () => {
             <Text style={styles.sectionTitle}>DATOS PERSONALES</Text>
           </Container>
 
-            <Container style={tw("flex flex-row justify-around")}>
-              <View style={tw("flex flex-col")}>
-                <Section
-                  title="NÚMERO DE DOCUMENTO"
-                  description={user?.identificationNumber || ""}
-                />
-                <Section
-                  title="NOMBRE"
-                  description={userCV?.personalData?.name || ""}
-                />
-                <Section
-                  title="APELLIDO"
-                  description={
-                    userCV?.personalData?.lastName1 +
-                      " " +
-                      userCV?.personalData?.lastName2 || ""
-                  }
-                />
-                <Section
-                  title="AUTO IDENTIFICACIÓN ÉTNICA"
-                  description={userCV?.personalData?.ethnicIdentification || ""}
-                />
-                <Section
-                  title="NACIONALIDAD"
-                  description={userCV?.personalData?.nationality || ""}
-                />
-              </View>
-              {avatarUrl && (
-                <img src={avatarUrl} style={styles.avatar} alt="Avatar" />
-              )}
-            </Container>
-
+          <Container style={tw("flex flex-row justify-around")}>
+            <View style={tw("flex flex-col")}>
+              <Section
+                title="NÚMERO DE DOCUMENTO"
+                description={user?.identificationNumber || ""}
+              />
+              <Section
+                title="NOMBRE"
+                description={userCV?.personalData?.name || ""}
+              />
+              <Section
+                title="APELLIDO"
+                description={
+                  userCV?.personalData?.lastName1 +
+                    " " +
+                    userCV?.personalData?.lastName2 || ""
+                }
+              />
+              <Section
+                title="AUTO IDENTIFICACIÓN ÉTNICA"
+                description={userCV?.personalData?.ethnicIdentification || ""}
+              />
+              <Section
+                title="NACIONALIDAD"
+                description={userCV?.personalData?.nationality || ""}
+              />
+            </View>
+            {avatarUrl && (
+              <img src={avatarUrl} style={styles.avatar} alt="Avatar" />
+            )}
+          </Container>
           <Container style={tw("flex flex-col")}>
             <Text style={tw("text-center py-4 mb-4 font-bold w-full")}>
               INFORMACIÓN ADICIONAL DISCAPACIDAD Y/O ENFERMEDAD CATASTRÓFICA{" "}
@@ -346,8 +351,13 @@ const PdfTemplate = () => {
               description={userCV?.emergencyContact?.cellPhone || ""}
             />
           </Container>
+          <Container style={tw("flex flex-col")}>
+            <Text style={tw("text-center py-4 mb-4 font-bold w-full")}>
+              FORMACIÓN ACADÉMICA Y PUBLICACIONES{" "}
+            </Text>
+            <View style={tw("flex flex-col")}></View>
+          </Container>
         </View>
-        )}
       </PageWrapper>
     </Document>
   );

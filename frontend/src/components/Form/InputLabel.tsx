@@ -31,7 +31,8 @@ const InputLabel: React.FC<InputProps> = ({
     };
   
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const inputValue = e.target.value;
+      const inputValue = e.target.value.toUpperCase(); 
+
       setValue(inputValue);
       setError(false);
       if (validationFunction) {
@@ -85,6 +86,7 @@ const InputLabel: React.FC<InputProps> = ({
             autoComplete={autocomplete}
             onBlur={handleBlur}
             onChange={handleInputChange}
+            style={{ textTransform: 'uppercase' }} 
           />
           <div style={errorIconStyle}>
             {/* Replace CircleXmark with your error icon component */}

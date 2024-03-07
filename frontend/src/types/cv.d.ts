@@ -171,11 +171,11 @@ export type CvExpandend = {
   personalData?: PersonalData;
   homeAddress?: HomeAddress;
   emergencyContact?: EmergencyContact;
-  academicTraining: AcademicTraining[];
-  languages: Language[];
-  publications: Publications[];
-  trainings: Training[];
-  professionalExperience: ProfessionalExperience[];
+  academicTraining?: AcademicTraining[];
+  languages?: Language[];
+  publications?: Publications[];
+  trainings?: Training[];
+  professionalExperience?: ProfessionalExperience[];
   extraPoints?: ExtraPoints;
   postulacionDocument?: PostulacionDocument;
 }

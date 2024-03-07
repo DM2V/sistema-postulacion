@@ -1,19 +1,17 @@
+import { FC, FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { pb } from "@/utils/pocketbase";
+import { PERSONALINFORMATION } from "@/routes/paths";
 import GreenButton from "@/components/Buttons/GreenButton";
 import CheckBox from "@/components/Form/CheckBox";
 import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
 import DateInput from "@/components/Form/DateInput";
 import InputLabel from "@/components/Form/InputLabel";
 import ImageInput from "@/components/Image/ImageInput";
-import { PersonalData } from "@/types/cv";
-import { useRouter } from "next/router";
-import { FC, FormEvent, useEffect, useState } from "react";
-import { fetchPersonalDataForUser } from "@/utils/fetch_functions/cv";
 import NavBar from "@/components/Navbar/NavbarUser";
 import Notification from "@/components/Form/Notification";
-
-// import EasyCrop from "@/components/Image/EasyCrop";
-// import ImageUpload from "@/components/Image/ImageUpload";
-
+import { fetchPersonalDataForUser } from "@/utils/fetch_functions/cv";
+import { PersonalData } from "@/types/cv";
 import {
   BloodType,
   CatastrophicIllnessType,
@@ -35,18 +33,19 @@ import {
   getMaritalStatus,
 } from "@/utils/fetch_functions/staticData";
 
-import { PERSONALINFORMATION } from "@/routes/paths";
-import { pb } from "@/utils/pocketbase";
 import {
   calculateAge,
   validateNotEmpty,
   validateNumbersOnly,
 } from "@/utils/validations";
+import { ca } from "date-fns/locale";
+import { set } from "date-fns";
 
 const PersonalDataPage: FC = () => {
   const userId = "msof6xv1zl55pof";
+  const router = useRouter();
+  const [personalData, setPersonalData] = useState<PersonalData | undefined>();
   const [notificationMessage, setNotificationMessage] = useState("");
-  const [personalData, setPersonalData] = useState<PersonalData>();
   const [isSpecialCapacityVisible, setSpecialCapacityVisible] = useState(true);
   const [isDiseaseVisible, setDiseaseVisible] = useState(true);
   const [isResidenceYearsVisible, setResidenceYearsVisible] = useState(true);
@@ -88,18 +87,81 @@ const PersonalDataPage: FC = () => {
   const [selectedDisabilityType, setSelectedDisabilityType] =
     useState<string>("");
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const handleImageSelect = (imageUrl: string) => {
-    setSelectedImage(imageUrl);
-  };
+  async function createPersonalData(formData: FormData) {
+    const data = {
+      avatar: (avatar as File) || "",
+      name: formData.get("name") as string,
+      lastName1: formData.get("lastName1") as string,
+      lastName2: formData.get("lastName2") as string,
+      birthDate: formData.get("birthDate") as string,
+      gender: formData.get("gender") as string,
+      bloodType: formData.get("bloodType") as string,
+      maritalStatus: formData.get("maritalStatus") as string,
+      nationality: formData.get("nationality") as string,
+      residenceYears: formData.get("residenceYears") || "0",
+      ethnicIdentification: formData.get("ethnicIdentification") as string,
+      ethnicGroup: formData.get("ethnicGroup") || "0",
+      specialCapacity: (formData.get("specialCapacity") as string) || "0",
+      catastrophicDisease:
+        (formData.get("catastrophicDisease") as string) || "0",
+      catastrophicDiseaseType:
+        (formData.get("catastrophicDiseaseType") as string) || "0",
+      disabilityType: (formData.get("disabilityType") as string) || "0",
+      disabilityPercentage: formData.get("disabilityPercentage") || "0",
+      MSPIDNumber: formData.get("MSPIDNumber") || "0",
+    };
+    console.log("data", data);
+    // console.log("avartar", avatar);
 
-  const router = useRouter();
+    const isFilled = Object.values(data).every(
+      (value) => value !== null && value !== undefined && value !== "",
+    );
 
+    if (!isFilled) {
+      setNotificationMessage("Por favor, completa los datos antes de enviar.");
+      return;
+    }
+
+    try {
+      if (personalData?.id) {
+        // await pb.collection("PersonalData").update(personalData.id, { data });
+        await pb.collection("PersonalData").update(personalData.id, data);
+        console.log(personalData.id);
+      } else {
+        const { cv } = await pb
+          .collection("users")
+          .getOne(userId, { fields: "cv" });
+        if (!cv) {
+          console.error("Error retrieving CV data.");
+          return;
+        }
+
+        const personalDataCreated = await pb
+          .collection("PersonalData")
+          .create(data);
+        const dataCV = { "personalData+": personalDataCreated.id };
+        await pb.collection("CV").update(cv, dataCV);
+        setTimeout(() => {
+          router.push(PERSONALINFORMATION);
+        }, 2000);
+      }
+      setNotificationMessage("¡El formulario ha sido enviado!");
+    } catch (error) {
+      console.error("Error creating or updating personal data:", error);
+    }
+  }
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    createPersonalData(formData);
+  }
 
   useEffect(() => {
-    fetchPersonalDataForUser(userId).then((data) => {
-      setPersonalData(data);
-    });
+    setResidenceYearsVisible(personalData?.nationality !== "ECUADOR");
+    setEthnicIdentificationVisible(
+      personalData?.ethnicIdentification !== "INDÍGENA",
+    );
     getGender(setGender);
     getBloodType(setBloodType);
     getCountry(setNationality);
@@ -110,66 +172,11 @@ const PersonalDataPage: FC = () => {
     getCatastrophicIllnessType(setCatastrophicIllnessType);
   }, []);
 
-  async function createPersonalData(formData: FormData) {
-    const personalData = {
-      avatar: avatar || "",
-      name: name,
-      lastName1: lastName1,
-      lastName2: lastName2,
-      birthDate: birthDate,
-      gender: selectedGender,
-      bloodType: selectedBloodType,
-      maritalStatus: selectedMaritalStatus,
-      nationality: selectedNationality,
-      residenceYears: residenceYears || "0",
-      ethnicIdentification: selectedEthnicIdentification,
-      ethnicGroup: selectedEthnicGroup || "0",
-      specialCapacity: specialCapacity,
-      catastrophicDisease: catastrophicDisease,
-      catastrophicDiseaseType: selectedCatastrophicDiseaseType || "0",
-      disabilityType: selectedDisabilityType || "0",
-      disabilityPercentage: disabilityPercentage || "0",
-      MSPIDNumber: MSPIDNumber || "0",
-    };
-
-    const isFilled = Object.values(personalData).every(
-      (value) => value !== null && value !== undefined && value !== "",
-    );
-
-    if (!isFilled) {
-      setNotificationMessage('Por favor, completa los datos antes de enviar.');
-      return;
-    }
-
-    try {
-      const { cv } = await pb
-        .collection("users")
-        .getOne(userId, { fields: "cv" });
-      if (!cv) {
-        console.error("Error retrieving CV data.");
-        return;
-      }
-
-      const personalDataCreated = await pb
-        .collection("PersonalData")
-        .create(personalData);
-      const dataCV = { "personalData+": personalDataCreated.id };
-      await pb.collection("CV").update(cv, dataCV);
-      setNotificationMessage('¡El formulario ha sido enviado!');
-
-      setTimeout(() => {
-        router.push(PERSONALINFORMATION);
-      }, 2000);
-    } catch (error) {
-      console.error("Error creating personal data:", error);
-    }
-  }
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    createPersonalData(formData);
-  }
+  useEffect(() => {
+    fetchPersonalDataForUser(userId).then((data) => {
+      setPersonalData(data);
+    });
+  }, [userId]);
 
   return (
     <div>
@@ -181,22 +188,16 @@ const PersonalDataPage: FC = () => {
               <h2 className="mb-4 font-bold text-state-press">
                 Datos personales
               </h2>
-              {/* <ImageUpload onImageSelect={handleImageSelect} />
-            {selectedImage && <EasyCrop image={selectedImage} />} */}
-
               <ImageInput
                 title="Fotografía"
                 name="avatar"
                 width={254}
                 height={318}
-                defaultValue={personalData?.id && personalData?.avatar ? `a7upmrm44olwz6l/${personalData.id}/${personalData.avatar}` : undefined}
-                // onChange={(name, selected) => {
-                //   if (selected !== null) {
-                //     setAvatar(selected);
-                //   } else {
-                //     setAvatar(undefined);
-                //   }
-                // }}
+                defaultValue={
+                  personalData?.id && personalData?.avatar
+                    ? `a7upmrm44olwz6l/${personalData.id}/${personalData.avatar}`
+                    : undefined
+                }
                 onChange={(file) => {
                   if (file !== null) {
                     setAvatar(file);
@@ -213,10 +214,8 @@ const PersonalDataPage: FC = () => {
                 onChange={(name, selectedOption) => {
                   setName(selectedOption);
                 }}
-                defaultValue={personalData?.name}
-                placeholder={personalData?.name}
-                // defaultValue={personalData?.name || ""}
-                // placeholder={personalData?.name || ""}
+                defaultValue={personalData?.name || ""}
+                placeholder={personalData?.name || ""}
               />
 
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -228,10 +227,8 @@ const PersonalDataPage: FC = () => {
                     setLastName1(selectedOption);
                   }}
                   validationFunction={validateNotEmpty}
-                  defaultValue={personalData?.name}
-                placeholder={personalData?.name}
-                  // defaultValue={personalData?.lastName1  || ""}
-                  // placeholder={personalData?.lastName1 || ""}
+                  defaultValue={personalData?.lastName1 || ""}
+                  placeholder={personalData?.lastName1 || ""}
                 />
                 <InputLabel
                   name={"lastName2"}
@@ -241,23 +238,21 @@ const PersonalDataPage: FC = () => {
                     setLastName2(selectedOption);
                   }}
                   validationFunction={validateNotEmpty}
-                  defaultValue={personalData?.name}
-                placeholder={personalData?.name}
-                  // defaultValue={personalData?.lastName2 || ""}
-                  // placeholder={personalData?.lastName2 || ""}
+                  defaultValue={personalData?.lastName2 || ""}
+                  placeholder={personalData?.lastName2 || ""}
                 />
                 <DateInput
                   name={"birthDate"}
                   title={"Fecha de Nacimiento:"}
                   onChange={(name, selectedOption) => {
-                    // selectedOption.setSeconds(30);
+                    selectedOption.setSeconds(30);
                     // setBirthDate(selectedOption.toISOString());
                     if (
                       selectedOption instanceof Date &&
                       !isNaN(selectedOption.getTime())
                     ) {
                       const modifiedDate = new Date(selectedOption);
-                      modifiedDate.setSeconds(30);
+                      // modifiedDate.setSeconds(30);
                       setBirthDate(modifiedDate.toISOString());
                     } else {
                       // Handle invalid date selection
@@ -265,11 +260,8 @@ const PersonalDataPage: FC = () => {
                     }
                   }}
                   defaultValue={
-                    personalData && personalData.birthDate
-                      ? new Date(personalData.birthDate.slice(0, 10) + "T00:00:00")
-                      : undefined
+                    personalData?.birthDate ? `${personalData?.birthDate}` : ""
                   }
-                  placeholder={personalData && personalData.birthDate ? personalData.birthDate.slice(0, 10) : ""}
                 />
                 <InputLabel
                   name="age"
@@ -281,47 +273,61 @@ const PersonalDataPage: FC = () => {
                       : calculateAge(birthDate)?.toString() || ""
                   }
                   disabled={true}
+                  defaultValue={
+                    personalData && personalData.birthDate
+                      ? calculateAge(personalData.birthDate).toString()
+                      : undefined
+                  }
                 />
                 <ComboBoxGeneric
                   name="gender"
                   title="Genero:"
+                  defaultOption={
+                    personalData?.gender ? personalData.gender : ""
+                  }
                   options={gender.map((d) => {
-                    return { label: d.name, value: d.id };
+                    return { label: d.name, value: d.name };
                   })}
                   onChange={(name, selectedOption) => {
-                    setSelectedGender(selectedOption.label);
+                    setSelectedGender(selectedOption.value);
                   }}
-                  defaultOption={personalData?.gender}
-                  // defaultOption={personalData?.gender || ""}
                 />
+
                 <ComboBoxGeneric
                   name="bloodType"
                   title="Tipo de Sangre:"
+                  defaultOption={personalData?.bloodType || ""}
                   options={bloodType.map((c) => {
-                    return { label: c.name, value: c.id };
+                    return { label: c.name, value: c.name };
                   })}
                   onChange={(name, selectedOption) => {
-                    setSelectedBloodType(selectedOption.label);
+                    setSelectedBloodType(selectedOption.value);
                   }}
                 />
                 <ComboBoxGeneric
                   name="maritalStatus"
                   title="Estado Civil:"
                   options={maritalStatus.map((c) => {
-                    return { label: c.name, value: c.id };
+                    return { label: c.name, value: c.name };
                   })}
                   onChange={(name, selectedOption) => {
-                    setSelectedMaritalStatus(selectedOption.label);
+                    setSelectedMaritalStatus(selectedOption.value);
                   }}
+                  defaultOption={
+                    personalData?.maritalStatus
+                      ? `${personalData.maritalStatus}`
+                      : ""
+                  }
                 />
                 <ComboBoxGeneric
                   name={"nationality"}
                   title={"País:"}
                   options={nationality.map((c) => {
-                    return { label: c.description, value: c.id };
+                    return { label: c.description, value: c.description };
                   })}
+                  defaultOption={personalData?.nationality || ""}
                   onChange={(name, selectedOption) => {
-                    setSelectedNationality(selectedOption.label);
+                    setSelectedNationality(selectedOption.value);
                     setResidenceYearsVisible(
                       selectedOption.label !== "Ecuador",
                     );
@@ -337,6 +343,7 @@ const PersonalDataPage: FC = () => {
                   onChange={(name, selectedOption) => {
                     setResidenceYears(selectedOption);
                   }}
+                  defaultValue={personalData?.residenceYears || ""}
                 />
               )}
 
@@ -344,14 +351,15 @@ const PersonalDataPage: FC = () => {
                 name={"ethnicIdentification"}
                 title={"Auto identificación étnica:"}
                 options={ethnicIdentification.map((c) => {
-                  return { label: c.name, value: c.id };
+                  return { label: c.name, value: c.name };
                 })}
                 onChange={(name, selectedOption) => {
-                  setSelectedEthnicIdentification(selectedOption.label);
+                  setSelectedEthnicIdentification(selectedOption.value);
                   setEthnicIdentificationVisible(
-                    selectedOption.label === "INDÍGENA",
+                    selectedOption.value === "INDÍGENA",
                   );
                 }}
+                defaultOption={personalData?.ethnicIdentification || ""}
               />
 
               {isethnicIdentificationVisible && (
@@ -359,11 +367,12 @@ const PersonalDataPage: FC = () => {
                   name={"ethnicGroup"}
                   title={"En caso de ser indigena, indique el grupo étnico:"}
                   options={ethnicGroup.map((c) => {
-                    return { label: c.name, value: c.id };
+                    return { label: c.name, value: c.name };
                   })}
                   onChange={(name, selectedOption) => {
-                    setSelectedEthnicGroup(selectedOption.label);
+                    setSelectedEthnicGroup(selectedOption.value);
                   }}
+                  defaultOption={personalData?.ethnicGroup || ""}
                 />
               )}
             </div>
@@ -398,7 +407,7 @@ const PersonalDataPage: FC = () => {
                         selectedOption === "Si" ? "Si" : "No",
                       );
                       setDiseaseVisible(selectedOption === "Si");
-                    }}
+                    }}   
                   />
                 </div>
 
@@ -407,7 +416,7 @@ const PersonalDataPage: FC = () => {
                     name={"disabilityType"}
                     title={"Tipo de discapacidad:"}
                     options={disabilityType.map((c) => {
-                      return { label: c.name, value: c.id };
+                      return { label: c.name, value: c.name };
                     })}
                     onChange={(name, selectedOption) => {
                       setSelectedDisabilityType(selectedOption.label);
@@ -419,7 +428,7 @@ const PersonalDataPage: FC = () => {
                     name={"catastrophicDiseaseType"}
                     title={"Tipo de enfermedad catastrófica:"}
                     options={CatastrophicIllnessType.map((c) => {
-                      return { label: c.name, value: c.id };
+                      return { label: c.name, value: c.name };
                     })}
                     onChange={(name, selectedOption) => {
                       setSelectedCatastrophicDiseaseType(selectedOption.label);
@@ -450,7 +459,7 @@ const PersonalDataPage: FC = () => {
                 )}
               </div>
             </div>
-            <div className="flex  justify-center">
+            <div className="my-4 flex justify-end">
               <GreenButton content="Guardar" />
             </div>
           </form>

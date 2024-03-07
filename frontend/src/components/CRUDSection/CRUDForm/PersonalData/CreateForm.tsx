@@ -4,7 +4,33 @@ import CheckBox from "@/components/Form/CheckBox";
 import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
 import DateInput from "@/components/Form/DateInput";
 import InputLabel from "@/components/Form/InputLabel";
+import { fetchPersonalDataForUser } from "@/utils/fetch_functions/cv";
 import ImageInput from "@/components/Image/ImageInput";
+import {
+    calculateAge,
+    validateNotEmpty,
+    validateNumbersOnly,
+  } from "@/utils/validations";
+import {
+    BloodType,
+    CatastrophicIllnessType,
+    Country,
+    DisabilityType,
+    EthnicGroup,
+    EthnicIdentification,
+    Gender,
+    MaritalStatus,
+  } from "@/types/staticData";
+  import {
+    getBloodType,
+    getCatastrophicIllnessType,
+    getCountry,
+    getDisabilityType,
+    getEthnicGroup,
+    getEthnicIdentification,
+    getGender,
+    getMaritalStatus,
+  } from "@/utils/fetch_functions/staticData";
 
 type CreateFormPersonalDataProps = {
   selectedElement?: PersonalData;
@@ -57,11 +83,28 @@ function CreateFormPersonalData({
     const [selectedDisabilityType, setSelectedDisabilityType] =
       useState<string>("");
   
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+      const [selectedImage, setSelectedImage] = useState<string | null>(null);
+      const handleImageSelect = (imageUrl: string) => {
+        setSelectedImage(imageUrl);
+      };
+    useEffect(() => {
+        fetchPersonalDataForUser(userId).then((data) => {
+          setPersonalData(data);
+        });
+        getGender(setGender);
+        getBloodType(setBloodType);
+        getCountry(setNationality);
+        getMaritalStatus(setMaritalStatus);
+        getEthnicGroup(setEthnicGroup);
+        getEthnicIdentification(setEthnicIdentification);
+        getDisabilityType(setDisabilityType);
+        getCatastrophicIllnessType(setCatastrophicIllnessType);
+      }, []);
+    
+    
 
   return (
     <div>
-      <h2 className="mb-4 font-bold text-state-press">Datos personales</h2>
       <div>
         <h2 className="mb-4 font-bold text-state-press">Datos personales</h2>
         <ImageInput

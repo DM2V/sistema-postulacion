@@ -5,24 +5,13 @@ const CheckBox: React.FC<CheckBoxProps> = ({
   name,
   options,
   selectedOptions,
-  allowMultipleSelection,
   onChange,
 }) => {
-  const [internalSelectedOptions, setInternalSelectedOptions] = useState<string[]>(
-    allowMultipleSelection && Array.isArray(selectedOptions) ? selectedOptions : [],
-  );
+  const [internalselectedOptions, setInternalselectedOptions] = useState<string | null>(selectedOptions);
 
-  const handleChange = (option: string) => {
-    if (allowMultipleSelection) {
-      const updatedOptions = internalSelectedOptions.includes(option)
-        ? internalSelectedOptions.filter((selected) => selected !== option)
-        : [...internalSelectedOptions, option];
-      setInternalSelectedOptions(updatedOptions);
-      onChange(name, updatedOptions);
-    } else {
-      setInternalSelectedOptions([option]);
-      onChange(name, option);
-    }
+  const handleChange = (option: string | null) => {
+    setInternalselectedOptions(option);
+    onChange(name, option);
   };
 
   return (
@@ -32,8 +21,8 @@ const CheckBox: React.FC<CheckBoxProps> = ({
           <input
             id={`${name}-${option}`}
             type="checkbox"
-            checked={internalSelectedOptions.includes(option)}
-            onChange={() => handleChange(option)}
+            checked={internalselectedOptions === option}
+            onChange={() => handleChange(internalselectedOptions === option ? null : option)}
             className="h-6 w-6 text-primary-color focus:ring-0"
           />
           <span className="text-tp-heading-color">{option}</span>
