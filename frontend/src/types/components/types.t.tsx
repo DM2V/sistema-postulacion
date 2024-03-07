@@ -83,6 +83,7 @@ export interface InputProps {
   autocomplete?: string;
   defaultValue?: string;
   showErrorIcon?: boolean;
+  inputType?: string;
   validationFunction?: (value: string) => boolean;
   onChange?: (name: string, selectedOption: string) => void;
 }

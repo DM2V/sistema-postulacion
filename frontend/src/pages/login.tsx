@@ -85,6 +85,7 @@ function Login() {
               title="Correo Electrónico:"
               errorMessage={"*Campo Requerido"}
               validationFunction={validateEmail}
+              inputType="0"
             />
             <Password
               name={"password"}

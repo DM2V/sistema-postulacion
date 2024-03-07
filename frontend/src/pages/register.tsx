@@ -93,6 +93,7 @@ function Register() {
               title={"Número de identificación:"}
               errorMessage={"El numero de identificación es necesario."}
               validationFunction={validateEcuadorianID}
+              inputType="0"
               onChange={(name, value) => {
                 setIdentificationNumber(value)
               }}
@@ -103,6 +104,7 @@ function Register() {
               title="Correo electrónico:"
               errorMessage={"*Campo Requerido"}
               validationFunction={validateNotEmpty}
+              inputType="0"
               onChange={(name, selected) => {
                 setEmail(selected)
               }}

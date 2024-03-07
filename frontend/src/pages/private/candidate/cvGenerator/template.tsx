@@ -355,7 +355,10 @@ const PdfTemplate = () => {
             <Text style={tw("text-center py-4 mb-4 font-bold w-full")}>
               FORMACIÓN ACADÉMICA Y PUBLICACIONES{" "}
             </Text>
-            <View style={tw("flex flex-col")}></View>
+            <View style={tw("flex flex-col")}>
+
+              
+            </View>
           </Container>
         </View>
       </PageWrapper>

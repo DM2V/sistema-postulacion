@@ -13,6 +13,7 @@ const InputLabel: React.FC<InputProps> = ({
     showErrorIcon = true,
     validationFunction,
     defaultValue,
+    inputType,
     onChange,
   }) => {
     const [isFocused, setFocused] = useState(false);
@@ -86,7 +87,7 @@ const InputLabel: React.FC<InputProps> = ({
             autoComplete={autocomplete}
             onBlur={handleBlur}
             onChange={handleInputChange}
-            style={{ textTransform: 'uppercase' }} 
+            style={{ textTransform: inputType ? 'lowercase' : 'uppercase' }}
           />
           <div style={errorIconStyle}>
             {/* Replace CircleXmark with your error icon component */}
