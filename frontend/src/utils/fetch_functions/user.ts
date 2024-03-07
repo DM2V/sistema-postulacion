@@ -6,7 +6,6 @@ export async function getUserInfo(userId: string, setUser: (e: User) => void): P
         // Obtener la información del usuario con campos expandidos
         const userInfo = await pb.collection('users').getOne(userId, {
             expand: 'cv.personalData,cv.homeAddress,cv.emergencyContact,cv.academicTraining,cv.languages,cv.publications,cv.trainings,cv.professionalExperience,cv.extraPoints,cv.postulacionDocument'
-            // expand: 'cv,cv.id,cv.personalData,cv.homeAddress,cv.emergencyContact,cv.academicTraining,cv.languages,cv.publications,cv.trainings,cv.professionalExperience,cv.extraPoints,cv.postulacionDocument'
         });
 
         if (!userInfo) {

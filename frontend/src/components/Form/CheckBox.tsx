@@ -4,13 +4,13 @@ import { CheckBoxProps } from '@/types/components/types.t';
 const CheckBox: React.FC<CheckBoxProps> = ({
   name,
   options,
-  selectedOption,
+  selectedOptions,
   onChange,
 }) => {
-  const [internalSelectedOption, setInternalSelectedOption] = useState<string | null>(selectedOption);
+  const [internalselectedOptions, setInternalselectedOptions] = useState<string | null>(selectedOptions);
 
   const handleChange = (option: string | null) => {
-    setInternalSelectedOption(option);
+    setInternalselectedOptions(option);
     onChange(name, option);
   };
 
@@ -21,8 +21,8 @@ const CheckBox: React.FC<CheckBoxProps> = ({
           <input
             id={`${name}-${option}`}
             type="checkbox"
-            checked={internalSelectedOption === option}
-            onChange={() => handleChange(internalSelectedOption === option ? null : option)}
+            checked={internalselectedOptions === option}
+            onChange={() => handleChange(internalselectedOptions === option ? null : option)}
             className="h-6 w-6 text-primary-color focus:ring-0"
           />
           <span className="text-tp-heading-color">{option}</span>

@@ -158,7 +158,7 @@ const PersonalDataPage: FC = () => {
   }
 
   useEffect(() => {
-    setResidenceYearsVisible(personalData?.nationality !== "Ecuador");
+    setResidenceYearsVisible(personalData?.nationality !== "ECUADOR");
     setEthnicIdentificationVisible(
       personalData?.ethnicIdentification !== "INDÍGENA",
     );
@@ -407,7 +407,7 @@ const PersonalDataPage: FC = () => {
                         selectedOption === "Si" ? "Si" : "No",
                       );
                       setDiseaseVisible(selectedOption === "Si");
-                    }}
+                    }}   
                   />
                 </div>
 

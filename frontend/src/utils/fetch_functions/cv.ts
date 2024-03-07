@@ -1,6 +1,9 @@
 import { pb } from "../pocketbase";
 import { CvExpandend, PersonalData, HomeAddress, EmergencyContact, AcademicTraining, Language, Publications, Training, ProfessionalExperience, ExtraPoints, PostulacionDocument } from "@/types/cv";
 
+export type Partial<T> = {
+    [P in keyof T]?: T[P]; // Using keyof and mapped types
+};
 
 export async function getCVs(setCVs: (e: CvExpandend | null) => void, cvId: string): Promise<void> {
     try {
@@ -15,7 +18,9 @@ export async function getCVs(setCVs: (e: CvExpandend | null) => void, cvId: stri
             personalData: await fetchPersonalData(cvRecord.personalData),
             homeAddress: await fetchHomeAddress(cvRecord.homeAddress),
             emergencyContact: await fetchEmergencyContact(cvRecord.emergencyContact),
-            academicTraining: await fetchAcademicTraining(cvRecord.academicTraining),
+            academicTraining: (await fetchAcademicTraining<AcademicTraining>(cvRecord.academicTraining))
+            .filter(training => !!training)
+            .map(training => training as AcademicTraining),
             languages: await fetchLanguages(cvRecord.languages),
             publications: await fetchPublications(cvRecord.publications),
             trainings: await fetchTrainings(cvRecord.trainings),
@@ -178,17 +183,56 @@ export async function fetchProfessionalExperience(professionalExperienceIds: str
     }
 }
 
-export async function fetchAcademicTraining(academicTrainingIds: string[]): Promise<AcademicTraining[]> {
+// export async function fetchAcademicTraining(academicTrainingIds: string[]): Promise<AcademicTraining[]> {
+//     try {
+//         const academicTrainingPromises = academicTrainingIds.map(async (academicTrainingId) => {
+//             const record = await pb.collection("AcademicTraining").getOne(academicTrainingId);
+//             const training: Partial<AcademicTraining> = {
+//                 id: record.id,
+//                 studyDurationType: record.studyDurationType,
+//                 institution: record.institution,
+//                 studyDuration: record.studyType,
+//                 educationLevel: record.educationLevel,
+//                 degree: record.degree,
+//                 country: record.country,
+//                 senescytRegistrationNumber: record.senescytRegistrationNumber,
+//                 senescytRegistrationDate: record.senescytRegistrationDate,
+//                 graduationDate: record.graduationDate,
+//                 certificate: record.certificate
+//             };
+//             return training; // Assuming record is an AcademicTraining object
+//         });
+//         const academicTrainings = await Promise.all(academicTrainingPromises);
+//         return academicTrainings.filter(academicTraining => !!academicTraining);
+//     } catch (error) {
+//         console.error("Error fetching academic trainings:", error);
+//         return [];
+//     }
+// }
+function mapToPartial<T>(record: T): Partial<T> {
+    const partial: Partial<T> = {};
+
+    for (const key in record) {
+        if (Object.prototype.hasOwnProperty.call(record, key)) {
+            partial[key] = record[key];
+        }
+    }
+
+    return partial;
+}
+
+export async function fetchAcademicTraining<T>(academicTrainingIds: string[]): Promise<Partial<T>[]> {
     try {
         const academicTrainingPromises = academicTrainingIds.map(async (academicTrainingId) => {
-            const record = await pb.collection("AcademicTraining").getOne(academicTrainingId);
-            return record.data() as AcademicTraining;
+            const record = await pb.collection("AcademicTraining").getOne(academicTrainingId) as T;
+            return mapToPartial(record); // Map database record to Partial<T>
         });
+
         const academicTrainings = await Promise.all(academicTrainingPromises);
         return academicTrainings.filter(academicTraining => !!academicTraining);
     } catch (error) {
         console.error("Error fetching academic trainings:", error);
-        return [];
+        throw error; // Propagate the error
     }
 }
 
@@ -302,7 +346,6 @@ export async function fetchEmergencyContactForUser(userId: string): Promise<Emer
             homePhone: record?.expand?.cv?.expand?.emergencyContact.homePhone,
             cellPhone: record?.expand?.cv?.expand?.emergencyContact.cellPhone,
         };
-        console.log("emergencyData", emergencyData)
         return emergencyData; // If data is found, return it
     } catch (error) {
         console.error("Error fetching emergency contact:", error);
@@ -386,21 +429,21 @@ export async function fetchUserData(userId: string): Promise<{
                 : null,
             emergencyContact: record?.expand?.cv?.expand?.emergencyContact
                 ? {
-                    name: record?.expand?.cv?.expand?.emergencyContact.name  || "",
-                    lastName1: record?.expand?.cv?.expand?.emergencyContact.lastName1  || "",
-                    lastName2: record?.expand?.cv?.expand?.emergencyContact.lastName2  || "",
-                    typeIdentification: record?.expand?.cv?.expand?.emergencyContact.typeIdentification  || "",
-                    identification: record?.expand?.cv?.expand?.emergencyContact.identification  || "",
-                    relationship: record?.expand?.cv?.expand?.emergencyContact.relationship  || "",
-                    province: record?.expand?.cv?.expand?.emergencyContact.province  || "",
-                    canton: record?.expand?.cv?.expand?.emergencyContact.canton  || "",
-                    parish: record?.expand?.cv?.expand?.emergencyContact.parish  || "",
-                    mainStreet: record?.expand?.cv?.expand?.emergencyContact.mainStreet  || "",
-                    secondaryStreet: record?.expand?.cv?.expand?.emergencyContact.secondaryStreet  || "",
-                    reference: record?.expand?.cv?.expand?.emergencyContact.reference  || "",
-                    number: record?.expand?.cv?.expand?.emergencyContact.number  || "",
-                    homePhone: record?.expand?.cv?.expand?.emergencyContact.homePhone  || "",
-                    cellPhone: record?.expand?.cv?.expand?.emergencyContact.cellPhone  || "",
+                    name: record?.expand?.cv?.expand?.emergencyContact.name || "",
+                    lastName1: record?.expand?.cv?.expand?.emergencyContact.lastName1 || "",
+                    lastName2: record?.expand?.cv?.expand?.emergencyContact.lastName2 || "",
+                    typeIdentification: record?.expand?.cv?.expand?.emergencyContact.typeIdentification || "",
+                    identification: record?.expand?.cv?.expand?.emergencyContact.identification || "",
+                    relationship: record?.expand?.cv?.expand?.emergencyContact.relationship || "",
+                    province: record?.expand?.cv?.expand?.emergencyContact.province || "",
+                    canton: record?.expand?.cv?.expand?.emergencyContact.canton || "",
+                    parish: record?.expand?.cv?.expand?.emergencyContact.parish || "",
+                    mainStreet: record?.expand?.cv?.expand?.emergencyContact.mainStreet || "",
+                    secondaryStreet: record?.expand?.cv?.expand?.emergencyContact.secondaryStreet || "",
+                    reference: record?.expand?.cv?.expand?.emergencyContact.reference || "",
+                    number: record?.expand?.cv?.expand?.emergencyContact.number || "",
+                    homePhone: record?.expand?.cv?.expand?.emergencyContact.homePhone || "",
+                    cellPhone: record?.expand?.cv?.expand?.emergencyContact.cellPhone || "",
                 }
                 : null,
         };
