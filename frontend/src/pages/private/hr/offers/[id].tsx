@@ -185,7 +185,7 @@ function EditOfferPage() {
     };
     console.log(id)
     console.log(offerData)
-    //const record = await pb.collection('Offer').update(id, offerData);
+    await pb.collection('Offer').update(id, offerData);
     //console.log(record)
     router.push(OFFERSHR);
 
