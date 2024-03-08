@@ -120,7 +120,7 @@ const FileInput: React.FC<InputPropsFile> = ({
           )}
           {modalOpen && (
             <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-50">
-              <div className="rounded-lg bg-white p-4">
+              <div className="rounded-lg bg-white p-6">
                 {/* Your preview content goes here */}
                 <PDFPreviewModal
                   isOpen={modalOpen}

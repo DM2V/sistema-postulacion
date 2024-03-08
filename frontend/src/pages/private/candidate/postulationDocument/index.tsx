@@ -7,6 +7,7 @@ import FileInput from "@/components/File/FileInput";
 import GreenButton from "@/components/Buttons/GreenButton";
 import { validateNotEmpty } from "@/utils/validations";
 import CheckBox from "@/components/Form/CheckBox";
+import LayoutWithSidebarCandidate from "@/components/Layout/LayoutWithSidebarCandidate";
 
 const PostulantionDocumentPage: FC = () => {
   const router = useRouter();
@@ -59,6 +60,7 @@ const PostulantionDocumentPage: FC = () => {
   }
 
   return (
+    <LayoutWithSidebarCandidate> 
     <div className="container mx-auto py-8">
       <div className="w-full">
         <h1 className="text-primary-color">Subir Información</h1>
@@ -73,7 +75,7 @@ const PostulantionDocumentPage: FC = () => {
                 title="*Hoja de Vida ESPE"
                 onChange={handleFileInputChange}
                 accept=".pdf"
-                description="FORMATO ESPE requerido"
+                description="Formato ESPE requerido"
                 validationFunction={validateNotEmpty}
               />
               <FileInput
@@ -128,7 +130,7 @@ const PostulantionDocumentPage: FC = () => {
               **Rellene todos los campos obligatorios para enviar su
               postulación.
             </p>
-            <div className="flex items-center justify-center py-4">
+            <div className="flex items-center justify-center py-4 my-4">
               <CheckBox
                 name="acceptTerms"
                 options={[
@@ -145,6 +147,7 @@ const PostulantionDocumentPage: FC = () => {
           </form>
         </div>
       </div>
+      </LayoutWithSidebarCandidate>
     );
 };
 

@@ -22,7 +22,7 @@ const PDFPreviewModal: React.FC<PDFPreviewModalProps> = ({
   return (
     <>
       {isOpen  && (
-        <div className="z-50 fixed inset-0 overflow-y-auto z-50 flex justify-center items-center">
+        <div className="fixed inset-0 overflow-y-auto z-50 flex justify-center items-center">
           <div className="fixed inset-0 bg-black opacity-50"></div>
           <div className="bg-white p-8 rounded-lg z-50 relative">
             <button className="absolute top-0 right-0 p-2" onClick={handleClose}>
