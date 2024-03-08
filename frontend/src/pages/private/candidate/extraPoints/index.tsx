@@ -13,13 +13,13 @@ const ExtraPointsPage: FC = () => {
   const router = useRouter();
 
   const [isVisibleMap, setIsVisibleMap] = useState({
-    professionalExperienceEspe: false,
-    fileNationalInternationalAwards: false,
-    fileProfessionalAcademicRecognition: false,
-    fileTwonsNationalities: false,
-    fileDisability: false,
-    fileWarHeroes: false,
-    fileVulnerableSituations: false,
+    professionalExperienceEspe: true,
+    fileNationalInternationalAwards: true,
+    fileProfessionalAcademicRecognition: true,
+    fileTwonsNationalities: true,
+    fileDisability: true,
+    fileWarHeroes: true,
+    fileVulnerableSituations: true,
   });
 
   const [fileMap, setFileMap] = useState({

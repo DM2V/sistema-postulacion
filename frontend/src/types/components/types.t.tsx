@@ -194,7 +194,7 @@ export type HeaderTable = {
 }
 
 export interface FileInputProps {
-  onFileChange: (file: File) => void;
-  onViewClick: () => void;
-  onDeleteClick: () => void;
+  onFileChange?: (file: File) => void;
+  onViewClick?: () => void;
+  onDeleteClick?: () => void;
 }
