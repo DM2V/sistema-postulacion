@@ -7,15 +7,23 @@ const CheckBox: React.FC<CheckBoxProps> = ({
   selectedOptions,
   onChange,
 }) => {
-  const [internalselectedOptions, setInternalselectedOptions] = useState<string | null>(selectedOptions);
+  const [internalselectedOptions, setInternalselectedOptions] = useState<string | string[] | null>(selectedOptions);
 
   const handleChange = (option: string | null) => {
     setInternalselectedOptions(option);
-    onChange(name, option);
+    // Comprobación para determinar el tipo de selectedOptions
+    if (Array.isArray(internalselectedOptions)) {
+      onChange(name, option === null ? internalselectedOptions.filter((selectedOption) => selectedOption !== option) : [...internalselectedOptions, option]);
+    } else {
+      onChange(name, option);
+    }
   };
 
+
+  const numberOfColumns = options.length > 3 ? 2 : 1;
+
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-${numberOfColumns} gap-4">
       {options.map((option) => (
         <label key={option} className="flex items-center space-x-2">
           <input

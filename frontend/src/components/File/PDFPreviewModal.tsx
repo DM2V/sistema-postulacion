@@ -4,22 +4,25 @@ import PDFViewer from 'pdf-viewer-reactjs'; // Install pdf-viewer-reactjs packag
 interface PDFPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  pdfUrl: string;
+  fileName: string;
+  filePages: number;
+  file: File | null;
 }
 
-const PDFPreviewModal: React.FC<PDFPreviewModalProps> = ({ isOpen, onClose, pdfUrl }) => {
-  const [isVisible, setIsVisible] = useState(isOpen);
-
-  // Close the modal
+const PDFPreviewModal: React.FC<PDFPreviewModalProps> = ({
+  isOpen,
+  onClose,
+  fileName,
+  filePages,
+  file,
+}) => {
   const handleClose = () => {
-    setIsVisible(false);
     onClose();
   };
-
   return (
     <>
-      {isVisible && (
-        <div className="fixed inset-0 overflow-y-auto z-50 flex justify-center items-center">
+      {isOpen  && (
+        <div className="z-50 fixed inset-0 overflow-y-auto z-50 flex justify-center items-center">
           <div className="fixed inset-0 bg-black opacity-50"></div>
           <div className="bg-white p-8 rounded-lg z-50 relative">
             <button className="absolute top-0 right-0 p-2" onClick={handleClose}>
@@ -39,8 +42,14 @@ const PDFPreviewModal: React.FC<PDFPreviewModalProps> = ({ isOpen, onClose, pdfU
               </svg>
             </button>
             <div className="w-full h-full">
-              {/* Your PDF preview content goes here */}
-              <iframe src={pdfUrl} className="w-full h-full"></iframe>
+              {/* <iframe src={pdfUrl} className="w-full h-full"></iframe> */}
+              {file && (
+              <iframe
+                src={URL.createObjectURL(file)}
+                title="PDF Preview"
+                className="w-full h-64"
+              ></iframe>
+            )}
             </div>
           </div>
         </div>
