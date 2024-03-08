@@ -1,4 +1,4 @@
-import { DeleteIcon, EditIcon } from "@/assets/icons";
+import { DeleteIcon } from "@/assets/icons";
 import LayoutWithSidebar from "@/components/Layout/LayoutWithSidebar";
 import { User } from "@/types/user";
 import { pb } from "@/utils/pocketbase";
@@ -117,9 +117,9 @@ const User = () => {
                         <td className="border-b px-4 py-2 md:table-cell lg:table-cell">
                           <div className="flex justify-center gap-5 text-lg ">
 
-                            <button className="hover:cursor-pointer">
+{/*                             <button className="hover:cursor-pointer">
                               <EditIcon color="#006935" />
-                            </button>
+                            </button> */}
                             <button onClick={() => deleteUser(offer.id)} className="hover:cursor-pointer">
                               <DeleteIcon color="#DD331D" />
                             </button>

@@ -117,14 +117,14 @@ const createUser = () => {
 
       <div className="pr-2 lg:w-5/6">
         <div
-          className="mb-4 rounded-r-3xl bg-gray-bg p-3 shadow-md"
+          className="mb-4 rounded-3xl bg-gray-bg p-3 shadow-md ml-5"
           style={{
             boxShadow:
               "15px -7px 0px -8px rgba(0, 74, 62, 0.05), 0px 4px 4px 0px rgba(0, 74, 62, 0.15), 0px -2px 4px 0px rgba(0, 74, 62, 0.15)",
           }}
         >
           <section>
-            <div className="flex flex-wrap">
+            <div className="flex flex-wrap justify-center">
               <div className="flex w-full gap-5">
                 <div className="w-1/3">
                   <ComboBox
@@ -159,6 +159,7 @@ const createUser = () => {
                     onChange={(name, selected) => {
                       setName(selected)
                     }}
+                    inputType="0"
                   />
                 </div>
                 <div className="w-1/2">
@@ -170,6 +171,7 @@ const createUser = () => {
                     onChange={(name, selected) => {
                       setLastName(selected)
                     }}
+                    inputType="0"
                   />
                 </div>
               </div>
@@ -194,7 +196,6 @@ const createUser = () => {
                     options={[
                       { label: "Evaluador", value: "evaluator" },
                       { label: "Administrador", value: "admin_hr" },
-                      { label: "Candidato", value: "candidate" },
                     ]}
                     onChange={(name, selected) => {
                       setRole(selected.value);
@@ -219,6 +220,7 @@ const createUser = () => {
                   title="Correo electrónico:"
                   errorMessage={"*Campo Requerido"}
                   validationFunction={validateEmail}
+                  inputType="0"
                   onChange={(name, selected) => {
                     setEmail(selected)
                   }}
@@ -239,11 +241,12 @@ const createUser = () => {
               <button onClick={handleCreateUser} className="focus:shadow-outline hover:t rounded-2xl bg-state-press p-2 px-4 text-white transition-transform hover:scale-110 hover:bg-primary-color focus:outline-none md:mt-4">
                 + Crear
               </button>
+
             </div>
           </section>
         </div>
-      </div>
-    </LayoutWithSidebar>
+      </div >
+    </LayoutWithSidebar >
   );
 };
 export default createUser;

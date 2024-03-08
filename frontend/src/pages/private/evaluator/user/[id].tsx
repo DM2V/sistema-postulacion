@@ -150,8 +150,8 @@ function ViewUser() {
                 <td className="p-3 md:table-cell lg:table-cell">
                   {userCv?.lastName}
                 </td>
-                <td className="p-3 md:table-cell lg:table-cell">
-                  {userCv?.expand?.phaseStatus?.status}
+                <td className="p-3 md:table-cell lg:table-cell font-bold">
+                  {userCv?.expand?.phaseStatus?.status ? userCv?.expand?.phaseStatus?.status : "...."}
                 </td>
               </tr>
             </tbody>
@@ -217,7 +217,7 @@ function ViewUser() {
 
             <div className="flex items-center gap-2">
               <h6>Puntaje asignado Fase Méritos: </h6>
-              <strong>{userCv?.expand?.phaseStatus?.score}</strong>/ 50
+              <strong>{userCv?.expand?.phaseStatus?.score}</strong>
             </div>
           </div>
         </div>
