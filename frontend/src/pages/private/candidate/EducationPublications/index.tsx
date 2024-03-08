@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
-import CreateFormTraining from "@/components/CRUDSection/CRUDForm/Training/CreateForm";
-import CreateFormProfessionalExperience from "@/components/CRUDSection/CRUDForm/ProfessionalExperience/CreateForm";
-import CRUDSection from "@/components/CRUDSection/CRUDSection";
-import { pb } from "@/utils/pocketbase";
-import { Training, ProfessionalExperience } from "@/types/cv";
-import { EXTRAPOINTS } from "@/routes/paths";
-import { useRouter } from "next/router";
 import GreenButton from "@/components/Buttons/GreenButton";
+import CreateFormProfessionalExperience from "@/components/CRUDSection/CRUDForm/ProfessionalExperience/CreateForm";
+import CreateFormTraining from "@/components/CRUDSection/CRUDForm/Training/CreateForm";
+import CRUDSection from "@/components/CRUDSection/CRUDSection";
+import LayoutWithSidebarCandidate from "@/components/Layout/LayoutWithSidebarCandidate";
 import NavBar from "@/components/Navbar/NavbarUser";
+import { EXTRAPOINTS } from "@/routes/paths";
+import { ProfessionalExperience, Training } from "@/types/cv";
+import { pb } from "@/utils/pocketbase";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 function EducationPublications() {
   const router = useRouter();
@@ -182,111 +183,113 @@ function EducationPublications() {
   });
 
   return (
-    <div>
-      <NavBar />
-      <div className="py-5">
-        <CRUDSection
-          title="Capacitación (últimos 5 años) "
-          description="Indique los eventos de capacitación en los que ha participado."
-          elements={trainings}
-          fetchElements={fetchTrainingsForUser}
-          addForm={<CreateFormTraining />}
-          editForm={<CreateFormTraining />}
-          createElement={createTraining}
-          deleteElement={deleteTraining}
-          editElement={updateTraining}
-          headers={[
-            { value: "eventType", label: "Tipo de evento", type: "string" },
-            {
-              value: "eventTheme",
-              label: "Tema del evento",
-              type: "string",
-            },
-            {
-              value: "institutionName",
-              label: "Nombre de la Institucion",
-              type: "string",
-            },
-            {
-              value: "hoursCount",
-              label: "Nº de horas",
-              type: "string",
-            },
-            {
-              value: "certificateType",
-              label: "Tipo de certificado",
-              type: "string",
-            },
-          ]}
-        />
-        <CRUDSection
-          title="Experiencia Profesional"
-          description="Indique "
-          elements={professionalExperiences}
-          fetchElements={fetchProfessionalExperiencesForUser}
-          addForm={<CreateFormProfessionalExperience />}
-          editForm={<CreateFormProfessionalExperience />}
-          createElement={createProfessionalExperience}
-          deleteElement={deleteProfessionalExperience}
-          editElement={updateProfessionalExperience}
-          headers={[
-            {
-              value: "institutionName",
-              label: "Tipo de Institución",
-              type: "string",
-            },
-            {
-              value: "position",
-              label: "Puesto",
-              type: "string",
-            },
-            {
-              value: "employmentModality",
-              label: "Modalidad de contratación",
-              type: "string",
-            },
-            // {
-            //   value: "administrativeUnit",
-            //   label: "Unidad Administrativa",
-            //   type: "string",
-            // },
-            {
-              value: "institutionType",
-              label: "Tipo de Institución",
-              type: "string",
-            },
-            {
-              value: "reasonJobExit",
-              label: "Motivo de salida laboral",
-              type: "string",
-            },
-            // {
-            //   value: "country",
-            //   label: "País",
-            //   type: "string",
-            // },
-            // {
-            //   value: "province",
-            //   label: "Provincia",
-            //   type: "string",
-            // },
-            // {
-            //   value: "startDate",
-            //   label: "Fecha de ingreso",
-            //   type: "string",
-            // },
-            // {
-            //   value: "endDate",
-            //   label: "Fecha de salida",
-            //   type: "string",
-            // },
-          ]}
-        />
-        <div className="my-4 flex justify-end">
-          <GreenButton onClick={handleSubmit} content="Siguiente" />
+    <LayoutWithSidebarCandidate>
+      <div>
+        <NavBar />
+        <div className="py-5">
+          <CRUDSection
+            title="Capacitación (últimos 5 años) "
+            description="Indique los eventos de capacitación en los que ha participado."
+            elements={trainings}
+            fetchElements={fetchTrainingsForUser}
+            addForm={<CreateFormTraining />}
+            editForm={<CreateFormTraining />}
+            createElement={createTraining}
+            deleteElement={deleteTraining}
+            editElement={updateTraining}
+            headers={[
+              { value: "eventType", label: "Tipo de evento", type: "string" },
+              {
+                value: "eventTheme",
+                label: "Tema del evento",
+                type: "string",
+              },
+              {
+                value: "institutionName",
+                label: "Nombre de la Institucion",
+                type: "string",
+              },
+              {
+                value: "hoursCount",
+                label: "Nº de horas",
+                type: "string",
+              },
+              {
+                value: "certificateType",
+                label: "Tipo de certificado",
+                type: "string",
+              },
+            ]}
+          />
+          <CRUDSection
+            title="Experiencia Profesional"
+            description="Indique "
+            elements={professionalExperiences}
+            fetchElements={fetchProfessionalExperiencesForUser}
+            addForm={<CreateFormProfessionalExperience />}
+            editForm={<CreateFormProfessionalExperience />}
+            createElement={createProfessionalExperience}
+            deleteElement={deleteProfessionalExperience}
+            editElement={updateProfessionalExperience}
+            headers={[
+              {
+                value: "institutionName",
+                label: "Tipo de Institución",
+                type: "string",
+              },
+              {
+                value: "position",
+                label: "Puesto",
+                type: "string",
+              },
+              {
+                value: "employmentModality",
+                label: "Modalidad de contratación",
+                type: "string",
+              },
+              // {
+              //   value: "administrativeUnit",
+              //   label: "Unidad Administrativa",
+              //   type: "string",
+              // },
+              {
+                value: "institutionType",
+                label: "Tipo de Institución",
+                type: "string",
+              },
+              {
+                value: "reasonJobExit",
+                label: "Motivo de salida laboral",
+                type: "string",
+              },
+              // {
+              //   value: "country",
+              //   label: "País",
+              //   type: "string",
+              // },
+              // {
+              //   value: "province",
+              //   label: "Provincia",
+              //   type: "string",
+              // },
+              // {
+              //   value: "startDate",
+              //   label: "Fecha de ingreso",
+              //   type: "string",
+              // },
+              // {
+              //   value: "endDate",
+              //   label: "Fecha de salida",
+              //   type: "string",
+              // },
+            ]}
+          />
+          <div className="my-4 flex justify-end">
+            <GreenButton onClick={handleSubmit} content="Siguiente" />
+          </div>
         </div>
       </div>
-    </div>
+    </LayoutWithSidebarCandidate>
   );
 }
 
