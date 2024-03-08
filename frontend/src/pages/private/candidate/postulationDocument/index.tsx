@@ -1,61 +1,56 @@
-import React, { useState, ChangeEvent } from 'react';
-import { InputPropsFile } from '../../types/components/types.t';
+import React, { FC, FormEvent, useState } from "react";
+import { useRouter } from "next/router";
+import { pb } from "@/utils/pocketbase";
+import { PostulacionDocument } from "@/types/cv";
+import { CVGENERATOR } from "@/routes/paths";
+import FileInput from "@/components/File/FileInput";
+import GreenButton from "@/components/Buttons/GreenButton";
+import { validateNotEmpty } from "@/utils/validations";
+import CheckBox from "@/components/Form/CheckBox";
 
-import { Eye, DeleteIcon } from '@/assets/icons'; // Importar los íconos
+const PostulantionDocumentPage: FC = () => {
+  const router = useRouter();
+  const [postulationDocument, setPostulationDocument] =
+    useState<PostulacionDocument | null>(null);
 
-const FileInput: React.FC<InputPropsFile> = ({
-    name,
-    title,
-    placeholder,
-    helpMessage,
-    errorMessage,
-    disabled = false,
-    accept,
-    showErrorIcon = true,
-    onChange,
-}) => {
-    const [error, setError] = useState(false);
-    const [fileName, setFileName] = useState<string>('');
-    const [file, setFile] = useState<File | null>(null); // Estado para almacenar el archivo cargado
+  const [fileMap, setFileMap] = useState({
+    resume: null,
+    idCopy: null,
+    votingCert: null,
+    degreeCert: null,
+    mecanizadoIess: null,
+    noImpedimentCert: null,
+    noAdminResponsibilityCert: null,
+  });
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newFile = e.target.files?.[0];
-        if (newFile) {
-            setFileName(newFile.name);
-            setError(false);
-            setFile(newFile); // Actualizar el archivo cargado en el estado
-            if (onChange) {
-                onChange(name, newFile);
-            }
-        } else {
-            setFileName('');
-            setError(true);
-            setFile(null); // Limpiar el archivo cargado en el estado
-        }
+  async function createPostulationDocument(formData: FormData) {
+    const postulationData = {
+      ...fileMap,
     };
+    try {
+      const { cv } = await pb
+        .collection("users")
+        .getOne("msof6xv1zl55pof", { fields: "cv" });
+      if (!cv) {
+        console.error("Error retrieving CV data.");
+        return;
+      }
 
-    const inputBorderColor = error && showErrorIcon
-        ? 'border border-red-500'
-        : 'border border-tp-body-color';
+      const extraPointDataCreated = await pb
+        .collection("PostulacionDocument")
+        .create(postulationData);
+      const dataCV = { extraPoints: extraPointDataCreated.id }; // Corrected key
+      await pb.collection("CV").update(cv, dataCV);
 
-    const helpText = error ? (
-        <div className="text-red-500">{errorMessage}</div>
-    ) : (
-        <div className="text-blue-500">{helpMessage}</div>
-    );
+      router.push(CVGENERATOR);
+    } catch (error) {
+      console.error("Error creating personal data:", error);
+    }
+  }
 
-    const handlePreview = () => {
-        // Implementar la lógica para abrir un modal y previsualizar el documento
-        // Puedes usar el estado `file` para acceder al archivo cargado
-        // Abre el modal con la previsualización del archivo
-    };
-
-    const handleDelete = () => {
-        setFileName('');
-        setError(false);
-        setFile(null); // Limpiar el archivo cargado en el estado
-        // Implementar la lógica para eliminar el archivo
-    };
+  const handleFileInputChange = (name: string, selectedFile: File | null) => {
+    setFileMap({ ...fileMap, [name]: selectedFile });
+  };
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
