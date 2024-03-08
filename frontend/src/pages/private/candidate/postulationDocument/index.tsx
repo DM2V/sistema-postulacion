@@ -1,61 +1,57 @@
-import React, { useState, ChangeEvent } from 'react';
-import { InputPropsFile } from '../../types/components/types.t';
+import React, { FC, FormEvent, useState } from "react";
+import { useRouter } from "next/router";
+import { pb } from "@/utils/pocketbase";
+import { PostulacionDocument } from "@/types/cv";
+import { CVGENERATOR } from "@/routes/paths";
+import FileInput from "@/components/File/FileInput";
+import GreenButton from "@/components/Buttons/GreenButton";
+import { validateNotEmpty } from "@/utils/validations";
+import CheckBox from "@/components/Form/CheckBox";
+import LayoutWithSidebarCandidate from "@/components/Layout/LayoutWithSidebarCandidate";
 
-import { Eye, DeleteIcon } from '@/assets/icons'; // Importar los íconos
+const PostulantionDocumentPage: FC = () => {
+  const router = useRouter();
+  const [postulationDocument, setPostulationDocument] =
+    useState<PostulacionDocument | null>(null);
 
-const FileInput: React.FC<InputPropsFile> = ({
-    name,
-    title,
-    placeholder,
-    helpMessage,
-    errorMessage,
-    disabled = false,
-    accept,
-    showErrorIcon = true,
-    onChange,
-}) => {
-    const [error, setError] = useState(false);
-    const [fileName, setFileName] = useState<string>('');
-    const [file, setFile] = useState<File | null>(null); // Estado para almacenar el archivo cargado
+  const [fileMap, setFileMap] = useState({
+    resume: null,
+    idCopy: null,
+    votingCert: null,
+    degreeCert: null,
+    mecanizadoIess: null,
+    noImpedimentCert: null,
+    noAdminResponsibilityCert: null,
+  });
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const newFile = e.target.files?.[0];
-        if (newFile) {
-            setFileName(newFile.name);
-            setError(false);
-            setFile(newFile); // Actualizar el archivo cargado en el estado
-            if (onChange) {
-                onChange(name, newFile);
-            }
-        } else {
-            setFileName('');
-            setError(true);
-            setFile(null); // Limpiar el archivo cargado en el estado
-        }
+  async function createPostulationDocument(formData: FormData) {
+    const postulationData = {
+      ...fileMap,
     };
+    try {
+      const { cv } = await pb
+        .collection("users")
+        .getOne("msof6xv1zl55pof", { fields: "cv" });
+      if (!cv) {
+        console.error("Error retrieving CV data.");
+        return;
+      }
 
-    const inputBorderColor = error && showErrorIcon
-        ? 'border border-red-500'
-        : 'border border-tp-body-color';
+      const extraPointDataCreated = await pb
+        .collection("PostulacionDocument")
+        .create(postulationData);
+      const dataCV = { extraPoints: extraPointDataCreated.id }; // Corrected key
+      await pb.collection("CV").update(cv, dataCV);
 
-    const helpText = error ? (
-        <div className="text-red-500">{errorMessage}</div>
-    ) : (
-        <div className="text-blue-500">{helpMessage}</div>
-    );
+      router.push(CVGENERATOR);
+    } catch (error) {
+      console.error("Error creating personal data:", error);
+    }
+  }
 
-    const handlePreview = () => {
-        // Implementar la lógica para abrir un modal y previsualizar el documento
-        // Puedes usar el estado `file` para acceder al archivo cargado
-        // Abre el modal con la previsualización del archivo
-    };
-
-    const handleDelete = () => {
-        setFileName('');
-        setError(false);
-        setFile(null); // Limpiar el archivo cargado en el estado
-        // Implementar la lógica para eliminar el archivo
-    };
+  const handleFileInputChange = (name: string, selectedFile: File | null) => {
+    setFileMap({ ...fileMap, [name]: selectedFile });
+  };
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -64,19 +60,22 @@ const FileInput: React.FC<InputPropsFile> = ({
   }
 
   return (
-    <div>
-      <div className="container mx-auto py-8">
-        <h1>PostulantionDocumentPage</h1>
-        <div className="w-full">
-          <form onSubmit={handleSubmit}>
-            <div>
+    <LayoutWithSidebarCandidate> 
+    <div className="container mx-auto py-8">
+      <div className="w-full">
+        <h1 className="text-primary-color">Subir Información</h1>
+        <p className="text-red-500  pb-6">
+          *Todos los documentos deben ser subidos en formato PDF.
+        </p>
+
+          <form onSubmit={handleSubmit} className="flex justify-center items-center flex-col">
+            <div className="w-full">
               <FileInput
                 name={"resume"}
                 title="*Hoja de Vida ESPE"
                 onChange={handleFileInputChange}
                 accept=".pdf"
-                 helpMessage="FORMATO ESPE requerido"
-                 defaultValue="FORMATO ESPE requerido"
+                description="Formato ESPE requerido"
                 validationFunction={validateNotEmpty}
               />
               <FileInput
@@ -100,7 +99,6 @@ const FileInput: React.FC<InputPropsFile> = ({
                 title="*Certificado de registro de título(Senescyt)"
                 onChange={handleFileInputChange}
                 accept=".pdf"
-                placeholder=""
                 validationFunction={validateNotEmpty}
               />
               <FileInput
@@ -108,7 +106,7 @@ const FileInput: React.FC<InputPropsFile> = ({
                 title="*Mecanizado IESS"
                 onChange={handleFileInputChange}
                 accept=".pdf"
-                placeholder="Historial Laboral(reporte tiempo de servicio por empleador IESS)"
+                description="Historial Laboral(reporte tiempo de servicio por empleador IESS)"
                 validationFunction={validateNotEmpty}
               />
               <FileInput
@@ -116,7 +114,7 @@ const FileInput: React.FC<InputPropsFile> = ({
                 title="*Certificado de no tener impedimento para ejercer cargo público"
                 onChange={handleFileInputChange}
                 accept=".pdf"
-                placeholder="Emitido en línea por el Ministerio de Trabajo"
+                description="Emitido en línea por el Ministerio de Trabajo"
                 validationFunction={validateNotEmpty}
               />
               <FileInput
@@ -124,31 +122,33 @@ const FileInput: React.FC<InputPropsFile> = ({
                 title="*Certificado de no tener responsabilidades administrativas"
                 onChange={handleFileInputChange}
                 accept=".pdf"
-                placeholder="Emitido en línea por la Contraloría General del Estado"
+                description="Emitido en línea por la Contraloría General del Estado"
                 validationFunction={validateNotEmpty}
               />
             </div>
-<div className="flex items-center justify-center py-4">
-
-            <CheckBox
-              name="acceptTerms"
-              options={[
-                "Declaro que todos los datos y documentos proporcionados en este formulario son veraces y completos, y no he omitido información alguna. Acepto plenamente la responsabilidad en caso de comprobar cualquier falsedad o inexactitud en algunas partes de esta postulación y entiendo que estaré sujeto a las normativas de la institución y otras disposiciones legales vigentes.",
-              ]}
-              selectedOptions={[]} // Corrected key
-              allowMultipleSelection={false}
-              onChange={(e) => console.log(e)}
+            <p>
+              **Rellene todos los campos obligatorios para enviar su
+              postulación.
+            </p>
+            <div className="flex items-center justify-center py-4 my-4">
+              <CheckBox
+                name="acceptTerms"
+                options={[
+                  "Declaro que todos los datos y documentos proporcionados en este formulario son veraces y completos, y no he omitido información alguna. Acepto plenamente la responsabilidad en caso de comprobar cualquier falsedad o inexactitud en algunas partes de esta postulación y entiendo que estaré sujeto a las normativas de la institución y otras disposiciones legales vigentes.",
+                ]}
+                selectedOptions={[]} // Corrected key
+                allowMultipleSelection={false}
+                onChange={(e) => console.log(e)}
               />
-
-              </div>
+            </div>
             <div className="mt-8 flex justify-end">
               <GreenButton content="Guardar" />
             </div>
           </form>
         </div>
       </div>
-    </div>
-  );
+      </LayoutWithSidebarCandidate>
+    );
 };
 
 export default PostulantionDocumentPage;

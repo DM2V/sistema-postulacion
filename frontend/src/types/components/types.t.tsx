@@ -90,6 +90,7 @@ export interface InputProps {
 export interface InputPropsFile {
   name: string;
   title: string;
+  description?: string;
   placeholder?: string;
   errorMessage?: string;
   helpMessage?: string;
