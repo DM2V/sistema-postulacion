@@ -1,35 +1,29 @@
-import React, { FC, FormEvent, useEffect, useState } from "react";
 import GreenButton from "@/components/Buttons/GreenButton";
 import { pb } from "@/utils/pocketbase";
-import { ACADEMICTRANING } from "@/routes/paths";
+import { FC, FormEvent, useEffect, useState } from "react";
 
-import { HomeAddress, EmergencyContact } from "@/types/cv";
-import { validateNotEmpty, validateNumbersOnly } from "@/utils/validations";
-import NavBar from "@/components/Navbar/NavbarUser";
 import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
 import InputLabel from "@/components/Form/InputLabel";
 import Notification from "@/components/Form/Notification";
+import LayoutWithSidebarCandidate from "@/components/Layout/LayoutWithSidebarCandidate";
+import NavBar from "@/components/Navbar/NavbarUser";
+import { EmergencyContact, HomeAddress } from "@/types/cv";
 import {
-  fetchEmergencyContact,
-  fetchEmergencyContactForUser,
-  fetchHomeAddress,
-  fetchHomeAddressForUser,
-} from "@/utils/fetch_functions/cv";
-import {
-  IdentificationType,
   Canton,
-  Province,
-  Parish,
   EmergencyRelationship,
+  IdentificationType,
+  Parish,
+  Province,
 } from "@/types/staticData";
-import {
-  getProvince,
-  getCanton,
-  getParish,
-  getIdentificationType,
-  getEmergencyRelationship,
-} from "@/utils/fetch_functions/staticData";
 import { fetchUserData } from "@/utils/fetch_functions/cv";
+import {
+  getCanton,
+  getEmergencyRelationship,
+  getIdentificationType,
+  getParish,
+  getProvince,
+} from "@/utils/fetch_functions/staticData";
+import { validateNotEmpty, validateNumbersOnly } from "@/utils/validations";
 
 const PersonalInformationPage: FC = () => {
   const userId = "msof6xv1zl55pof";
@@ -199,468 +193,470 @@ const PersonalInformationPage: FC = () => {
   }, []);
 
   return (
-    <div>
-      <NavBar />
-      <div className="flex justify-center align-middle">
-        <div className="container">
-          <h1 className="text-ter-color">Información Personal</h1>
-          <form onSubmit={handleSubmit}>
-            <div>
-              <h4 className="py-4 font-bold text-state-hover">
-                Dirección Domiciliaria Permanente
-              </h4>
-              <div className="grid grid-cols-1 gap-4 pb-4 lg:grid-cols-3">
-                <ComboBoxGeneric
-                  name={"province"}
-                  title={"Provincia:"}
-                  options={province.map((d) => {
-                    return { label: d.province, value: d.province };
-                  })}
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      homeAddressData: {
-                        ...formData.homeAddressData,
+    <LayoutWithSidebarCandidate>
+      <div>
+        <NavBar />
+        <div className="flex justify-center align-middle text-xs">
+          <div className="container mx-8">
+
+            <form onSubmit={handleSubmit}>
+              <div>
+                <h4 className="py-4 font-bold text-primary-color">
+                  Dirección Domiciliaria Permanente
+                </h4>
+                <div className="grid grid-cols-1 gap-4 pb-4 lg:grid-cols-3">
+                  <ComboBoxGeneric
+                    name={"province"}
+                    title={"Provincia:"}
+                    options={province.map((d) => {
+                      return { label: d.province, value: d.province };
+                    })}
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        homeAddressData: {
+                          ...formData.homeAddressData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    defaultOption={formData.homeAddressData.province || ""}
+                  />
+                  <ComboBoxGeneric
+                    name={"canton"}
+                    title={"Cantón:"}
+                    options={canton.map((d) => {
+                      return { label: d.canton, value: d.canton };
+                    })}
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        homeAddressData: {
+                          ...formData.homeAddressData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    defaultOption={formData.homeAddressData.canton || ""}
+                  />
+                  <ComboBoxGeneric
+                    name={"parish"}
+                    title={"Parroquia:"}
+                    options={parish.map((d) => {
+                      return { label: d.parish, value: d.parish };
+                    })}
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        homeAddressData: {
+                          ...formData.homeAddressData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    defaultOption={formData.homeAddressData.parish || ""}
+                  />
+                  <InputLabel
+                    name="mainStreet"
+                    title="Calle Principal:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
                         [name]: value,
-                      },
-                    });
-                  }}
-                  defaultOption={formData.homeAddressData.province || ""}
-                />
-                <ComboBoxGeneric
-                  name={"canton"}
-                  title={"Cantón:"}
-                  options={canton.map((d) => {
-                    return { label: d.canton, value: d.canton };
-                  })}
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      homeAddressData: {
-                        ...formData.homeAddressData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  defaultOption={formData.homeAddressData.canton || ""}
-                />
-                <ComboBoxGeneric
-                  name={"parish"}
-                  title={"Parroquia:"}
-                  options={parish.map((d) => {
-                    return { label: d.parish, value: d.parish };
-                  })}
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      homeAddressData: {
-                        ...formData.homeAddressData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  defaultOption={formData.homeAddressData.parish || ""}
-                />
-                <InputLabel
-                  name="mainStreet"
-                  title="Calle Principal:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      [name]: value,
-                    });
-                  }}
-                  validationFunction={validateNotEmpty}
-                  defaultValue={formData.homeAddressData.mainStreet || ""}
-                  placeholder={formData.homeAddressData?.mainStreet || ""} 
-                />
-                <InputLabel
-                  name="secondaryStreet"
-                  title="Calle Secundaria:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      homeAddressData: {
-                        ...formData.homeAddressData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNotEmpty}
-                  defaultValue={formData.homeAddressData.secondaryStreet || ""}
-                  placeholder={formData.homeAddressData?.secondaryStreet || ""}
-                />
-                <InputLabel
-                  name="reference"
-                  title="Referencia:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      homeAddressData: {
-                        ...formData.homeAddressData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNotEmpty}
-                  defaultValue={formData.homeAddressData.reference || ""}
-                  placeholder={formData.homeAddressData?.reference || ""}
-                />
+                      });
+                    }}
+                    validationFunction={validateNotEmpty}
+                    defaultValue={formData.homeAddressData.mainStreet || ""}
+                    placeholder={formData.homeAddressData?.mainStreet || ""}
+                  />
+                  <InputLabel
+                    name="secondaryStreet"
+                    title="Calle Secundaria:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        homeAddressData: {
+                          ...formData.homeAddressData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNotEmpty}
+                    defaultValue={formData.homeAddressData.secondaryStreet || ""}
+                    placeholder={formData.homeAddressData?.secondaryStreet || ""}
+                  />
+                  <InputLabel
+                    name="reference"
+                    title="Referencia:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        homeAddressData: {
+                          ...formData.homeAddressData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNotEmpty}
+                    defaultValue={formData.homeAddressData.reference || ""}
+                    placeholder={formData.homeAddressData?.reference || ""}
+                  />
+                </div>
+                <div className="grid grid-cols-1 gap-4 pb-4 lg:w-5/6 lg:grid-cols-5">
+                  <InputLabel
+                    name="number"
+                    title="Número:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        homeAddressData: {
+                          ...formData.homeAddressData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNumbersOnly}
+                    showErrorIcon={false}
+                    defaultValue={formData.homeAddressData.number || ""}
+                    placeholder={formData.homeAddressData?.number || ""}
+                  />
+                  <InputLabel
+                    name="homePhone"
+                    title="Teléfono domicilio:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        homeAddressData: {
+                          ...formData.homeAddressData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNumbersOnly}
+                    showErrorIcon={false}
+                    defaultValue={formData.homeAddressData.homePhone || ""}
+                    placeholder={formData.homeAddressData?.homePhone || ""}
+                  />
+                  <InputLabel
+                    name="cellPhone"
+                    title="Teléfono celular:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        homeAddressData: {
+                          ...formData.homeAddressData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNumbersOnly}
+                    showErrorIcon={false}
+                    defaultValue={formData.homeAddressData.cellPhone || ""}
+                    placeholder={formData.homeAddressData?.cellPhone || ""}
+                  />
+                  <InputLabel
+                    name="workPhone"
+                    title="Teléfono trabajo:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        homeAddressData: {
+                          ...formData.homeAddressData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNumbersOnly}
+                    showErrorIcon={false}
+                    defaultValue={formData.homeAddressData.workPhone || ""}
+                    placeholder={formData.homeAddressData?.workPhone || ""}
+                  />
+                  <InputLabel
+                    name="extencion"
+                    title="Extensión:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        homeAddressData: {
+                          ...formData.homeAddressData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNumbersOnly}
+                    showErrorIcon={false}
+                    defaultValue={formData.homeAddressData.extencion || ""}
+                    placeholder={formData.homeAddressData?.extencion || ""}
+                  />
+                </div>
               </div>
-              <div className="grid grid-cols-1 gap-4 pb-4 lg:w-5/6 lg:grid-cols-5">
-                <InputLabel
-                  name="number"
-                  title="Número:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      homeAddressData: {
-                        ...formData.homeAddressData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNumbersOnly}
-                  showErrorIcon={false}
-                  defaultValue={formData.homeAddressData.number || ""}
-                  placeholder={formData.homeAddressData?.number || ""}
-                />
-                <InputLabel
-                  name="homePhone"
-                  title="Teléfono domicilio:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      homeAddressData: {
-                        ...formData.homeAddressData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNumbersOnly}
-                  showErrorIcon={false}
-                  defaultValue={formData.homeAddressData.homePhone || ""}
-                  placeholder={formData.homeAddressData?.homePhone || ""}
-                />
-                <InputLabel
-                  name="cellPhone"
-                  title="Teléfono celular:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      homeAddressData: {
-                        ...formData.homeAddressData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNumbersOnly}
-                  showErrorIcon={false}
-                  defaultValue={formData.homeAddressData.cellPhone || ""}
-                  placeholder={formData.homeAddressData?.cellPhone || ""}
-                />
-                <InputLabel
-                  name="workPhone"
-                  title="Teléfono trabajo:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      homeAddressData: {
-                        ...formData.homeAddressData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNumbersOnly}
-                  showErrorIcon={false}
-                  defaultValue={formData.homeAddressData.workPhone || ""}
-                  placeholder={formData.homeAddressData?.workPhone || ""}
-                />
-                <InputLabel
-                  name="extencion"
-                  title="Extensión:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      homeAddressData: {
-                        ...formData.homeAddressData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNumbersOnly}
-                  showErrorIcon={false}
-                  defaultValue={formData.homeAddressData.extencion || ""}
-                  placeholder={formData.homeAddressData?.extencion || ""}
-                />
+              <div>
+                <h4 className="py-4 font-bold text-primary-color">
+                  Contacto de emergencia
+                </h4>
+                <div className="grid w-full grid-cols-1 gap-4 pb-4 lg:w-4/5 lg:grid-cols-3">
+                  <InputLabel
+                    name="name"
+                    title="Nombres:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNotEmpty}
+                    defaultValue={formData.emergencyContactData.name}
+                    placeholder={formData.emergencyContactData?.name}
+                  />
+                  <InputLabel
+                    name="lastName1"
+                    title="Apellido Paterno:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNotEmpty}
+                    defaultValue={formData.emergencyContactData.lastName1}
+                    placeholder={formData.emergencyContactData?.lastName1}
+                  />
+                  <InputLabel
+                    name="lastName2"
+                    title="Apellido Materno:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNotEmpty}
+                    defaultValue={formData.emergencyContactData.lastName2}
+                    placeholder={formData.emergencyContactData?.lastName2}
+                  />
+                  <ComboBoxGeneric
+                    name="typeIdentification"
+                    title="Tipo de identificación:"
+                    options={identificationType.map((d) => {
+                      return { label: d.name, value: d.name };
+                    })}
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    defaultOption={
+                      formData.emergencyContactData.typeIdentification || ""
+                    }
+                  />
+                  <InputLabel
+                    name="identification"
+                    title="Numero de identificación:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNumbersOnly}
+                    defaultValue={formData.emergencyContactData.identification}
+                  />
+                  <ComboBoxGeneric
+                    name="relationship"
+                    title="Parentesco:"
+                    options={relationship.map((d) => {
+                      return { label: d.relationship, value: d.relationship };
+                    })}
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    defaultOption={formData.emergencyContactData.relationship || ""}
+                  />
+                </div>
+                <div className="grid grid-cols-1 gap-4 pb-4 lg:grid-cols-3">
+                  <ComboBoxGeneric
+                    name={"province"}
+                    title={"Provincia:"}
+                    options={province.map((d) => {
+                      return { label: d.province, value: d.province };
+                    })}
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    defaultOption={formData.emergencyContactData.province}
+                  />
+                  <ComboBoxGeneric
+                    name={"canton"}
+                    title={"Cantón:"}
+                    options={canton.map((d) => {
+                      return { label: d.canton, value: d.canton };
+                    })}
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    defaultOption={formData.emergencyContactData.canton}
+                  />
+                  <ComboBoxGeneric
+                    name={"parish"}
+                    title={"Parroquia:"}
+                    options={parish.map((d) => {
+                      return { label: d.parish, value: d.parish };
+                    })}
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    defaultOption={formData.emergencyContactData.parish}
+                  />
+                  <InputLabel
+                    name="mainStreet"
+                    title="Calle Principal:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNotEmpty}
+                    defaultValue={formData.emergencyContactData.mainStreet}
+                    placeholder={formData.emergencyContactData?.mainStreet}
+                  />
+                  <InputLabel
+                    name="secondaryStreet"
+                    title="Calle Secundaría:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNotEmpty}
+                    defaultValue={formData.emergencyContactData.secondaryStreet}
+                    placeholder={formData.emergencyContactData?.secondaryStreet}
+                  />
+                  <InputLabel
+                    name="reference"
+                    title="Referencia:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNotEmpty}
+                    defaultValue={formData.emergencyContactData.reference}
+                    placeholder={formData.emergencyContactData?.reference}
+                  />
+                </div>
+                {/* 5-6 */}
+                <div className="grid w-full grid-cols-1 gap-4 pb-4 lg:w-3/6 lg:grid-cols-3">
+                  <InputLabel
+                    name="number"
+                    title="Número:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNumbersOnly}
+                    defaultValue={formData.emergencyContactData.number}
+                    placeholder={formData.emergencyContactData?.number}
+                  />
+                  <InputLabel
+                    name="homePhone"
+                    title="Teléfono domicilio:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNumbersOnly}
+                    defaultValue={formData.emergencyContactData.homePhone}
+                    placeholder={formData.emergencyContactData?.homePhone}
+                  />
+                  <InputLabel
+                    name="cellPhone"
+                    title="Teléfono celular:"
+                    onChange={(name, value) => {
+                      setFormData({
+                        ...formData,
+                        emergencyContactData: {
+                          ...formData.emergencyContactData,
+                          [name]: value,
+                        },
+                      });
+                    }}
+                    validationFunction={validateNumbersOnly}
+                    defaultValue={formData.emergencyContactData.cellPhone}
+                    placeholder={formData.emergencyContactData?.cellPhone}
+                  />
+                </div>
               </div>
-            </div>
-            <div>
-              <h4 className="py-4 font-bold text-state-hover">
-                Contacto de emergencia
-              </h4>
-              <div className="grid w-full grid-cols-1 gap-4 pb-4 lg:w-4/5 lg:grid-cols-3">
-                <InputLabel
-                  name="name"
-                  title="Nombres:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNotEmpty}
-                  defaultValue={formData.emergencyContactData.name}
-                  placeholder={formData.emergencyContactData?.name}
-                />
-                <InputLabel
-                  name="lastName1"
-                  title="Apellido Paterno:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNotEmpty}
-                  defaultValue={formData.emergencyContactData.lastName1}
-                  placeholder={formData.emergencyContactData?.lastName1}
-                />
-                <InputLabel
-                  name="lastName2"
-                  title="Apellido Materno:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNotEmpty}
-                  defaultValue={formData.emergencyContactData.lastName2}
-                  placeholder={formData.emergencyContactData?.lastName2}
-                />
-                <ComboBoxGeneric
-                  name="typeIdentification"
-                  title="Tipo de identificación:"
-                  options={identificationType.map((d) => {
-                    return { label: d.name, value:  d.name };
-                  })}
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  defaultOption={
-                    formData.emergencyContactData.typeIdentification || ""
-                  }
-                />
-                <InputLabel
-                  name="identification"
-                  title="Numero de identificación:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNumbersOnly}
-                  defaultValue={formData.emergencyContactData.identification}
-                />
-                <ComboBoxGeneric
-                  name="relationship"
-                  title="Parentesco:"
-                  options={relationship.map((d) => {
-                    return { label: d.relationship, value: d.relationship };
-                  })}
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  defaultOption={formData.emergencyContactData.relationship || ""}
-                />
-              </div>
-              <div className="grid grid-cols-1 gap-4 pb-4 lg:grid-cols-3">
-                <ComboBoxGeneric
-                  name={"province"}
-                  title={"Provincia:"}
-                  options={province.map((d) => {
-                    return { label: d.province, value: d.province };
-                  })}
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  defaultOption={formData.emergencyContactData.province}
-                />
-                <ComboBoxGeneric
-                  name={"canton"}
-                  title={"Cantón:"}
-                  options={canton.map((d) => {
-                    return { label: d.canton, value: d.canton };
-                  })}
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  defaultOption={formData.emergencyContactData.canton}
-                />
-                <ComboBoxGeneric
-                  name={"parish"}
-                  title={"Parroquia:"}
-                  options={parish.map((d) => {
-                    return { label: d.parish, value: d.parish };
-                  })}
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  defaultOption={formData.emergencyContactData.parish}
-                />
-                <InputLabel
-                  name="mainStreet"
-                  title="Calle Principal:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNotEmpty}
-                  defaultValue={formData.emergencyContactData.mainStreet}
-                  placeholder={formData.emergencyContactData?.mainStreet}
-                />
-                <InputLabel
-                  name="secondaryStreet"
-                  title="Calle Secundaría:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNotEmpty}
-                  defaultValue={formData.emergencyContactData.secondaryStreet}
-                  placeholder={formData.emergencyContactData?.secondaryStreet}
-                />
-                <InputLabel
-                  name="reference"
-                  title="Referencia:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNotEmpty}
-                  defaultValue={formData.emergencyContactData.reference}
-                  placeholder={formData.emergencyContactData?.reference}
-                />
-              </div>
-              {/* 5-6 */}
-              <div className="grid w-full grid-cols-1 gap-4 pb-4 lg:w-3/6 lg:grid-cols-3">
-                <InputLabel
-                  name="number"
-                  title="Número:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNumbersOnly}
-                  defaultValue={formData.emergencyContactData.number}
-                  placeholder={formData.emergencyContactData?.number}
-                />
-                <InputLabel
-                  name="homePhone"
-                  title="Teléfono domicilio:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNumbersOnly}
-                  defaultValue={formData.emergencyContactData.homePhone}
-                  placeholder={formData.emergencyContactData?.homePhone}
-                />
-                <InputLabel
-                  name="cellPhone"
-                  title="Teléfono celular:"
-                  onChange={(name, value) => {
-                    setFormData({
-                      ...formData,
-                      emergencyContactData: {
-                        ...formData.emergencyContactData,
-                        [name]: value,
-                      },
-                    });
-                  }}
-                  validationFunction={validateNumbersOnly}
-                  defaultValue={formData.emergencyContactData.cellPhone}
-                  placeholder={formData.emergencyContactData?.cellPhone}
-                />
-              </div>
-            </div>
-          </form>
-          <Notification message={notificationMessage} />
+            </form>
+            <Notification message={notificationMessage} />
             <div className="my-4 flex justify-end">
               <GreenButton content="Guardar" />
             </div>
+          </div>
         </div>
       </div>
-    </div>
+    </LayoutWithSidebarCandidate>
   );
 };
 

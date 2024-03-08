@@ -2,7 +2,7 @@ export const HOME = "/";
 export const LOGIN = "/login";
 export const REGISTER = "/register";
 export const OFFER = "/public/offers";
-export const OFFERDETAIL = "/public/offers/:id";
+
 export const INFO = "/public/information";
 export const CAMPUS = "/public/campus";
 export const PHASES = "/public/phases";
@@ -21,8 +21,8 @@ export const EDUCATIONPUBLICATIONS = "/private/candidate/educationPublications";
 export const EXTRAPOINTS = "/private/candidate/extraPoints";
 export const CVGENERATOR = "/private/candidate/cvGenerator";
 
-export const CANDIDATEPANEL = "candidate-panel";
-export const ACADEMICTRANING = "trainingPublications";
+export const CANDIDATEPANEL = "/private/candidate/home";
+
 export const HOMEHR = "/private/hr/home"
 export const CANIDADATEOFFERS = "/private/candidate/offers"
 
@@ -42,3 +42,7 @@ export const USERSHR = "/private/hr/users"
 export const CONVOCATIONHR = "/private/hr/convocatoria"
 export const CONVOCATIONHRCREATE = "/private/hr/convocatoria/Create"
 export const CONVOCATIONHRVIEW = "/private/hr/convocatoria"
+
+
+export const CANDIDATEDOCUMENTS = "/private/candidate/postulationDocument"
+export const OFFERSELECTEDCANDIDATE = "/private/candidate/offers"

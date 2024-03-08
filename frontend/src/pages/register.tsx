@@ -6,7 +6,7 @@ import { PERSONALDATA } from "@/routes/paths";
 import { PostulationPeriod } from "@/types/offers";
 import { getPostulationPeriods } from "@/utils/fetch_functions/periods";
 import { pb } from "@/utils/pocketbase";
-import { validateEcuadorianID, validateNotEmpty, validatePassword } from "@/utils/validations";
+import { validateEcuadorianID, validateEmail, validatePassword } from "@/utils/validations";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -102,8 +102,8 @@ function Register() {
             <InputLabel
               name="email"
               title="Correo electrónico:"
-              errorMessage={"*Campo Requerido"}
-              validationFunction={validateNotEmpty}
+              errorMessage={"*Correo electrónico requerido."}
+              validationFunction={validateEmail}
               inputType="0"
               onChange={(name, selected) => {
                 setEmail(selected)

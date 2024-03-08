@@ -1,16 +1,12 @@
-import { FC, FormEvent, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { pb } from "@/utils/pocketbase";
-import { PERSONALINFORMATION } from "@/routes/paths";
 import GreenButton from "@/components/Buttons/GreenButton";
 import CheckBox from "@/components/Form/CheckBox";
 import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
 import DateInput from "@/components/Form/DateInput";
 import InputLabel from "@/components/Form/InputLabel";
+import Notification from "@/components/Form/Notification";
 import ImageInput from "@/components/Image/ImageInput";
 import NavBar from "@/components/Navbar/NavbarUser";
-import Notification from "@/components/Form/Notification";
-import { fetchPersonalDataForUser } from "@/utils/fetch_functions/cv";
+import { PERSONALINFORMATION } from "@/routes/paths";
 import { PersonalData } from "@/types/cv";
 import {
   BloodType,
@@ -22,6 +18,7 @@ import {
   Gender,
   MaritalStatus,
 } from "@/types/staticData";
+import { fetchPersonalDataForUser } from "@/utils/fetch_functions/cv";
 import {
   getBloodType,
   getCatastrophicIllnessType,
@@ -32,14 +29,16 @@ import {
   getGender,
   getMaritalStatus,
 } from "@/utils/fetch_functions/staticData";
+import { pb } from "@/utils/pocketbase";
+import { useRouter } from "next/router";
+import { FC, FormEvent, useEffect, useState } from "react";
 
+import LayoutWithSidebarCandidate from "@/components/Layout/LayoutWithSidebarCandidate";
 import {
   calculateAge,
   validateNotEmpty,
   validateNumbersOnly,
 } from "@/utils/validations";
-import { ca } from "date-fns/locale";
-import { set } from "date-fns";
 
 const PersonalDataPage: FC = () => {
   const userId = "msof6xv1zl55pof";
@@ -179,294 +178,296 @@ const PersonalDataPage: FC = () => {
   }, [userId]);
 
   return (
-    <div>
-      <NavBar />
-      <div className="my-8 flex min-h-screen flex-col items-center lg:p-4">
-        <div className="rounded-2xl bg-gray-bg p-8 shadow-lg md:w-1/2">
-          <form onSubmit={handleSubmit}>
-            <div className="mb-8">
-              <h2 className="mb-4 font-bold text-state-press">
-                Datos personales
-              </h2>
-              <ImageInput
-                title="Fotografía"
-                name="avatar"
-                width={254}
-                height={318}
-                defaultValue={
-                  personalData?.id && personalData?.avatar
-                    ? `a7upmrm44olwz6l/${personalData.id}/${personalData.avatar}`
-                    : undefined
-                }
-                onChange={(file) => {
-                  if (file !== null) {
-                    setAvatar(file);
-                  } else {
-                    setAvatar(undefined);
-                  }
-                }}
-              />
-              <InputLabel
-                name={"name"}
-                title={"Nombres:"}
-                errorMessage={"*Campo Requerido"}
-                validationFunction={validateNotEmpty}
-                onChange={(name, selectedOption) => {
-                  setName(selectedOption);
-                }}
-                defaultValue={personalData?.name || ""}
-                placeholder={personalData?.name || ""}
-              />
-
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                <InputLabel
-                  name={"lastName1"}
-                  title={"Apellido Paterno:"}
-                  errorMessage={"*Campo Requerido"}
-                  onChange={(name, selectedOption) => {
-                    setLastName1(selectedOption);
-                  }}
-                  validationFunction={validateNotEmpty}
-                  defaultValue={personalData?.lastName1 || ""}
-                  placeholder={personalData?.lastName1 || ""}
-                />
-                <InputLabel
-                  name={"lastName2"}
-                  title={"Apellido Materno:"}
-                  errorMessage={"*Campo Requerido"}
-                  onChange={(name, selectedOption) => {
-                    setLastName2(selectedOption);
-                  }}
-                  validationFunction={validateNotEmpty}
-                  defaultValue={personalData?.lastName2 || ""}
-                  placeholder={personalData?.lastName2 || ""}
-                />
-                <DateInput
-                  name={"birthDate"}
-                  title={"Fecha de Nacimiento:"}
-                  onChange={(name, selectedOption) => {
-                    selectedOption.setSeconds(30);
-                    // setBirthDate(selectedOption.toISOString());
-                    if (
-                      selectedOption instanceof Date &&
-                      !isNaN(selectedOption.getTime())
-                    ) {
-                      const modifiedDate = new Date(selectedOption);
-                      // modifiedDate.setSeconds(30);
-                      setBirthDate(modifiedDate.toISOString());
-                    } else {
-                      // Handle invalid date selection
-                      console.error("Invalid date selected:", selectedOption);
-                    }
-                  }}
+    <LayoutWithSidebarCandidate>
+      <div>
+        <NavBar />
+        <div className="my-8 flex min-h-screen flex-col items-center lg:p-4">
+          <div className="rounded-2xl bg-gray-bg p-8 shadow-lg md:w-1/2">
+            <form onSubmit={handleSubmit}>
+              <div className="mb-8">
+                <h2 className="mb-4 font-bold text-state-press">
+                  Datos personales
+                </h2>
+                <ImageInput
+                  title="Fotografía"
+                  name="avatar"
+                  width={254}
+                  height={318}
                   defaultValue={
-                    personalData?.birthDate ? `${personalData?.birthDate}` : ""
-                  }
-                />
-                <InputLabel
-                  name="age"
-                  title="Edad:"
-                  placeholder={
-                    isNaN(calculateAge(birthDate)) ||
-                    calculateAge(birthDate) < 19
-                      ? ""
-                      : calculateAge(birthDate)?.toString() || ""
-                  }
-                  disabled={true}
-                  defaultValue={
-                    personalData && personalData.birthDate
-                      ? calculateAge(personalData.birthDate).toString()
+                    personalData?.id && personalData?.avatar
+                      ? `a7upmrm44olwz6l/${personalData.id}/${personalData.avatar}`
                       : undefined
                   }
-                />
-                <ComboBoxGeneric
-                  name="gender"
-                  title="Genero:"
-                  defaultOption={
-                    personalData?.gender ? personalData.gender : ""
-                  }
-                  options={gender.map((d) => {
-                    return { label: d.name, value: d.name };
-                  })}
-                  onChange={(name, selectedOption) => {
-                    setSelectedGender(selectedOption.value);
+                  onChange={(file) => {
+                    if (file !== null) {
+                      setAvatar(file);
+                    } else {
+                      setAvatar(undefined);
+                    }
                   }}
+                />
+                <InputLabel
+                  name={"name"}
+                  title={"Nombres:"}
+                  errorMessage={"*Campo Requerido"}
+                  validationFunction={validateNotEmpty}
+                  onChange={(name, selectedOption) => {
+                    setName(selectedOption);
+                  }}
+                  defaultValue={personalData?.name || ""}
+                  placeholder={personalData?.name || ""}
                 />
 
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                  <InputLabel
+                    name={"lastName1"}
+                    title={"Apellido Paterno:"}
+                    errorMessage={"*Campo Requerido"}
+                    onChange={(name, selectedOption) => {
+                      setLastName1(selectedOption);
+                    }}
+                    validationFunction={validateNotEmpty}
+                    defaultValue={personalData?.lastName1 || ""}
+                    placeholder={personalData?.lastName1 || ""}
+                  />
+                  <InputLabel
+                    name={"lastName2"}
+                    title={"Apellido Materno:"}
+                    errorMessage={"*Campo Requerido"}
+                    onChange={(name, selectedOption) => {
+                      setLastName2(selectedOption);
+                    }}
+                    validationFunction={validateNotEmpty}
+                    defaultValue={personalData?.lastName2 || ""}
+                    placeholder={personalData?.lastName2 || ""}
+                  />
+                  <DateInput
+                    name={"birthDate"}
+                    title={"Fecha de Nacimiento:"}
+                    onChange={(name, selectedOption) => {
+                      selectedOption.setSeconds(30);
+                      // setBirthDate(selectedOption.toISOString());
+                      if (
+                        selectedOption instanceof Date &&
+                        !isNaN(selectedOption.getTime())
+                      ) {
+                        const modifiedDate = new Date(selectedOption);
+                        // modifiedDate.setSeconds(30);
+                        setBirthDate(modifiedDate.toISOString());
+                      } else {
+                        // Handle invalid date selection
+                        console.error("Invalid date selected:", selectedOption);
+                      }
+                    }}
+                    defaultValue={
+                      personalData?.birthDate ? `${personalData?.birthDate}` : ""
+                    }
+                  />
+                  <InputLabel
+                    name="age"
+                    title="Edad:"
+                    placeholder={
+                      isNaN(calculateAge(birthDate)) ||
+                        calculateAge(birthDate) < 19
+                        ? ""
+                        : calculateAge(birthDate)?.toString() || ""
+                    }
+                    disabled={true}
+                    defaultValue={
+                      personalData && personalData.birthDate
+                        ? calculateAge(personalData.birthDate).toString()
+                        : undefined
+                    }
+                  />
+                  <ComboBoxGeneric
+                    name="gender"
+                    title="Genero:"
+                    defaultOption={
+                      personalData?.gender ? personalData.gender : ""
+                    }
+                    options={gender.map((d) => {
+                      return { label: d.name, value: d.name };
+                    })}
+                    onChange={(name, selectedOption) => {
+                      setSelectedGender(selectedOption.value);
+                    }}
+                  />
+
+                  <ComboBoxGeneric
+                    name="bloodType"
+                    title="Tipo de Sangre:"
+                    defaultOption={personalData?.bloodType || ""}
+                    options={bloodType.map((c) => {
+                      return { label: c.name, value: c.name };
+                    })}
+                    onChange={(name, selectedOption) => {
+                      setSelectedBloodType(selectedOption.value);
+                    }}
+                  />
+                  <ComboBoxGeneric
+                    name="maritalStatus"
+                    title="Estado Civil:"
+                    options={maritalStatus.map((c) => {
+                      return { label: c.name, value: c.name };
+                    })}
+                    onChange={(name, selectedOption) => {
+                      setSelectedMaritalStatus(selectedOption.value);
+                    }}
+                    defaultOption={
+                      personalData?.maritalStatus
+                        ? `${personalData.maritalStatus}`
+                        : ""
+                    }
+                  />
+                  <ComboBoxGeneric
+                    name={"nationality"}
+                    title={"País:"}
+                    options={nationality.map((c) => {
+                      return { label: c.description, value: c.description };
+                    })}
+                    defaultOption={personalData?.nationality || ""}
+                    onChange={(name, selectedOption) => {
+                      setSelectedNationality(selectedOption.value);
+                      setResidenceYearsVisible(
+                        selectedOption.label !== "Ecuador",
+                      );
+                    }}
+                  />
+                </div>
+                {isResidenceYearsVisible && (
+                  <InputLabel
+                    name="residenceYears"
+                    title="En caso de ser extranjero, indicar años de residencia:"
+                    errorMessage={"Solo se permiten números"}
+                    validationFunction={validateNumbersOnly}
+                    onChange={(name, selectedOption) => {
+                      setResidenceYears(selectedOption);
+                    }}
+                    defaultValue={personalData?.residenceYears || ""}
+                  />
+                )}
+
                 <ComboBoxGeneric
-                  name="bloodType"
-                  title="Tipo de Sangre:"
-                  defaultOption={personalData?.bloodType || ""}
-                  options={bloodType.map((c) => {
+                  name={"ethnicIdentification"}
+                  title={"Auto identificación étnica:"}
+                  options={ethnicIdentification.map((c) => {
                     return { label: c.name, value: c.name };
                   })}
                   onChange={(name, selectedOption) => {
-                    setSelectedBloodType(selectedOption.value);
-                  }}
-                />
-                <ComboBoxGeneric
-                  name="maritalStatus"
-                  title="Estado Civil:"
-                  options={maritalStatus.map((c) => {
-                    return { label: c.name, value: c.name };
-                  })}
-                  onChange={(name, selectedOption) => {
-                    setSelectedMaritalStatus(selectedOption.value);
-                  }}
-                  defaultOption={
-                    personalData?.maritalStatus
-                      ? `${personalData.maritalStatus}`
-                      : ""
-                  }
-                />
-                <ComboBoxGeneric
-                  name={"nationality"}
-                  title={"País:"}
-                  options={nationality.map((c) => {
-                    return { label: c.description, value: c.description };
-                  })}
-                  defaultOption={personalData?.nationality || ""}
-                  onChange={(name, selectedOption) => {
-                    setSelectedNationality(selectedOption.value);
-                    setResidenceYearsVisible(
-                      selectedOption.label !== "Ecuador",
+                    setSelectedEthnicIdentification(selectedOption.value);
+                    setEthnicIdentificationVisible(
+                      selectedOption.value === "INDÍGENA",
                     );
                   }}
+                  defaultOption={personalData?.ethnicIdentification || ""}
                 />
-              </div>
-              {isResidenceYearsVisible && (
-                <InputLabel
-                  name="residenceYears"
-                  title="En caso de ser extranjero, indicar años de residencia:"
-                  errorMessage={"Solo se permiten números"}
-                  validationFunction={validateNumbersOnly}
-                  onChange={(name, selectedOption) => {
-                    setResidenceYears(selectedOption);
-                  }}
-                  defaultValue={personalData?.residenceYears || ""}
-                />
-              )}
 
-              <ComboBoxGeneric
-                name={"ethnicIdentification"}
-                title={"Auto identificación étnica:"}
-                options={ethnicIdentification.map((c) => {
-                  return { label: c.name, value: c.name };
-                })}
-                onChange={(name, selectedOption) => {
-                  setSelectedEthnicIdentification(selectedOption.value);
-                  setEthnicIdentificationVisible(
-                    selectedOption.value === "INDÍGENA",
-                  );
-                }}
-                defaultOption={personalData?.ethnicIdentification || ""}
-              />
-
-              {isethnicIdentificationVisible && (
-                <ComboBoxGeneric
-                  name={"ethnicGroup"}
-                  title={"En caso de ser indigena, indique el grupo étnico:"}
-                  options={ethnicGroup.map((c) => {
-                    return { label: c.name, value: c.name };
-                  })}
-                  onChange={(name, selectedOption) => {
-                    setSelectedEthnicGroup(selectedOption.value);
-                  }}
-                  defaultOption={personalData?.ethnicGroup || ""}
-                />
-              )}
-            </div>
-            <div>
-              <h2 className="mb-4 font-bold text-state-press">
-                Información adicional discapacidad y/o enfermedad catastrófica{" "}
-              </h2>
-
-              <div className="grid grid-cols-1 gap-4 pb-4 lg:grid-cols-2">
-                <div>
-                  <p>Capacidad Especial:</p>
-                  <CheckBox
-                    name="specialCapacity"
-                    options={["Si", "No"]}
-                    selectedOptions={[specialCapacity]}
-                    allowMultipleSelection={false}
-                    onChange={(name, selectedOption) => {
-                      setSpecialCapacity(selectedOption === "Si" ? "Si" : "No");
-                      setSpecialCapacityVisible(selectedOption === "Si");
-                    }}
-                  />
-                </div>
-                <div>
-                  <p>Enfermedad Catastrófica:</p>
-                  <CheckBox
-                    name="catastrophicDisease"
-                    options={["Si", "No"]}
-                    selectedOptions={[catastrophicDisease]}
-                    allowMultipleSelection={false}
-                    onChange={(name, selectedOption) => {
-                      setCatastrophicDisease(
-                        selectedOption === "Si" ? "Si" : "No",
-                      );
-                      setDiseaseVisible(selectedOption === "Si");
-                    }}   
-                  />
-                </div>
-
-                {isSpecialCapacityVisible && (
+                {isethnicIdentificationVisible && (
                   <ComboBoxGeneric
-                    name={"disabilityType"}
-                    title={"Tipo de discapacidad:"}
-                    options={disabilityType.map((c) => {
+                    name={"ethnicGroup"}
+                    title={"En caso de ser indigena, indique el grupo étnico:"}
+                    options={ethnicGroup.map((c) => {
                       return { label: c.name, value: c.name };
                     })}
                     onChange={(name, selectedOption) => {
-                      setSelectedDisabilityType(selectedOption.label);
+                      setSelectedEthnicGroup(selectedOption.value);
                     }}
-                  />
-                )}
-                {isDiseaseVisible && (
-                  <ComboBoxGeneric
-                    name={"catastrophicDiseaseType"}
-                    title={"Tipo de enfermedad catastrófica:"}
-                    options={CatastrophicIllnessType.map((c) => {
-                      return { label: c.name, value: c.name };
-                    })}
-                    onChange={(name, selectedOption) => {
-                      setSelectedCatastrophicDiseaseType(selectedOption.label);
-                    }}
-                  />
-                )}
-                {isSpecialCapacityVisible && (
-                  <InputLabel
-                    name="disabilityPercentage"
-                    title="% de discapacidad:"
-                    errorMessage={"Solo se permiten números"}
-                    validationFunction={validateNumbersOnly}
-                    onChange={(name, value) => {
-                      setDisabilityPercentage(value);
-                    }}
-                  />
-                )}
-                {isDiseaseVisible && (
-                  <InputLabel
-                    name="MSPIDNumber"
-                    title="No. Carnet M.S.P.:"
-                    errorMessage={"Solo se permiten números"}
-                    validationFunction={validateNumbersOnly}
-                    onChange={(name, value) => {
-                      setMSPIDNumber(value);
-                    }}
+                    defaultOption={personalData?.ethnicGroup || ""}
                   />
                 )}
               </div>
-            </div>
-            <div className="my-4 flex justify-end">
-              <GreenButton content="Guardar" />
-            </div>
-          </form>
-          <Notification message={notificationMessage} />
+              <div>
+                <h2 className="mb-4 font-bold text-state-press">
+                  Información adicional discapacidad y/o enfermedad catastrófica{" "}
+                </h2>
+
+                <div className="grid grid-cols-1 gap-4 pb-4 lg:grid-cols-2">
+                  <div>
+                    <p>Capacidad Especial:</p>
+                    <CheckBox
+                      name="specialCapacity"
+                      options={["Si", "No"]}
+                      selectedOptions={[specialCapacity]}
+                      allowMultipleSelection={false}
+                      onChange={(name, selectedOption) => {
+                        setSpecialCapacity(selectedOption === "Si" ? "Si" : "No");
+                        setSpecialCapacityVisible(selectedOption === "Si");
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <p>Enfermedad Catastrófica:</p>
+                    <CheckBox
+                      name="catastrophicDisease"
+                      options={["Si", "No"]}
+                      selectedOptions={[catastrophicDisease]}
+                      allowMultipleSelection={false}
+                      onChange={(name, selectedOption) => {
+                        setCatastrophicDisease(
+                          selectedOption === "Si" ? "Si" : "No",
+                        );
+                        setDiseaseVisible(selectedOption === "Si");
+                      }}
+                    />
+                  </div>
+
+                  {isSpecialCapacityVisible && (
+                    <ComboBoxGeneric
+                      name={"disabilityType"}
+                      title={"Tipo de discapacidad:"}
+                      options={disabilityType.map((c) => {
+                        return { label: c.name, value: c.name };
+                      })}
+                      onChange={(name, selectedOption) => {
+                        setSelectedDisabilityType(selectedOption.label);
+                      }}
+                    />
+                  )}
+                  {isDiseaseVisible && (
+                    <ComboBoxGeneric
+                      name={"catastrophicDiseaseType"}
+                      title={"Tipo de enfermedad catastrófica:"}
+                      options={CatastrophicIllnessType.map((c) => {
+                        return { label: c.name, value: c.name };
+                      })}
+                      onChange={(name, selectedOption) => {
+                        setSelectedCatastrophicDiseaseType(selectedOption.label);
+                      }}
+                    />
+                  )}
+                  {isSpecialCapacityVisible && (
+                    <InputLabel
+                      name="disabilityPercentage"
+                      title="% de discapacidad:"
+                      errorMessage={"Solo se permiten números"}
+                      validationFunction={validateNumbersOnly}
+                      onChange={(name, value) => {
+                        setDisabilityPercentage(value);
+                      }}
+                    />
+                  )}
+                  {isDiseaseVisible && (
+                    <InputLabel
+                      name="MSPIDNumber"
+                      title="No. Carnet M.S.P.:"
+                      errorMessage={"Solo se permiten números"}
+                      validationFunction={validateNumbersOnly}
+                      onChange={(name, value) => {
+                        setMSPIDNumber(value);
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="my-4 flex justify-end">
+                <GreenButton content="Guardar" />
+              </div>
+            </form>
+            <Notification message={notificationMessage} />
+          </div>
         </div>
       </div>
-    </div>
+    </LayoutWithSidebarCandidate>
   );
 };
 

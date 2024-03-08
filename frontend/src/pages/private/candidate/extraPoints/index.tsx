@@ -1,12 +1,13 @@
-import React, { FC, FormEvent, useState } from "react";
+import GreenButton from "@/components/Buttons/GreenButton";
+import CheckBox from "@/components/Form/CheckBox";
+import FileInput from "@/components/Form/FileLabel";
+import LayoutWithSidebarCandidate from "@/components/Layout/LayoutWithSidebarCandidate";
 import NavBar from "@/components/Navbar/NavbarUser";
 import { CVGENERATOR } from "@/routes/paths";
-import { useRouter } from "next/router";
 import { pb } from "@/utils/pocketbase";
-import FileInput from "@/components/Form/FileLabel";
-import CheckBox from "@/components/Form/CheckBox";
-import GreenButton from "@/components/Buttons/GreenButton";
 import { validateNotEmpty } from "@/utils/validations";
+import { useRouter } from "next/router";
+import { FC, FormEvent, useState } from "react";
 
 const ExtraPointsPage: FC = () => {
   const router = useRouter();
@@ -101,250 +102,250 @@ const ExtraPointsPage: FC = () => {
   };
 
   return (
-    <div>
-      <NavBar />
-      <div className="container mx-auto py-8">
-        <form onSubmit={handleSubmit}>
-          <div>
-            <h2 className="border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
-              Obtención de premios nacionales o internacionales{" "}
-            </h2>
+    <LayoutWithSidebarCandidate>
+      <div>
+        <NavBar />
+        <div className="mx-5 py-5">
+          <form onSubmit={handleSubmit}>
+            <div>
+              <h4 className="border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
+                Obtención de premios nacionales o internacionales{" "}
+              </h4>
 
-            <div className="flex items-center justify-center py-4">
-              <CheckBox
-                name={"professionalExperienceEspe"}
-                options={[""]}
-                selectedOptions={stringValues.professionalExperienceEspe}
-                allowMultipleSelection={false}
-                onChange={(name, selectedOptions) => {
-                  setIsVisibleMap({
-                    ...isVisibleMap,
-                    professionalExperienceEspe:
-                      !isVisibleMap.professionalExperienceEspe,
-                  });
-                }}
-              />
-              <div className="w-full">
-                <p>
-                  ¿Ha trabajado en la Universidad de las Fuerzas Armadas ESPE
-                  como personal <span className="font-bold">Titular</span> u{" "}
-                  <span className="font-bold">Ocasional</span> por más de cinco
-                  (5) años, consecutivos o no?
-                </p>
-                {isVisibleMap.professionalExperienceEspe && (
-                  <FileInput
-                    name={"fileProfessionalExperienceEspe"}
-                    title="Subir certificado laboral de la Universidad de las Fuerzas Armadas - ESPE"
-                    onChange={handleFileInputChange}
-                    accept=".pdf"
-                    placeholder="Certificado otorgado por la institución"
-                    validationFunction={validateNotEmpty}
-                  />
-                )}
+              <div className="flex items-center justify-center py-4">
+                <CheckBox
+                  name={"professionalExperienceEspe"}
+                  options={[""]}
+                  selectedOptions={stringValues.professionalExperienceEspe}
+                  allowMultipleSelection={false}
+                  onChange={(name, selectedOptions) => {
+                    setIsVisibleMap({
+                      ...isVisibleMap,
+                      professionalExperienceEspe:
+                        !isVisibleMap.professionalExperienceEspe,
+                    });
+                  }}
+                />
+                <div className="w-full">
+                  <p>
+                    ¿Ha trabajado en la Universidad de las Fuerzas Armadas ESPE
+                    como personal <span className="font-bold">Titular</span> u{" "}
+                    <span className="font-bold">Ocasional</span> por más de cinco
+                    (5) años, consecutivos o no?
+                  </p>
+                  {isVisibleMap.professionalExperienceEspe && (
+                    <FileInput
+                      name={"fileProfessionalExperienceEspe"}
+                      title="Subir certificado laboral de la Universidad de las Fuerzas Armadas - ESPE"
+                      onChange={handleFileInputChange}
+                      accept=".pdf"
+                      placeholder="Certificado otorgado por la institución"
+                      validationFunction={validateNotEmpty}
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center justify-center py-4">
+                <CheckBox
+                  name={"fileNationalInternationalAwards"}
+                  options={[""]}
+                  selectedOptions={stringValues.fileNationalInternationalAwards}
+                  allowMultipleSelection={false}
+                  onChange={(name, selectedOptions) => {
+                    setIsVisibleMap({
+                      ...isVisibleMap,
+                      fileNationalInternationalAwards:
+                        !isVisibleMap.fileNationalInternationalAwards,
+                    });
+                  }}
+                />
+                <div className="w-full">
+                  <p>
+                    ¿Ha recibido premios nacionales o internacionales relacionados
+                    con las áreas de conocimiento al cual postula?{" "}
+                  </p>
+                  {isVisibleMap.fileNationalInternationalAwards && (
+                    <FileInput
+                      name={"fileNationalInternationalAwards"}
+                      title="Certificado o diploma de premios, relacionados con las áreas de conocimiento al cual postula."
+                      onChange={handleFileInputChange}
+                      accept=".pdf"
+                      placeholder="Certificado otorgado por instituciones de educación superior que pertenezcan a las primeras mil del ranking SCIMAGO o WOS"
+                      validationFunction={validateNotEmpty}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-            <div className="flex items-center justify-center py-4">
-              <CheckBox
-                name={"fileNationalInternationalAwards"}
-                options={[""]}
-                selectedOptions={stringValues.fileNationalInternationalAwards}
-                allowMultipleSelection={false}
-                onChange={(name, selectedOptions) => {
-                  setIsVisibleMap({
-                    ...isVisibleMap,
-                    fileNationalInternationalAwards:
-                      !isVisibleMap.fileNationalInternationalAwards,
-                  });
-                }}
-              />
-              <div className="w-full">
-                <p>
-                  ¿Ha recibido premios nacionales o internacionales relacionados
-                  con las áreas de conocimiento al cual postula?{" "}
-                </p>
-                {isVisibleMap.fileNationalInternationalAwards && (
-                  <FileInput
-                    name={"fileNationalInternationalAwards"}
-                    title="Certificado o diploma de premios, relacionados con las áreas de conocimiento al cual postula."
-                    onChange={handleFileInputChange}
-                    accept=".pdf"
-                    placeholder="Certificado otorgado por instituciones de educación superior que pertenezcan a las primeras mil del ranking SCIMAGO o WOS"
-                    validationFunction={validateNotEmpty}
-                  />
-                )}
+            {/*  */}
+            <div className="my-4">
+              <h4 className="mb-2 border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
+                Reconocimiento profesional o académico{" "}
+              </h4>
+              <div className="flex items-center justify-center py-4">
+                <CheckBox
+                  name={"fileProfessionalAcademicRecognition"}
+                  options={[""]}
+                  selectedOptions={
+                    stringValues.fileProfessionalAcademicRecognition
+                  }
+                  allowMultipleSelection={false}
+                  onChange={(name, selectedOptions) => {
+                    setIsVisibleMap({
+                      ...isVisibleMap,
+                      fileProfessionalAcademicRecognition:
+                        !isVisibleMap.fileProfessionalAcademicRecognition,
+                    });
+                  }}
+                />
+                <div className="w-full">
+                  <p>
+                    ¿Ha recibido premios reconocimiento profesional o académico
+                    relacionados con las áreas de conocimiento al cual postula?{" "}
+                  </p>
+                  {isVisibleMap.fileProfessionalAcademicRecognition && (
+                    <FileInput
+                      name={"fileProfessionalAcademicRecognition"}
+                      title="Certificado o diploma de premios reconocimiento profesional o académico relacionados con las áreas de conocimiento al cual postula."
+                      onChange={handleFileInputChange}
+                      accept=".pdf"
+                      placeholder="Certificado otorgado por instituciones de reconocimiento nacional o extranjero  diferente a la que realiza el concurso"
+                      validationFunction={validateNotEmpty}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-          {/*  */}
-          <div className="my-4">
-            <h2 className="mb-2 border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
-              Reconocimiento profesional o académico{" "}
-            </h2>
-            <div className="flex items-center justify-center py-4">
-              <CheckBox
-                name={"fileProfessionalAcademicRecognition"}
-                options={[""]}
-                selectedOptions={
-                  stringValues.fileProfessionalAcademicRecognition
-                }
-                allowMultipleSelection={false}
-                onChange={(name, selectedOptions) => {
-                  setIsVisibleMap({
-                    ...isVisibleMap,
-                    fileProfessionalAcademicRecognition:
-                      !isVisibleMap.fileProfessionalAcademicRecognition,
-                  });
-                }}
-              />
-              <div className="w-full">
-                <p>
-                  ¿Ha recibido premios reconocimiento profesional o académico
-                  relacionados con las áreas de conocimiento al cual postula?{" "}
-                </p>
-                {isVisibleMap.fileProfessionalAcademicRecognition && (
-                  <FileInput
-                    name={"fileProfessionalAcademicRecognition"}
-                    title="Certificado o diploma de premios reconocimiento profesional o académico relacionados con las áreas de conocimiento al cual postula."
-                    onChange={handleFileInputChange}
-                    accept=".pdf"
-                    placeholder="Certificado otorgado por instituciones de reconocimiento nacional o extranjero  diferente a la que realiza el concurso"
-                    validationFunction={validateNotEmpty}
-                  />
-                )}
+            {/*  */}
+            <div className="my-4">
+              <h4 className="border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
+                Acciones Afirmativas
+              </h4>
+              <div className="flex items-center justify-center py-4">
+                <CheckBox
+                  name={"fileTwonsNationalities"}
+                  options={[""]}
+                  selectedOptions={stringValues.fileTwonsNationalities}
+                  allowMultipleSelection={false}
+                  onChange={(name, selectedOptions) => {
+                    setIsVisibleMap({
+                      ...isVisibleMap,
+                      fileTwonsNationalities:
+                        !isVisibleMap.fileTwonsNationalities,
+                    });
+                  }}
+                />
+                <div className="w-full">
+                  <p>
+                    ¿Autodeterminación o documento que indique que pertenece a
+                    pueblos y nacionalidades?{" "}
+                  </p>
+                  {isVisibleMap.fileTwonsNationalities && (
+                    <FileInput
+                      name={"fileTwonsNationalities"}
+                      title="Autodeterminación o documento que indique que pertenece a pueblos y nacionalidades"
+                      onChange={handleFileInputChange}
+                      accept=".pdf"
+                      placeholder="Documentos que respalden esta información"
+                      validationFunction={validateNotEmpty}
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center justify-center py-4">
+                <CheckBox
+                  name={"fileDisability"}
+                  options={[""]}
+                  selectedOptions={[]}
+                  allowMultipleSelection={false}
+                  onChange={(name, selectedOptions) => {
+                    setIsVisibleMap({
+                      ...isVisibleMap,
+                      fileDisability: !isVisibleMap.fileDisability,
+                    });
+                  }}
+                />
+                <div className="w-full">
+                  <p>¿Carnet de discapacidad otorgado por el CONADIS? </p>
+                  {isVisibleMap.fileDisability && (
+                    <FileInput
+                      name={"fileDisability"}
+                      title="Carnet de discapacidad otorgado por el CONADIS"
+                      onChange={handleFileInputChange}
+                      accept=".pdf"
+                      placeholder="Documentos que respalden esta información"
+                      validationFunction={validateNotEmpty}
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center justify-center py-4">
+                <CheckBox
+                  name={"fileWarHeroes"}
+                  options={[""]}
+                  selectedOptions={stringValues.fileWarHeroes}
+                  allowMultipleSelection={false}
+                  onChange={(name, selectedOptions) => {
+                    setIsVisibleMap({
+                      ...isVisibleMap,
+                      fileWarHeroes: !isVisibleMap.fileWarHeroes,
+                    });
+                  }}
+                />
+                <div className="w-full">
+                  <p>¿Resolución de ser Héroe o heroína de guerra? </p>
+                  {isVisibleMap.fileWarHeroes && (
+                    <FileInput
+                      name={"fileWarHeroes"}
+                      title="Resolución de ser Héroe o heroína de guerra"
+                      onChange={handleFileInputChange}
+                      accept=".pdf"
+                      placeholder="Documentos que respalden esta información"
+                      validationFunction={validateNotEmpty}
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center justify-center py-4">
+                <CheckBox
+                  name={"fileVulnerableSituations"}
+                  options={[""]}
+                  selectedOptions={stringValues.fileVulnerableSituations}
+                  allowMultipleSelection={false}
+                  onChange={(name, selectedOptions) => {
+                    setIsVisibleMap({
+                      ...isVisibleMap,
+                      fileVulnerableSituations:
+                        !isVisibleMap.fileVulnerableSituations,
+                    });
+                  }}
+                />
+                <div className="w-full">
+                  <p>
+                    ¿Documento que señale ser persona en situación de
+                    vulnerabilidad?{" "}
+                  </p>
+                  {isVisibleMap.fileVulnerableSituations && (
+                    <FileInput
+                      name={"fileVulnerableSituations"}
+                      title="Documento que señale ser persona en situación de vulnerabilidad"
+                      onChange={handleFileInputChange}
+                      accept=".pdf"
+                      placeholder="Documentos que respalden esta información"
+                      validationFunction={validateNotEmpty}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-          {/*  */}
-          <div className="my-4">
-            <h2 className="border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
-              Acciones Afirmativas
-            </h2>
-            <div className="flex items-center justify-center py-4">
-              <CheckBox
-                name={"fileTwonsNationalities"}
-                options={[""]}
-                selectedOptions={stringValues.fileTwonsNationalities}
-                allowMultipleSelection={false}
-                onChange={(name, selectedOptions) => {
-                  setIsVisibleMap({
-                    ...isVisibleMap,
-                    fileTwonsNationalities:
-                      !isVisibleMap.fileTwonsNationalities,
-                  });
-                }}
-              />
-              <div className="w-full">
-                <p>
-                  ¿Autodeterminación o documento que indique que pertenece a
-                  pueblos y nacionalidades?{" "}
-                </p>
-                {isVisibleMap.fileTwonsNationalities && (
-                  <FileInput
-                    name={"fileTwonsNationalities"}
-                    title="Autodeterminación o documento que indique que pertenece a pueblos y nacionalidades"
-                    onChange={handleFileInputChange}
-                    accept=".pdf"
-                    placeholder="Documentos que respalden esta información"
-                    validationFunction={validateNotEmpty}
-                  />
-                )}
-              </div>
-            </div>
-            <div className="flex items-center justify-center py-4">
-              <CheckBox
-                name={"fileDisability"}
-                options={[""]}
-                selectedOptions={[
-                  stringValues.fileDisability
-                ]}
-                allowMultipleSelection={false}
-                onChange={(name, selectedOptions) => {
-                  setIsVisibleMap({
-                    ...isVisibleMap,
-                    fileDisability: !isVisibleMap.fileDisability,
-                  });
-                }}
-              />
-              <div className="w-full">
-                <p>¿Carnet de discapacidad otorgado por el CONADIS? </p>
-                {isVisibleMap.fileDisability && (
-                  <FileInput
-                    name={"fileDisability"}
-                    title="Carnet de discapacidad otorgado por el CONADIS"
-                    onChange={handleFileInputChange}
-                    accept=".pdf"
-                    placeholder="Documentos que respalden esta información"
-                    validationFunction={validateNotEmpty}
-                  />
-                )}
-              </div>
-            </div>
-            <div className="flex items-center justify-center py-4">
-              <CheckBox
-                name={"fileWarHeroes"}
-                options={[""]}
-                selectedOptions={stringValues.fileWarHeroes}
-                allowMultipleSelection={false}
-                onChange={(name, selectedOptions) => {
-                  setIsVisibleMap({
-                    ...isVisibleMap,
-                    fileWarHeroes: !isVisibleMap.fileWarHeroes,
-                  });
-                }}
-              />
-              <div className="w-full">
-                <p>¿Resolución de ser Héroe o heroína de guerra? </p>
-                {isVisibleMap.fileWarHeroes && (
-                  <FileInput
-                    name={"fileWarHeroes"}
-                    title="Resolución de ser Héroe o heroína de guerra"
-                    onChange={handleFileInputChange}
-                    accept=".pdf"
-                    placeholder="Documentos que respalden esta información"
-                    validationFunction={validateNotEmpty}
-                  />
-                )}
-              </div>
-            </div>
-            <div className="flex items-center justify-center py-4">
-              <CheckBox
-                name={"fileVulnerableSituations"}
-                options={[""]}
-                selectedOptions={stringValues.fileVulnerableSituations}
-                allowMultipleSelection={false}
-                onChange={(name, selectedOptions) => {
-                  setIsVisibleMap({
-                    ...isVisibleMap,
-                    fileVulnerableSituations:
-                      !isVisibleMap.fileVulnerableSituations,
-                  });
-                }}
-              />
-              <div className="w-full">
-                <p>
-                  ¿Documento que señale ser persona en situación de
-                  vulnerabilidad?{" "}
-                </p>
-                {isVisibleMap.fileVulnerableSituations && (
-                  <FileInput
-                    name={"fileVulnerableSituations"}
-                    title="Documento que señale ser persona en situación de vulnerabilidad"
-                    onChange={handleFileInputChange}
-                    accept=".pdf"
-                    placeholder="Documentos que respalden esta información"
-                    validationFunction={validateNotEmpty}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
 
-          <div className="mt-8 flex justify-end">
-            <GreenButton content="Guardar" />
-          </div>
-        </form>
+            <div className="mt-8 flex justify-end">
+              <GreenButton content="Guardar" />
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </LayoutWithSidebarCandidate>
   );
 };
 
