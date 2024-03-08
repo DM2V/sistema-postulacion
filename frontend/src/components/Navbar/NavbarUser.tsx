@@ -1,18 +1,18 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import {
+  EDUCATIONPUBLICATIONS,
+  EXTRAPOINTS,
   PERSONALDATA,
   PERSONALINFORMATION,
   TRAININGPUBLICATIONS,
-  EDUCATIONPUBLICATIONS,
-  EXTRAPOINTS,
 } from "../../routes/paths";
-import Link from "next/link";
 
 const NavBar = () => {
   const router = useRouter();
 
   return (
-    <nav className="py-6 bg-primary-color">
+    <nav className="py-6 bg-primary-color text-sm">
       <ul className="flex flex-wrap justify-center">
         <NavItem
           href={PERSONALDATA}

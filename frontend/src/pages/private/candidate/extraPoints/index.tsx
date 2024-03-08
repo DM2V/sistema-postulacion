@@ -105,12 +105,12 @@ const ExtraPointsPage: FC = () => {
     <LayoutWithSidebarCandidate>
       <div>
         <NavBar />
-        <div className="container mx-auto py-8">
+        <div className="mx-5 py-5">
           <form onSubmit={handleSubmit}>
             <div>
-              <h2 className="border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
+              <h4 className="border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
                 Obtención de premios nacionales o internacionales{" "}
-              </h2>
+              </h4>
 
               <div className="flex items-center justify-center py-4">
                 <CheckBox
@@ -179,9 +179,9 @@ const ExtraPointsPage: FC = () => {
             </div>
             {/*  */}
             <div className="my-4">
-              <h2 className="mb-2 border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
+              <h4 className="mb-2 border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
                 Reconocimiento profesional o académico{" "}
-              </h2>
+              </h4>
               <div className="flex items-center justify-center py-4">
                 <CheckBox
                   name={"fileProfessionalAcademicRecognition"}
@@ -218,9 +218,9 @@ const ExtraPointsPage: FC = () => {
             </div>
             {/*  */}
             <div className="my-4">
-              <h2 className="border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
+              <h4 className="border-b-2 border-gray-400 pb-2 font-bold text-state-hover">
                 Acciones Afirmativas
-              </h2>
+              </h4>
               <div className="flex items-center justify-center py-4">
                 <CheckBox
                   name={"fileTwonsNationalities"}

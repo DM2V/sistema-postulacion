@@ -196,12 +196,12 @@ const PersonalInformationPage: FC = () => {
     <LayoutWithSidebarCandidate>
       <div>
         <NavBar />
-        <div className="flex justify-center align-middle">
-          <div className="container">
-            <h1 className="text-ter-color">Información Personal</h1>
+        <div className="flex justify-center align-middle text-xs">
+          <div className="container mx-8">
+
             <form onSubmit={handleSubmit}>
               <div>
-                <h4 className="py-4 font-bold text-state-hover">
+                <h4 className="py-4 font-bold text-primary-color">
                   Dirección Domiciliaria Permanente
                 </h4>
                 <div className="grid grid-cols-1 gap-4 pb-4 lg:grid-cols-3">
@@ -391,7 +391,7 @@ const PersonalInformationPage: FC = () => {
                 </div>
               </div>
               <div>
-                <h4 className="py-4 font-bold text-state-hover">
+                <h4 className="py-4 font-bold text-primary-color">
                   Contacto de emergencia
                 </h4>
                 <div className="grid w-full grid-cols-1 gap-4 pb-4 lg:w-4/5 lg:grid-cols-3">

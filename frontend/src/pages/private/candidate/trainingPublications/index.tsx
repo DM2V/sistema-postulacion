@@ -263,7 +263,7 @@ function TrainingPublications() {
         <div className="py-5">
           <div>
             <CRUDSection
-              title="Formación Adacémica"
+              title="Formación Académica"
               description="Detalles sobre los niveles de instrucción que has alcanzado, comenzando con el nivel de instrucción que tenga mayor relevancia para la postulación."
               elements={academicTraining}
               fetchElements={fetchAcademicTrainingForUser}
