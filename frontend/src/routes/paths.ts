@@ -20,6 +20,7 @@ export const TRAININGPUBLICATIONS = "/private/candidate/trainingPublications";
 export const EDUCATIONPUBLICATIONS = "/private/candidate/educationPublications";
 export const EXTRAPOINTS = "/private/candidate/extraPoints";
 export const CVGENERATOR = "/private/candidate/cvGenerator";
+export const POSTULATIONFINISH = "/private/candidate/home/finishPostulation";
 
 export const CANDIDATEPANEL = "/private/candidate/home";
 
