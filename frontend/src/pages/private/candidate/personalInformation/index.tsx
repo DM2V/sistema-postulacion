@@ -157,6 +157,8 @@ const PersonalInformationPage: FC = () => {
     }
   }
 
+  console.log(formData)
+
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (formData.homeAddressData && formData.emergencyContactData) {

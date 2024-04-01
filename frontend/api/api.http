@@ -1,0 +1,44 @@
+### Get user
+GET http://127.0.0.1:8090/api/collections/users/records/
+
+### Get CV
+GET http://127.0.0.1:8090/api/collections/CV/records
+
+### Get PersonalData
+GET http://127.0.0.1:8090/api/collections/PersonalData/records
+
+### Get HomeAddress
+GET http://127.0.0.1:8090/api/collections/HomeAddress/records
+
+### Get EmergencyContact
+GET http://127.0.0.1:8090/api/collections/EmergencyContact/records
+
+### Get AcademicTraining
+GET http://127.0.0.1:8090/api/collections/AcademicTraining/records
+
+### Get Language
+GET http://127.0.0.1:8090/api/collections/Language/records
+
+### Get Publications
+GET http://127.0.0.1:8090/api/collections/Publications/records
+
+### Get Trainings
+GET http://127.0.0.1:8090/api/collections/Trainings/records
+
+### Get ProfessionalExperience
+GET http://127.0.0.1:8090/api/collections/ProfessionalExperience/records
+
+### Get ExtraPoints
+GET http://127.0.0.1:8090/api/collections/ExtraPoints/records
+
+### Get PostulacionDocument
+GET http://127.0.0.1:8090/api/collections/PostulacionDocument/records
+
+### Get Offer
+GET http://127.0.0.1:8090/api/collections/Offer/records
+
+### Get Calendar
+GET http://127.0.0.1:8090/api/collections/Calendar/records
+
+### Get Call
+GET http://127.0.0.1:8090/api/collections/Call/records

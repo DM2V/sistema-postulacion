@@ -10,7 +10,7 @@ import {
   Canton,
   Province,
   Parish,
-  emergencyContactData,
+  EmergencyRelationship
 } from "@/types/staticData";
 
 import {
@@ -18,7 +18,7 @@ import {
   getProvince,
   getCanton,
   getParish,
-  getEmergencyContactData,
+  getEmergencyRelationship
 } from "@/utils/fetch_functions/staticData";
 
 interface Props {
@@ -29,7 +29,7 @@ const EmergencyContactForm: React.FC<Props> = ({ onChange }) => {
   const [province, setProvince] = useState<Province[]>([]);
   const [canton, setCanton] = useState<Canton[]>([]);
   const [parish, setParish] = useState<Parish[]>([]);
-  const [relationship, setRelationship] = useState<emergencyContactData[]>([]);
+  const [relationship, setRelationship] = useState<EmergencyRelationship[]>([]);
   const [identificationType, setIdentificationType] = useState<
     IdentificationType[]
   >([]);
@@ -79,7 +79,7 @@ const EmergencyContactForm: React.FC<Props> = ({ onChange }) => {
     getProvince(setProvince);
     getCanton(setCanton);
     getParish(setParish);
-    getEmergencyContactData(setRelationship);
+    getEmergencyRelationship(setRelationship);
   }, [formData]);
 
   return (

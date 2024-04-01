@@ -282,7 +282,7 @@ const PersonalDataPage: FC = () => {
                     defaultValue={
                       personalData && personalData.birthDate
                         ? calculateAge(personalData.birthDate).toString()
-                        : undefined
+                        : ""
                     }
                   />
                   <ComboBoxGeneric

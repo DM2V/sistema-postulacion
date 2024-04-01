@@ -1,3 +1,4 @@
+import { FC, FormEvent, useEffect, useState } from "react";
 import GreenButton from "@/components/Buttons/GreenButton";
 import CheckBox from "@/components/Form/CheckBox";
 import FileInput from "@/components/Form/FileLabel";
@@ -7,10 +8,14 @@ import { CVGENERATOR } from "@/routes/paths";
 import { pb } from "@/utils/pocketbase";
 import { validateNotEmpty } from "@/utils/validations";
 import { useRouter } from "next/router";
-import { FC, FormEvent, useState } from "react";
+import { ExtraPoints } from "@/types/cv";
+import { fetchExtraPoints } from "@/utils/fetch_functions/cv";
+
 
 const ExtraPointsPage: FC = () => {
   const router = useRouter();
+  const userId = "msof6xv1zl55pof";
+  const [extraPoints, setExtraPoints] = useState<ExtraPoints | undefined>();
 
   const [isVisibleMap, setIsVisibleMap] = useState({
     professionalExperienceEspe: false,
@@ -101,6 +106,13 @@ const ExtraPointsPage: FC = () => {
     setFileMap({ ...fileMap, [name]: selectedFile });
   };
 
+  useEffect(() => {
+    fetchExtraPoints(userId).then((data) => {
+      setExtraPoints(data);
+    });
+  
+  }, [userId]);
+
   return (
     <LayoutWithSidebarCandidate>
       <div>
@@ -190,7 +202,7 @@ const ExtraPointsPage: FC = () => {
                     stringValues.fileProfessionalAcademicRecognition
                   }
                   allowMultipleSelection={false}
-                  onChange={(name, selectedOptions) => {
+                  onChange={( name, selectedOptions) => {
                     setIsVisibleMap({
                       ...isVisibleMap,
                       fileProfessionalAcademicRecognition:
@@ -256,7 +268,7 @@ const ExtraPointsPage: FC = () => {
                 <CheckBox
                   name={"fileDisability"}
                   options={[""]}
-                  selectedOptions={[]}
+                  selectedOptions={[stringValues.fileDisability]}
                   allowMultipleSelection={false}
                   onChange={(name, selectedOptions) => {
                     setIsVisibleMap({
@@ -291,6 +303,7 @@ const ExtraPointsPage: FC = () => {
                       fileWarHeroes: !isVisibleMap.fileWarHeroes,
                     });
                   }}
+                  defaultOption={stringValues.warHeroes}
                 />
                 <div className="w-full">
                   <p>¿Resolución de ser Héroe o heroína de guerra? </p>
