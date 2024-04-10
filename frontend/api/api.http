@@ -1,3 +1,4 @@
+### Using Rest Client extentions for Visual Studio Code
 ### Get user
 GET http://127.0.0.1:8090/api/collections/users/records/
 

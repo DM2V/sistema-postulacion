@@ -118,7 +118,7 @@ function OffersHome() {
       </div>
 
 
-      <div className='bg-[#f3f3f3]'>
+      <div className='bg-[#f3f3f3] h-screen'>
         {showOffers && (
           <>
             {offers.length > 0 ? (

@@ -1,3 +1,4 @@
+import { DeleteIcon, Eye } from "@/assets/icons";
 import { CONVOCATIONHRVIEW } from "@/routes/paths";
 import { Call } from "@/types/convocatoria";
 import Link from "next/link";
@@ -49,11 +50,14 @@ function CallItem({ call, handleDelete, }: { call: Call; handleDelete: (id: stri
             <b>Creada el:</b> {call.created.slice(0, 10)}
           </p>
 
-          <div className="flex flex-row gap-4 mt-2">
-            <p className="text-primary-color font-semibold">
-              <Link href={`${CONVOCATIONHRVIEW}/${call.id}`}>Ver</Link>
-            </p>
-            <button className="text-fill-error" onClick={openModal}>Eliminar</button>
+          <div className="flex flex-row gap-4 mt-2 justify-between">
+            <div className="flex justify-center items-center gap-1 hover:scale-110 transition-all transform">
+              <Eye />
+              <p className="text-primary-color font-semibold">
+                <Link href={`${CONVOCATIONHRVIEW}/${call.id}`}>Ver</Link>
+              </p>
+            </div>
+            <button className="text-fill-error font-bold hover:scale-110 transition-all transform" onClick={openModal}><DeleteIcon color="red"/></button>
           </div>
         </div>
       </div>

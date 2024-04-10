@@ -235,9 +235,9 @@ function Phase() {
             <div className="flex justify-center mt-3">
               <WhiteButton content="Aceptar" onClick={handleScore} />
             </div>
-            <div className="flex items-center gap-2 my-4">
+            <div className="flex items-center gap-2 my-4 justify-center">
               <h6>Puntaje asignado Fase Oposición: </h6>
-              <strong>{userCv?.expand?.phaseStatus?.scoreOpposition}</strong>/ 50
+              <strong>{userCv?.expand?.phaseStatus?.scoreOpposition}</strong>
             </div>
           </div>
         </div>

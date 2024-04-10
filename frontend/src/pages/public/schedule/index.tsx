@@ -100,7 +100,7 @@ const Schedule: FC = () => {
           <section>
             <div className="h-auto md:h-auto lg:mx-20 lg:my-7 lg:h-auto">
               <iframe
-                src={`${BACKEND_ADDRESS}/api/files/Calendar/mb4vjdpd1hatz44/2023_uthm_ins_concurso_meritos_oposicion_personal_academico_v2_hpAVolfKyr.pdf`}
+                src={`${BACKEND_ADDRESS}/api/files/Calendar/dvalmawifo1ong1/2023_uthm_ins_concurso_meritos_oposicion_personal_academico_v2_2Wsp1ltryY.pdf`}
                 title="PDF Viewer"
                 width="100%"
                 height="550"

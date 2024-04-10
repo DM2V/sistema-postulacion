@@ -98,17 +98,17 @@ const PersonalDataPage: FC = () => {
       bloodType: formData.get("bloodType") as string,
       maritalStatus: formData.get("maritalStatus") as string,
       nationality: formData.get("nationality") as string,
-      residenceYears: formData.get("residenceYears") || "0",
+      residenceYears: formData.get("residenceYears"),
       ethnicIdentification: formData.get("ethnicIdentification") as string,
-      ethnicGroup: formData.get("ethnicGroup") || "0",
-      specialCapacity: (formData.get("specialCapacity") as string) || "0",
+      ethnicGroup: formData.get("ethnicGroup"),
+      specialCapacity: (formData.get("specialCapacity") as string),
       catastrophicDisease:
-        (formData.get("catastrophicDisease") as string) || "0",
+        (formData.get("catastrophicDisease") as string),
       catastrophicDiseaseType:
-        (formData.get("catastrophicDiseaseType") as string) || "0",
-      disabilityType: (formData.get("disabilityType") as string) || "0",
-      disabilityPercentage: formData.get("disabilityPercentage") || "0",
-      MSPIDNumber: formData.get("MSPIDNumber") || "0",
+        (formData.get("catastrophicDiseaseType") as string),
+      disabilityType: (formData.get("disabilityType") as string),
+      disabilityPercentage: formData.get("disabilityPercentage"),
+      MSPIDNumber: formData.get("MSPIDNumber"),
     };
     console.log("data", data);
 
@@ -159,8 +159,11 @@ const PersonalDataPage: FC = () => {
   useEffect(() => {
     setResidenceYearsVisible(personalData?.nationality !== "ECUADOR");
     setEthnicIdentificationVisible(
-      personalData?.ethnicIdentification !== "INDÍGENA",
+      personalData?.ethnicIdentification === "INDÍGENA",
     );
+    setBirthDate(personalData && !isNaN(calculateAge(personalData.birthDate)) ? personalData.birthDate.toString() : "")
+    setSpecialCapacityVisible(personalData?.specialCapacity === "Si");
+    setDiseaseVisible(personalData?.catastrophicDisease === "Si");
     getGender(setGender);
     getBloodType(setBloodType);
     getCountry(setNationality);
@@ -175,11 +178,9 @@ const PersonalDataPage: FC = () => {
     fetchPersonalDataForUser(userId).then((data) => {
       setPersonalData(data);
     });
-    setSpecialCapacityVisible(personalData?.specialCapacity === "Si");
-    setDiseaseVisible(personalData?.catastrophicDisease === "Si");
   }, [userId]);
 
-  console.log("personalData", personalData);
+
 
   return (
     <LayoutWithSidebarCandidate>
@@ -250,16 +251,13 @@ const PersonalDataPage: FC = () => {
                     title={"Fecha de Nacimiento:"}
                     onChange={(name, selectedOption) => {
                       selectedOption.setSeconds(30);
-                      // setBirthDate(selectedOption.toISOString());
                       if (
                         selectedOption instanceof Date &&
                         !isNaN(selectedOption.getTime())
                       ) {
                         const modifiedDate = new Date(selectedOption);
-                        // modifiedDate.setSeconds(30);
                         setBirthDate(modifiedDate.toISOString());
                       } else {
-                        // Handle invalid date selection
                         console.error("Invalid date selected:", selectedOption);
                       }
                     }}
@@ -268,6 +266,7 @@ const PersonalDataPage: FC = () => {
                         ? `${personalData?.birthDate}`
                         : ""
                     }
+                    placeholder={personalData?.birthDate || ""}
                   />
                   <InputLabel
                     name="age"
@@ -331,11 +330,11 @@ const PersonalDataPage: FC = () => {
                     options={nationality.map((c) => {
                       return { label: c.description, value: c.description };
                     })}
-                    defaultOption={personalData?.nationality || ""}
+                    defaultOption={personalData?.nationality || "" }
                     onChange={(name, selectedOption) => {
                       setSelectedNationality(selectedOption.value);
                       setResidenceYearsVisible(
-                        selectedOption.label !== "Ecuador",
+                        selectedOption.label !== "ECUADOR",
                       );
                     }}
                   />
@@ -362,7 +361,7 @@ const PersonalDataPage: FC = () => {
                   onChange={(name, selectedOption) => {
                     setSelectedEthnicIdentification(selectedOption.value);
                     setEthnicIdentificationVisible(
-                      selectedOption.value === "INDÍGENA",
+                      selectedOption.value === "INDÍGENA"
                     );
                   }}
                   defaultOption={personalData?.ethnicIdentification || ""}

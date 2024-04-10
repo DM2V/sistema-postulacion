@@ -1,11 +1,11 @@
-import { OfferCardIcon } from "@/assets/icons";
+import { DeleteIcon, OfferCardIcon } from "@/assets/icons";
 import { OFFERSHREDIT } from "@/routes/paths";
 import { Offer } from "@/types/offers";
 import { pb } from "@/utils/pocketbase";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { LuClipboardEdit, LuEraser } from "react-icons/lu";
+import { LuClipboardEdit } from "react-icons/lu";
 import Modal from "react-modal";
 
 pb.autoCancellation(false);
@@ -96,26 +96,23 @@ function OfferItem({ offer, getOffers, }: { offer: Offer; getOffers: () => Promi
         </p>
       </section>
 
-      
-        <div className="flex w-full items-end justify-end gap-2 text-[#293846] mt-3">
-          <div className="flex flex-row gap-1 items-center">
-            <LuClipboardEdit />
-            <Link
-              className="font-bold transition-all hover:text-yellow-800"
-              href={`${OFFERSHREDIT}/${offer.id}`}>
-              Editar
-            </Link>
-          </div>
 
-          <div className="flex flex-row gap-1 items-center text-red-700">
-            <LuEraser />
-            <button
-              onClick={openModal}
-              className="font-bold  transition-all hover:text-red-800">
-              Eliminar
-            </button>
-          </div>
+      <div className="flex w-full items-center justify-between gap-2 text-primary-color mt-3 ">
+        <div className="flex flex-row gap-1 items-center hover:scale-110 transition-all transform hover:text-primary-color">
+          <LuClipboardEdit />
+          <Link
+            className="font-bold"
+            href={`${OFFERSHREDIT}/${offer.id}`}>
+            Editar
+          </Link>
         </div>
+
+        <button
+          onClick={openModal}
+          className="font-bold  transition-all hover:text-red-900 hover:scale-110 transforms">
+          <DeleteIcon color="#a60e13" />
+        </button>
+      </div>
 
 
 
