@@ -469,7 +469,7 @@ export async function fetchLanguagesForUser(userId: string) {
             return null;
         }
     } catch (error) {
-        console.error("Error fetching languages:", error);
+        console.error("Error fetchingsd languages:", error);
         return null;
     }
 }
