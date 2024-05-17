@@ -36,6 +36,7 @@ function UserdataCandidate() {
 
             <p className="text-sm font-bold mt-2 mb-1 hover:text-[#0077c3] cursor-pointer">{model.name?.toUpperCase()} {model.lastName?.toUpperCase()}</p>
             <p className="text-xs hover:text-[#0077c3] cursor-pointer">{model.email}</p>
+            <p> {model.id}</p>
           </div>
         </div>
       )}

@@ -1,7 +1,14 @@
 export function validateEcuadorianID(id: string): boolean {
+  const numberPattern = /^[0-9]*$/;
+
+  if (!id || !numberPattern.test(id)) {
+    return false; // Retorna falso si el campo está vacío o contiene caracteres que no son números
+  }
+
   const pattern = /^(0[1-7]|1[0-9]|20)(\d{7})\d$/;
   return pattern.test(id);
 }
+
 
 export function validateEmail(email: string): boolean{
   const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;

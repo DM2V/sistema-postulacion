@@ -18,10 +18,10 @@ function index() {
 
 
           <section>
-            🎉 Te damos la más cordial bienvenida al proceso de selección de docentes en la Universidad de las Fuerzas Armadas ESPE. Estás a punto de dar un paso importante en tu carrera profesional.
+            🎉 Le damos la más cordial bienvenida al proceso de selección de docentes en la Universidad de las Fuerzas Armadas ESPE. Esta a punto de dar un paso importante en tu carrera profesional.
           </section>
 
-          <p className='text-center my-5 text-black'>Ahora Puedes Comenzar la <b>Fase de Postulación</b></p>
+          <p className='text-center my-5 text-black'>Ahora puede comenzar la <b>Fase de Postulación</b></p>
 
           <section>
             <Image src={FasePostulacion} alt='Fases Concurso' className='w-screen' />

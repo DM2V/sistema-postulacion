@@ -18,6 +18,7 @@ import { FormEvent, useState } from "react";
 function Login() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState('');
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -39,6 +40,7 @@ function Login() {
       switch (role) {
         case "candidate":
           router.push(CANDIDATEPANEL);
+          
           break;
         case "admin_hr":
           router.push(HOMEHR);
@@ -50,8 +52,11 @@ function Login() {
           break;
       }
     } catch (error) {
+      setErrorMessage('Usuario o contraseña incorrectos');
+
       console.log(error);
     } finally {
+      
       setLoading(false);
     }
   }
@@ -75,7 +80,11 @@ function Login() {
             Bienvenido(a) al portal de selección de personal académico, por favor ingrese sus
             datos.
           </p>
-
+                {errorMessage && (
+        <div className="text-red-500 m-4 text-center  md:text-sm lg:text-base ">
+          {errorMessage}
+        </div>
+)}
           <form
             className="m-2 mx-auto md:w-3/4 md:text-sm lg:text-base"
             onSubmit={handleSubmit}
@@ -96,6 +105,7 @@ function Login() {
             />
 
             <GreenButton disabled={loading} content="Ingresar" />
+
           </form>
 
           <div className="m-4 text-center text-sm font-medium text-tp-disable-color lg:text-base">

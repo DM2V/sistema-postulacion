@@ -27,9 +27,10 @@ function CRUDTable<T extends Record<string, any>>({
         </tr>
       </thead>
 
-      <tbody>
-        {elements.map((element, index) => (
-          <tr key={index} className="border-t-2 p-2">
+      <tbody> 
+        
+      {elements && elements.map((element, index) => (
+                  <tr key={index} className="border-t-2 p-2">
             {headers.map((header) => {
               switch (header.type) {
                 case "date":

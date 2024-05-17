@@ -246,13 +246,13 @@ function TrainingPublications() {
   }
 
   useEffect(() => {
-    if (languages.length === 0) {
+    if (languages &&  languages.length === 0) {
       fetchLanguagesForUser();
     }
-    if (publications.length === 0) {
+    if (publications && publications.length === 0) {
       fetchPublicationsForUser();
     }
-    if (academicTraining.length === 0) {
+    if (academicTraining && academicTraining.length === 0) {
       fetchAcademicTrainingForUser();
     }
   });

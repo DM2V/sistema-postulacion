@@ -33,7 +33,7 @@ function Register() {
 
     const data = {
       "identificationNumber": identificationNumber.trim(),
-      "email": email.trim(),
+      "email": email.trim().toLowerCase(),
       "emailVisibility": true,
       "password": password.trim(),
       "passwordConfirm": password.trim(),
@@ -53,6 +53,7 @@ function Register() {
     try {
       const record = await pb.collection('users').create(formData);
       const userId = record?.id;
+      console.log(userId)
       router.push({
         pathname: PERSONALDATA,
         query: record?.id // Pasar el ID como un query parameter

@@ -3,6 +3,8 @@ import CheckBox from "@/components/Form/CheckBox";
 import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
 import DateInput from "@/components/Form/DateInput";
 import InputLabel from "@/components/Form/InputLabel";
+import { User } from "@/types/user";
+
 import Notification from "@/components/Form/Notification";
 import ImageInput from "@/components/Image/ImageInput";
 import NavBar from "@/components/Navbar/NavbarUser";
@@ -42,15 +44,20 @@ import {
 import { set } from "date-fns";
 
 const PersonalDataPage: FC = () => {
-  const userId = "msof6xv1zl55pof";
   const router = useRouter();
-  const [personalData, setPersonalData] = useState<PersonalData | undefined>();
+  
+  const [model, setModel] = useState<User | undefined>(undefined);
+  const [personalData, setPersonalData] = useState<PersonalData | undefined>(undefined);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [isSpecialCapacityVisible, setSpecialCapacityVisible] = useState(true);
   const [isDiseaseVisible, setDiseaseVisible] = useState(true);
   const [isResidenceYearsVisible, setResidenceYearsVisible] = useState(true);
-  const [isethnicIdentificationVisible, setEthnicIdentificationVisible] =
-    useState(true);
+  const [isethnicIdentificationVisible, setEthnicIdentificationVisible] =useState(true);
+
+  useEffect(() => {
+    setModel(pb.authStore.model as User);
+      }, [pb.authStore])
+  const userId = model?.id;
 
   const [avatar, setAvatar] = useState<File>();
   const [name, setName] = useState<string>("");
@@ -87,69 +94,88 @@ const PersonalDataPage: FC = () => {
   const [selectedDisabilityType, setSelectedDisabilityType] =
     useState<string>("");
 
-  async function createPersonalData(formData: FormData) {
-    const data = {
-      avatar: (avatar as File) || "",
-      name: formData.get("name") as string,
-      lastName1: formData.get("lastName1") as string,
-      lastName2: formData.get("lastName2") as string,
-      birthDate: formData.get("birthDate") as string,
-      gender: formData.get("gender") as string,
-      bloodType: formData.get("bloodType") as string,
-      maritalStatus: formData.get("maritalStatus") as string,
-      nationality: formData.get("nationality") as string,
-      residenceYears: formData.get("residenceYears"),
-      ethnicIdentification: formData.get("ethnicIdentification") as string,
-      ethnicGroup: formData.get("ethnicGroup"),
-      specialCapacity: (formData.get("specialCapacity") as string),
-      catastrophicDisease:
-        (formData.get("catastrophicDisease") as string),
-      catastrophicDiseaseType:
-        (formData.get("catastrophicDiseaseType") as string),
-      disabilityType: (formData.get("disabilityType") as string),
-      disabilityPercentage: formData.get("disabilityPercentage"),
-      MSPIDNumber: formData.get("MSPIDNumber"),
-    };
-    console.log("data", data);
+    async function createPersonalData(formData: FormData) {
+      setNotificationMessage("");
 
-    const isFilled = Object.values(data).every(
-      (value) => value !== null && value !== undefined && value !== "",
-    );
+      const avatar = formData.get("avatar") as File;
+      const data = {
+        avatar: avatar || "",
+        name: formData.get("name") as string,
+        lastName1: formData.get("lastName1") as string,
+        lastName2: formData.get("lastName2") as string,
+        birthDate: formData.get("birthDate") as string,
+        gender: formData.get("gender") as string,
+        bloodType: formData.get("bloodType") as string,
+        maritalStatus: formData.get("maritalStatus") as string,
+        nationality: formData.get("nationality") as string,
+        residenceYears: formData.get("residenceYears"),
+        ethnicIdentification: formData.get("ethnicIdentification") as string,
+        ethnicGroup: formData.get("ethnicGroup"),
+        specialCapacity: formData.get("specialCapacity") as string,
+        catastrophicDisease: formData.get("catastrophicDisease") as string,
+        catastrophicDiseaseType: formData.get("catastrophicDiseaseType") as string,
+        disabilityType: formData.get("disabilityType") as string,
+        disabilityPercentage: formData.get("disabilityPercentage"),
+        MSPIDNumber: formData.get("MSPIDNumber"),
+      };
+    
+    
 
-    if (!isFilled) {
-      setNotificationMessage("Por favor, completa los datos antes de enviar.");
-      return;
-    }
-
-    try {
-      if (personalData?.id) {
-        // await pb.collection("PersonalData").update(personalData.id, { data });
-        await pb.collection("PersonalData").update(personalData.id, data);
-        console.log(personalData.id);
-      } else {
-        const { cv } = await pb
-          .collection("users")
-          .getOne(userId, { fields: "cv" });
-        if (!cv) {
-          console.error("Error retrieving CV data.");
-          return;
+    /*  const isFilled = Object.values(data).every(
+        (value) => value !== null && value !== undefined && value !== ""
+      );
+  
+      if (!isFilled) {
+        setNotificationMessage("Por favor, completa los datos antes de enviar.");
+        return;
+      }*/
+      try {
+        const user = await pb.collection("users").getOne(userId as string, {
+          fields: "cv",
+        });
+        let cvId = user.cv;
+        if (!cvId) {
+          const newCV = await createBlankCV(userId as string);
+          cvId = newCV.id;
         }
-
-        const personalDataCreated = await pb
-          .collection("PersonalData")
-          .create(data);
-        const dataCV = { "personalData+": personalDataCreated.id };
-        await pb.collection("CV").update(cv, dataCV);
-        setTimeout(() => {
-          router.push(PERSONALINFORMATION);
-        }, 2000);
+        const personalDataId = await createOrUpdatePersonalData(cvId, data);
+        setNotificationMessage("Sus datos fuerons actualizados con exito.");
+      } catch (error) {
+        console.error("Error al buscar o crear el CV y el PersonalData:", error);
       }
-      setNotificationMessage("¡El formulario ha sido enviado!");
-    } catch (error) {
-      console.error("Error creating or updating personal data:", error);
     }
-  }
-
+        async function createBlankCV(userId: string) {
+      try {
+        const newCV = await pb.collection("CV").create({});
+        await pb.collection("users").update(userId, { cv: newCV.id });
+        return newCV;
+      } catch (error) {
+        console.error("Error al crear un nuevo CV:", error);
+        throw error;
+      }
+    }
+    
+    async function createOrUpdatePersonalData(cvId: string, formData: any) {
+      try {
+        const existingCV = await pb.collection("CV").getOne(cvId, {
+          expand: "personalData",
+        });
+            let personalDataId;
+            if (existingCV.personalData) {
+          const updatedPersonalData = await pb.collection("PersonalData").update(existingCV.personalData, formData);
+          personalDataId = updatedPersonalData.id;
+        } else {
+          const newPersonalData = await pb.collection("PersonalData").create(formData);
+          personalDataId = newPersonalData.id;
+        }
+         await pb.collection("CV").update(cvId, { personalData: personalDataId });
+        return personalDataId;
+      } catch (error) {
+        console.error("Error al crear o actualizar el PersonalData:", error);
+        throw error;
+      }
+    }
+    
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -175,11 +201,12 @@ const PersonalDataPage: FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchPersonalDataForUser(userId).then((data) => {
-      setPersonalData(data);
-    });
+    if (userId) {
+      fetchPersonalDataForUser(userId).then((data) => {
+        setPersonalData(data);
+      });
+    }
   }, [userId]);
-
 
 
   return (
@@ -203,6 +230,7 @@ const PersonalDataPage: FC = () => {
                       ? `a7upmrm44olwz6l/${personalData.id}/${personalData.avatar}`
                       : undefined
                   }
+                
                   onChange={(file) => {
                     if (file !== null) {
                       setAvatar(file);
@@ -249,6 +277,7 @@ const PersonalDataPage: FC = () => {
                   <DateInput
                     name={"birthDate"}
                     title={"Fecha de Nacimiento:"}
+                    
                     onChange={(name, selectedOption) => {
                       selectedOption.setSeconds(30);
                       if (
@@ -286,6 +315,7 @@ const PersonalDataPage: FC = () => {
                   />
                   <ComboBoxGeneric
                     name="gender"
+                    
                     title="Genero:"
                     defaultOption={
                       personalData?.gender ? personalData.gender : ""
