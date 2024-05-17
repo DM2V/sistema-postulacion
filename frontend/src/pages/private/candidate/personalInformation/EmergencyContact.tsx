@@ -71,6 +71,7 @@ const EmergencyContactForm: React.FC<Props> = ({ onChange }) => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
+    
     e.preventDefault();
   };
 

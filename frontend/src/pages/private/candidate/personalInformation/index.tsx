@@ -16,6 +16,7 @@ import {
   Province,
 } from "@/types/staticData";
 import { fetchUserData } from "@/utils/fetch_functions/cv";
+
 import {
   getCanton,
   getEmergencyRelationship,
@@ -70,9 +71,11 @@ const PersonalInformationPage: FC = () => {
   >([]);
 
   async function createPersonalInfomation(
+    
     homeAddressData: HomeAddress,
     emergencyContactData: EmergencyContact,
   ) {
+
     const homeAddress = {
       province: formData.homeAddressData.province,
       canton: formData.homeAddressData.canton,
@@ -105,7 +108,7 @@ const PersonalInformationPage: FC = () => {
       cellPhone: formData.emergencyContactData.cellPhone || "",
     };
 
-    const isPersonalInfoFilled = Object.values(homeAddress).every(
+   /* const isPersonalInfoFilled = Object.values(homeAddress).every(
       (value) => value !== null && value !== undefined && value !== "",
     );
 
@@ -115,14 +118,13 @@ const PersonalInformationPage: FC = () => {
 
     if (!isPersonalInfoFilled && !isEmergencyContactFilled) {
       setNotificationMessage("Por favor, completa los datos antes de enviar.");
-      // return;
+      //return;
     }
-
+*/
     try {
       const { cv } = await pb
         .collection("users")
         .getOne(userId, { fields: "cv" });
-
       if (!cv) {
         console.error("Error retrieving CV data.");
         return;
@@ -149,7 +151,6 @@ const PersonalInformationPage: FC = () => {
           .create(formData.emergencyContactData);
         cv["emergencyContact+"] = emergencyContactCreated.id;
       }
-
       await pb.collection("CV").update(cv, cv);
       setNotificationMessage("¡El formulario ha sido enviado!");
     } catch (error) {
@@ -157,9 +158,9 @@ const PersonalInformationPage: FC = () => {
     }
   }
 
-  console.log(formData)
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    console.log("lleg")
     e.preventDefault();
     if (formData.homeAddressData && formData.emergencyContactData) {
       createPersonalInfomation(
@@ -173,6 +174,7 @@ const PersonalInformationPage: FC = () => {
 
 
   useEffect(() => {
+
     fetchUserData(userId).then((data) => {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -200,7 +202,6 @@ const PersonalInformationPage: FC = () => {
         <NavBar />
         <div className="flex justify-center align-middle text-xs">
           <div className="container mx-8">
-
             <form onSubmit={handleSubmit}>
               <div>
                 <h4 className="py-4 font-bold text-primary-color">
