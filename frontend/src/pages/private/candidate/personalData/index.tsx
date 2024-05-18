@@ -134,7 +134,6 @@ const PersonalDataPage: FC = () => {
           fields: "cv",
         });
         let cvId = user.cv;
-
         if (!cvId) {
           const newCV = await createBlankCV(userId as string);
           cvId = newCV.id;
@@ -178,12 +177,9 @@ const PersonalDataPage: FC = () => {
     }
     
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
-
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     createPersonalData(formData);
-    console.log("lleg")
-
   }
 
   useEffect(() => {

@@ -10,21 +10,14 @@ import { AcademicTraining, Language, Publications } from "@/types/cv";
 import { pb } from "@/utils/pocketbase";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { User } from "@/types/user";
 
 function TrainingPublications() {
   const router = useRouter();
-  
   const [languages, setLanguages] = useState<Language[]>([]);
   const [academicTraining, setAcademicTraining] = useState<AcademicTraining[]>(
     [],
   );
   const [publications, setPublications] = useState<Publications[]>([]);
-  const [model, setModel] = useState<User | undefined>(undefined);
-  useEffect(() => {
-    setModel(pb.authStore.model as User);
-      }, [pb.authStore])
-  const userId = model?.id;
 
   const handleSubmit = () => {
     router.push(EDUCATIONPUBLICATIONS);
@@ -32,7 +25,7 @@ function TrainingPublications() {
 
   async function fetchLanguagesForUser() {
     try {
-      const record = await pb.collection("users").getOne(userId, {
+      const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
         expand: "cv,cv.languages",
         fields: "expand.cv.expand.languages",
       });
@@ -44,27 +37,24 @@ function TrainingPublications() {
       console.log("Fetched languages:", languages);
     } catch (error) {
       console.error("Error fetching languages:", error);
-
     }
   }
   async function fetchPublicationsForUser() {
     try {
-      const record = await pb.collection("users").getOne(userId, {
+      const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
         expand: "cv,cv.publications",
         fields: "expand.cv.expand.publications",
       });
       setPublications(record?.expand?.cv.expand.publications);
       console.log("Fetched publications:", publications);
-
     } catch (error) {
       console.error("Error fetching publications:", error);
-
     }
   }
 
   async function fetchAcademicTrainingForUser() {
     try {
-      const record = await pb.collection("users").getOne(userId, {
+      const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
         expand: "cv,cv.academicTraining",
         fields: "expand.cv.expand.academicTraining",
       });
@@ -88,7 +78,7 @@ function TrainingPublications() {
     };
 
     try {
-      const { cv } = await pb.collection("users").getOne(userId, {
+      const { cv } = await pb.collection("users").getOne("msof6xv1zl55pof", {
         fields: "cv",
       });
       if (!cv) {
@@ -152,7 +142,7 @@ function TrainingPublications() {
 
     const publicationCreated = await pb.collection("Publications").create(data);
 
-    const { cv } = await pb.collection("users").getOne(userId, {
+    const { cv } = await pb.collection("users").getOne("msof6xv1zl55pof", {
       fields: "cv",
     });
     const dataCV = {
@@ -212,7 +202,7 @@ function TrainingPublications() {
     try {
       const { cv } = await pb
         .collection("users")
-        .getOne(userId, { fields: "cv" });
+        .getOne("msof6xv1zl55pof", { fields: "cv" });
       if (!cv) {
         console.error("Error retrieving CV data.");
         return;
@@ -254,24 +244,18 @@ function TrainingPublications() {
   async function deleteAcademicTraining(id: string) {
     await pb.collection("AcademicTraining").delete(id);
   }
+
   useEffect(() => {
-    if (languages && languages.length === 0) {
+    if (languages &&  languages.length === 0) {
       fetchLanguagesForUser();
     }
-  }, [languages]);
-  
-  useEffect(() => {
     if (publications && publications.length === 0) {
       fetchPublicationsForUser();
     }
-  }, [publications]);
-  
-  useEffect(() => {
     if (academicTraining && academicTraining.length === 0) {
       fetchAcademicTrainingForUser();
     }
-  }, [academicTraining]);
-  
+  });
   return (
     <LayoutWithSidebarCandidate>
       <div>
