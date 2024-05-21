@@ -30,7 +30,13 @@ function TrainingPublications() {
     router.push(EDUCATIONPUBLICATIONS);
   };
 
-  async function fetchLanguagesForUser() {
+  useEffect(() => {
+    if (userId) {
+      fetchLanguagesForUser(userId);
+    }
+  }, [userId]);
+
+  async function fetchLanguagesForUser(userId:string) {
     try {
       const record = await pb.collection("users").getOne(userId, {
         expand: "cv,cv.languages",
@@ -47,7 +53,7 @@ function TrainingPublications() {
 
     }
   }
-  async function fetchPublicationsForUser() {
+  async function fetchPublicationsForUser(userId:string) {
     try {
       const record = await pb.collection("users").getOne(userId, {
         expand: "cv,cv.publications",
@@ -62,7 +68,7 @@ function TrainingPublications() {
     }
   }
 
-  async function fetchAcademicTrainingForUser() {
+  async function fetchAcademicTrainingForUser(userId:string) {
     try {
       const record = await pb.collection("users").getOne(userId, {
         expand: "cv,cv.academicTraining",
@@ -87,6 +93,7 @@ function TrainingPublications() {
       certificate,
     };
 
+    
     try {
       const { cv } = await pb.collection("users").getOne(userId, {
         fields: "cv",
