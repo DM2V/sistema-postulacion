@@ -29,6 +29,8 @@ function TrainingPublications() {
         expand: "cv,cv.languages",
         fields: "expand.cv.expand.languages",
       });
+     const primerIdioma = record.expand.cv.expand.languages;
+     console.log("Primer idioma ID:", primerIdioma.id);
       if (record?.expand?.cv?.expand?.languages) {
         setLanguages(record?.expand?.cv.expand.languages);
       } else {
@@ -58,6 +60,9 @@ function TrainingPublications() {
         expand: "cv,cv.academicTraining",
         fields: "expand.cv.expand.academicTraining",
       });
+     // Acceder a la formación académica del CV del usuarios 
+     const academicTraining = record?.expand?.cv?.expand?.academicTraining;
+    console.log("Formación académica:", academicTraining);
       setAcademicTraining(record?.expand?.cv.expand.academicTraining);
     } catch (error) {
       console.error("Error fetching academic training:", error);

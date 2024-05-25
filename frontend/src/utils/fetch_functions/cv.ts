@@ -408,7 +408,8 @@ export async function fetchUserData(userId: string): Promise<{
             expand: "cv,cv.emergencyContact,cv.homeAddress",
             fields: "expand.cv.expand.emergencyContact,expand.cv.expand.homeAddress",
         });
-        console.log("record", record)
+    
+// Acceder al ID de la dirección de casa directamente desde record
 
         return {
 

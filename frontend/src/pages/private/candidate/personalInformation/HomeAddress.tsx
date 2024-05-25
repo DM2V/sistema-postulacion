@@ -13,12 +13,20 @@ import {
   getParish,
 } from "@/utils/fetch_functions/staticData";
 import { set } from "date-fns";
+import { User } from "@/types/user";
 
 interface Props {
   onChange: (name: string, selectedOption: string) => void;
 }
 
 const HomeAddressForm: React.FC<Props> = ({ onChange }) => {
+  const [model, setModel] = useState<User | undefined>(undefined);
+
+  useEffect(() => {
+    setModel(pb.authStore.model as User);
+      }, [pb.authStore])
+  const userId = model?.id;
+
   const [homeAddressData, setHomeAddressData] = useState<HomeAddress>();
   const [province, setProvince] = useState<Province[]>([]);
   const [canton, setCanton] = useState<Canton[]>([]);
@@ -44,7 +52,7 @@ const HomeAddressForm: React.FC<Props> = ({ onChange }) => {
 
   async function fetchHomeAddress() {
     try{
-      const record = await pb.collection("HomeAddress").getOne("msof6xv1zl55pof", {
+      const record = await pb.collection("HomeAddress").getOne(userId, {
         expand: "cv,cv.homeAddress",
         fields: "expand.cv.expand.homeAddress",
       });

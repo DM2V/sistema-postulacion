@@ -4,6 +4,8 @@ import { validateNotEmpty, validateNumbersOnly } from "@/utils/validations";
 import InputLabel from "@/components/Form/InputLabel";
 import ComboBox from "@/components/Form/ComboBox";
 import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
+import { pb } from "@/utils/pocketbase";
+import { User } from "@/types/user";
 
 import {
   IdentificationType,
@@ -26,6 +28,13 @@ interface Props {
 }
 
 const EmergencyContactForm: React.FC<Props> = ({ onChange }) => {
+  const [model, setModel] = useState<User | undefined>(undefined);
+
+  useEffect(() => {
+    setModel(pb.authStore.model as User);
+      }, [pb.authStore])
+  const userId = model?.id;
+
   const [province, setProvince] = useState<Province[]>([]);
   const [canton, setCanton] = useState<Canton[]>([]);
   const [parish, setParish] = useState<Parish[]>([]);

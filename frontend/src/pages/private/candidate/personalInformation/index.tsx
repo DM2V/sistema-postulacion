@@ -1,6 +1,7 @@
 import GreenButton from "@/components/Buttons/GreenButton";
 import { pb } from "@/utils/pocketbase";
 import { FC, FormEvent, useEffect, useState } from "react";
+import { User } from "@/types/user";
 
 import ComboBoxGeneric from "@/components/Form/ComboBoxGeneric";
 import InputLabel from "@/components/Form/InputLabel";
@@ -26,7 +27,12 @@ import {
 import { validateNotEmpty, validateNumbersOnly } from "@/utils/validations";
 
 const PersonalInformationPage: FC = () => {
-  const userId = "msof6xv1zl55pof";
+  const [model, setModel] = useState<User | undefined>(undefined);
+
+  useEffect(() => {
+    setModel(pb.authStore.model as User);
+      }, [pb.authStore])
+  const userId = model?.id;
 
   const [formData, setFormData] = useState({
     homeAddressData: {
@@ -118,16 +124,13 @@ const PersonalInformationPage: FC = () => {
       // return;
     }
 
-    try {
-      const { cv } = await pb
-        .collection("users")
-        .getOne(userId, { fields: "cv" });
-
+   /* try {
+      const { cv } = await pb.collection("users").getOne(userId, { fields: "cv" });
+      
       if (!cv) {
         console.error("Error retrieving CV data.");
         return;
       }
-
       if (homeAddressData.id) {
         await pb
           .collection("HomeAddress")
@@ -154,37 +157,93 @@ const PersonalInformationPage: FC = () => {
       setNotificationMessage("¡El formulario ha sido enviado!");
     } catch (error) {
       console.error("Error updating CV data:", error);
+    }*/
+    try {
+      const record = await pb.collection("users").getOne(userId, {
+        fields: "cv"
+      });
+    
+      let cvId;
+      if (!record?.cv) {
+        const newCV = await pb.collection("CV").create({});
+        setNotificationMessage(`Cv nuevo con id ${newCV.id}`);
+        await pb.collection("users").update(userId, {
+          cv: newCV.id
+        });
+        cvId = newCV.id;
+      } else {
+        cvId = record.cv;
+        setNotificationMessage("CV del usuario encontrado.");
+      }
+    
+      const cvRecord = await pb.collection("CV").getOne(cvId, {
+        fields: "homeAddress, emergencyContact"
+      });
+    
+      let homeAddressId;
+      if (!cvRecord?.homeAddress) {
+        const newHomeAddress = await pb.collection("homeAddress").create(formData.homeAddressData);
+        homeAddressId = newHomeAddress.id;
+      } else {
+        homeAddressId = cvRecord.homeAddress;
+        // Actualizar homeAddress existente con FormData
+        await pb.collection("homeAddress").update(homeAddressId,  formData.homeAddressData);
+      }
+    
+      let emergencyContactId;
+      if (!cvRecord?.emergencyContact) {
+        const newEmergencyContact = await pb.collection("emergencyContact").create(formData.emergencyContactData);
+        emergencyContactId = newEmergencyContact.id;
+      } else {
+        emergencyContactId = cvRecord.emergencyContact;
+       // console.log("Es: ",emergencyContactId)
+        // Actualizar emergencyContact existente con FormData
+        await pb.collection("emergencyContact").update(emergencyContactId,formData.emergencyContactData);
+      }
+    
+      await pb.collection("CV").update(cvId, {
+        homeAddress: homeAddressId,
+        emergencyContact: emergencyContactId
+      });
+    
+    } catch (error) {
+      console.error("Error al obtener o crear el CV y homeAddress:", error);
     }
+    
+    
   }
 
-  console.log(formData)
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("click");
     e.preventDefault();
     if (formData.homeAddressData && formData.emergencyContactData) {
       createPersonalInfomation(
         formData.homeAddressData,
-        formData.emergencyContactData,
+        formData.emergencyContactData
       );
     } else {
       setNotificationMessage("Por favor, completa los datos antes de enviar.");
     }
   }
-
-
+  
   useEffect(() => {
-    fetchUserData(userId).then((data) => {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        emergencyContactData: data.emergencyContact
-          ? { ...prevFormData.emergencyContactData, ...data.emergencyContact }
-          : prevFormData.emergencyContactData,
-        homeAddressData: data.homeAddress
-          ? { ...prevFormData.homeAddressData, ...data.homeAddress }
-          : prevFormData.homeAddressData,
-      }));
-    });
+    // Verifica si userId tiene un valor antes de llamar a fetchUserData
+    if (userId) {
+      fetchUserData(userId).then((data) => {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          emergencyContactData: data.emergencyContact
+            ? { ...prevFormData.emergencyContactData, ...data.emergencyContact }
+            : prevFormData.emergencyContactData,
+          homeAddressData: data.homeAddress
+            ? { ...prevFormData.homeAddressData, ...data.homeAddress }
+            : prevFormData.homeAddressData,
+        }));
+      });
+    }
   }, [userId]);
+  
 
   useEffect(() => {
     getEmergencyRelationship(setRelationship);
@@ -653,7 +712,7 @@ const PersonalInformationPage: FC = () => {
             </form>
             <Notification message={notificationMessage} />
             <div className="my-4 flex justify-end">
-              <GreenButton content="Guardar" />
+            <GreenButton content="Guardar" onClick={handleSubmit} />
             </div>
           </div>
         </div>

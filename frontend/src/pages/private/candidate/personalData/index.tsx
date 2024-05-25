@@ -147,6 +147,7 @@ const PersonalDataPage: FC = () => {
         async function createBlankCV(userId: string) {
       try {
         const newCV = await pb.collection("CV").create({});
+        
         await pb.collection("users").update(userId, { cv: newCV.id });
         return newCV;
       } catch (error) {
