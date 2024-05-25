@@ -10,6 +10,7 @@ import { AcademicTraining, Language, Publications } from "@/types/cv";
 import { pb } from "@/utils/pocketbase";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { User } from "@/types/user";
 
 function TrainingPublications() {
   const router = useRouter();
@@ -17,63 +18,71 @@ function TrainingPublications() {
   const [academicTraining, setAcademicTraining] = useState<AcademicTraining[]>(
     [],
   );
+  const [model, setModel] = useState<User | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+
   const [publications, setPublications] = useState<Publications[]>([]);
+  useEffect(() => {
+    setModel(pb.authStore.model as User);
+      }, [pb.authStore])
+  const userId = model?.id;
 
   const handleSubmit = () => {
     router.push(EDUCATIONPUBLICATIONS);
   };
 
-  useEffect(() => {
-    if (userId) {
-      fetchLanguagesForUser(userId);
-    }
-  }, [userId]);
 
-  async function fetchLanguagesForUser(userId:string) {
+  async function fetchLanguagesForUser() {
     try {
-      const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
+      const record = await pb.collection("users").getOne(userId, {
         expand: "cv,cv.languages",
         fields: "expand.cv.expand.languages",
       });
-     const primerIdioma = record.expand.cv.expand.languages;
-     console.log("Primer idioma ID:", primerIdioma.id);
+      
       if (record?.expand?.cv?.expand?.languages) {
-        setLanguages(record?.expand?.cv.expand.languages);
+        setLanguages(record?.expand?.cv?.expand?.languages);
       } else {
         console.log("No languages found for user");
       }
-      console.log("Fetched languages:", languages);
     } catch (error) {
       console.error("Error fetching languages:", error);
     }
   }
-  async function fetchPublicationsForUser(userId:string) {
+  
+  async function fetchPublicationsForUser() {
     try {
-      const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
+      const record = await pb.collection("users").getOne(userId, {
         expand: "cv,cv.publications",
         fields: "expand.cv.expand.publications",
       });
-      setPublications(record?.expand?.cv.expand.publications);
-      console.log("Fetched publications:", publications);
+      
+      if (record?.expand?.cv?.expand?.publications) {
+        setPublications(record?.expand?.cv?.expand?.publications);
+      } else {
+        console.log("No publications found for user");
+      }
     } catch (error) {
       console.error("Error fetching publications:", error);
     }
   }
-
-  async function fetchAcademicTrainingForUser(userId:string) {
+  
+  async function fetchAcademicTrainingForUser() {
     try {
-      const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
+      const record = await pb.collection("users").getOne(userId, {
         expand: "cv,cv.academicTraining",
         fields: "expand.cv.expand.academicTraining",
       });
-     // Acceder a la formación académica del CV del usuarios 
-     const academicTraining = record?.expand?.cv?.expand?.academicTraining;
-    console.log("Formación académica:", academicTraining);
-      setAcademicTraining(record?.expand?.cv.expand.academicTraining);
+      
+      if (record?.expand?.cv?.expand?.academicTraining) {
+        setAcademicTraining(record?.expand?.cv?.expand?.academicTraining);
+      } else {
+        console.log("No academic training found for user");
+      }
     } catch (error) {
       console.error("Error fetching academic training:", error);
     }
   }
+  
 
   async function createLanguage(formData: FormData) {
     const language = formData.get("language");
@@ -90,7 +99,7 @@ function TrainingPublications() {
 
     
     try {
-      const { cv } = await pb.collection("users").getOne("msof6xv1zl55pof", {
+      const { cv } = await pb.collection("users").getOne(userId, {
         fields: "cv",
       });
       if (!cv) {
@@ -123,7 +132,16 @@ function TrainingPublications() {
 
   async function deleteLanguage(id: string) {
     await pb.collection("Language").delete(id);
+  
+    // Después de eliminar el idioma de la base de datos, actualiza el estado languages
+    setLanguages(prevLanguages => prevLanguages.filter(language => language.id !== id));
+    
+    // Si la longitud de los datos es cero, actualiza el estado para reflejar que ya no hay datos disponibles
+    if (languages.length === 0) {
+      setLanguages([]);
+    }
   }
+  
 
   async function createPublication(formData: FormData) {
     const researchType = formData.get("researchType");
@@ -154,7 +172,7 @@ function TrainingPublications() {
 
     const publicationCreated = await pb.collection("Publications").create(data);
 
-    const { cv } = await pb.collection("users").getOne("msof6xv1zl55pof", {
+    const { cv } = await pb.collection("users").getOne(userId, {
       fields: "cv",
     });
     const dataCV = {
@@ -182,8 +200,14 @@ function TrainingPublications() {
 
   async function deletePublication(id: string) {
     await pb.collection("Publications").delete(id);
+  
+    setPublications(prevPublications => prevPublications.filter(publication => publication.id !== id));
+    
+    if (publications.length === 0) {
+      setPublications([]);
+    }
   }
-
+  
   async function createAcademicTraining(formData: FormData) {
     const educationLevel = formData.get("educationLevel");
     const institution = formData.get("institution");
@@ -214,7 +238,7 @@ function TrainingPublications() {
     try {
       const { cv } = await pb
         .collection("users")
-        .getOne("msof6xv1zl55pof", { fields: "cv" });
+        .getOne(userId, { fields: "cv" });
       if (!cv) {
         console.error("Error retrieving CV data.");
         return;
@@ -255,25 +279,53 @@ function TrainingPublications() {
 
   async function deleteAcademicTraining(id: string) {
     await pb.collection("AcademicTraining").delete(id);
+  
+    // Después de eliminar el elemento de la base de datos, actualiza el estado academicTraining
+    setAcademicTraining(prevAcademicTraining => prevAcademicTraining.filter(element => element.id !== id));
+    
+    // Si la longitud de los datos es cero, actualiza el estado para reflejar que ya no hay datos disponibles
+    if (academicTraining.length === 0) {
+      setAcademicTraining([]);
+    }
   }
-
   useEffect(() => {
-    if (languages &&  languages.length === 0) {
-      fetchLanguagesForUser();
+    console.log("Componente montado o loading cambió:", loading);
+    const fetchData = async () => {
+      console.log("Comenzando a cargar datos...");
+      await Promise.all([
+        fetchLanguagesForUser(),
+        fetchPublicationsForUser(),
+        fetchAcademicTrainingForUser()
+      ]);
+      console.log("Datos cargados correctamente");
+      setLoading(false);
+    };
+  
+    fetchData();
+  }, []);
+  
+  useEffect(() => {
+    console.log("Estado de loading o datos cambiaron:", loading, languages, publications, academicTraining);
+    if (!loading) {
+      if (languages.length === 0) {
+        fetchLanguagesForUser();
+      }
+      if (publications.length === 0) {
+        fetchPublicationsForUser();
+      }
+      if (academicTraining.length === 0) {
+        fetchAcademicTrainingForUser();
+      }
     }
-    if (publications && publications.length === 0) {
-      fetchPublicationsForUser();
-    }
-    if (academicTraining && academicTraining.length === 0) {
-      fetchAcademicTrainingForUser();
-    }
-  });
+  }, [loading, languages, publications, academicTraining]);
   return (
     <LayoutWithSidebarCandidate>
       <div>
         <NavBar />
         <div className="py-5">
+          
           <div>
+          
             <CRUDSection
               title="Formación Académica"
               description="Detalles sobre los niveles de instrucción que has alcanzado, comenzando con el nivel de instrucción que tenga mayor relevancia para la postulación."
@@ -335,6 +387,7 @@ function TrainingPublications() {
               ]}
             />
           </div>
+          
 
           <div>
             <CRUDSection
