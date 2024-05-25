@@ -1,8 +1,13 @@
 export function validateEcuadorianID(id: string): boolean {
+  // Verificar si el número de identificación tiene exactamente 10 dígitos
+  if (id.length !== 10) {
+    return false;
+  }
+
   const numberPattern = /^[0-9]*$/;
 
-  if (!id || !numberPattern.test(id)) {
-    return false; // Retorna falso si el campo está vacío o contiene caracteres que no son números
+  if (!numberPattern.test(id)) {
+    return false; // Retorna falso si el campo no consiste solo en números
   }
 
   const pattern = /^(0[1-7]|1[0-9]|20)(\d{7})\d$/;

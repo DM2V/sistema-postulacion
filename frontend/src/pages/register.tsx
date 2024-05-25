@@ -29,7 +29,12 @@ function Register() {
   ) => { };
 
   async function handleCreateUser() {
-    console.log("first")
+    if (!/^\d{10}$/.test(identificationNumber.trim())) {
+      alert("El número de identificación debe contener exactamente 10 dígitos.");
+      return; // Detener la ejecución si el número de identificación no es válido
+    }
+    console.log("first");
+    
 
     const data = {
       "identificationNumber": identificationNumber.trim(),
