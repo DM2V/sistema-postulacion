@@ -23,7 +23,13 @@ function TrainingPublications() {
     router.push(EDUCATIONPUBLICATIONS);
   };
 
-  async function fetchLanguagesForUser() {
+  useEffect(() => {
+    if (userId) {
+      fetchLanguagesForUser(userId);
+    }
+  }, [userId]);
+
+  async function fetchLanguagesForUser(userId:string) {
     try {
       const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
         expand: "cv,cv.languages",
@@ -41,7 +47,7 @@ function TrainingPublications() {
       console.error("Error fetching languages:", error);
     }
   }
-  async function fetchPublicationsForUser() {
+  async function fetchPublicationsForUser(userId:string) {
     try {
       const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
         expand: "cv,cv.publications",
@@ -54,7 +60,7 @@ function TrainingPublications() {
     }
   }
 
-  async function fetchAcademicTrainingForUser() {
+  async function fetchAcademicTrainingForUser(userId:string) {
     try {
       const record = await pb.collection("users").getOne("msof6xv1zl55pof", {
         expand: "cv,cv.academicTraining",
@@ -82,6 +88,7 @@ function TrainingPublications() {
       certificate,
     };
 
+    
     try {
       const { cv } = await pb.collection("users").getOne("msof6xv1zl55pof", {
         fields: "cv",
