@@ -13,7 +13,6 @@ import Modal from "react-modal";
 function ViewUser() {
   const router = useRouter();
   const { id } = router.query;
-
   const [userCv, setUserCv] = useState<User | undefined>();
   const [score, setScore] = useState<number>();
   const [phaseStatus, setPhaseStatus] = useState<User>();
@@ -50,9 +49,11 @@ function ViewUser() {
     const record = await pb.collection("users").getOne<User>(id as string, {
       expand: "phaseStatus, offer",
     });
+ 
+
     setPhaseStatus(record);
     const scoreMerits = record?.expand?.phaseStatus?.score;
-    console.log(record);
+    console.log("asas",scoreMerits )
 
     if (score == null || score < 35 || score > 60) {
       alert("El puntaje debe ser mínimo 35 y máximo 50.");
@@ -64,18 +65,15 @@ function ViewUser() {
       };
       const newPhase = await pb.collection("PhaseStatus").create(data);
       console.log(data);
-      alert("Exitoso");
+     // alert("Exitoso");
       const idPhaseStatus = newPhase.id;
-
-
       //update user with the new phaseStatus
       const data2 = {
         "phaseStatus": idPhaseStatus,
       };
       pb.collection('users').update(id as string, data2);
       console.log("Usuario actualizado con nuevo phaseStatus");
-
-      window.location.reload();
+  //    window.location.reload();
     } else {
       alert("Ya existe un puntaje");
     }
@@ -88,10 +86,10 @@ function ViewUser() {
     const record = await pb.collection("users").getOne<User>(id as string, {
       expand: "phaseStatus, cv, offer",
     });
+    console.log("somos",record)
     setPhaseStatus(record);
     const score = record?.expand?.phaseStatus?.score ?? 0;
-    console.log(record);
-    console.log(record?.expand?.phaseStatus?.score);
+    console.log(score);
 
     if (score >= minScore && score <= maxScore) {
       alert("Puntaje válido! Pasa a la siguiente fase");
