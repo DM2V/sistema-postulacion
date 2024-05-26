@@ -129,6 +129,7 @@ const PdfTemplate = () => {
   const [user, setUser] = useState<User | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
   const [userCV, setUserCV] = useState<CvExpandend | null>();
+  
   const userId = "msof6xv1zl55pof";
 
   // Para obtener la información del usuario

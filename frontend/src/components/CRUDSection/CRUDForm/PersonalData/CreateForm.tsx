@@ -39,7 +39,8 @@ type CreateFormPersonalDataProps = {
 function CreateFormPersonalData({
   selectedElement,
 }: CreateFormPersonalDataProps) {
-    const userId = "msof6xv1zl55pof";
+ // const [model, setModel] = useState(pb.authStore.model as User);
+  //const userId = model?.id;
     const [notificationMessage, setNotificationMessage] = useState("");
     const [personalData, setPersonalData] = useState<PersonalData>();
     const [isSpecialCapacityVisible, setSpecialCapacityVisible] = useState(true);
@@ -88,7 +89,7 @@ function CreateFormPersonalData({
         setSelectedImage(imageUrl);
       };
     useEffect(() => {
-        fetchPersonalDataForUser(userId).then((data) => {
+        fetchPersonalDataForUser("s").then((data) => {
           setPersonalData(data);
         });
         getGender(setGender);
@@ -106,7 +107,7 @@ function CreateFormPersonalData({
   return (
     <div>
       <div>
-        <h2 className="mb-4 font-bold text-state-press">Datos personales</h2>
+        <h2 className="mb-4 font-bold text-state-press">Datoss sspersonales</h2>
         <ImageInput
           title="Fotografía"
           name="avatar"

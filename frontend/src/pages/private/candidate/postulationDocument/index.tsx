@@ -6,11 +6,17 @@ import { PostulacionDocument } from "@/types/cv";
 import { pb } from "@/utils/pocketbase";
 import { validateNotEmpty } from "@/utils/validations";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter,useEffect } from "next/router";
 import { FC, FormEvent, useState } from "react";
+import { User } from "@/types/user";
 
 const PostulantionDocumentPage: FC = () => {
   const router = useRouter();
+  const { id } = router.query;
+  console.log("s",id)
+  const [model, setModel] = useState(pb.authStore.model as User);
+  const userId = model?.id;
+
   const [postulationDocument, setPostulationDocument] =
     useState<PostulacionDocument | null>(null);
 
@@ -31,7 +37,7 @@ const PostulantionDocumentPage: FC = () => {
     try {
       const { cv } = await pb
         .collection("users")
-        .getOne("msof6xv1zl55pof", { fields: "cv" });
+        .getOne(userId, { fields: "cv" });
       if (!cv) {
         console.error("Error retrieving CV data.");
         return;
