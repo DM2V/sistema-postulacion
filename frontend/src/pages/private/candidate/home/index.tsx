@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import FasePostulacion from '@/assets/images/FasePostulacion.webp';
+import FaseConcurso from '@/assets/images/FasesConcurso.webp';
 import GreenButton from '@/components/Buttons/GreenButton';
 import LayoutWithSidebarCandidate from '@/components/Layout/LayoutWithSidebarCandidate';
 import { CANIDADATEOFFERS } from '@/routes/paths';
@@ -24,7 +24,7 @@ function index() {
           <p className='text-center my-5 text-black'>Ahora puede comenzar la <b>Fase de Postulación</b></p>
 
           <section>
-            <Image src={FasePostulacion} alt='Fases Concurso' className='w-screen' />
+            <Image src={FaseConcurso} alt='Fases Concurso' className='w-screen' />
 
           </section>
 
