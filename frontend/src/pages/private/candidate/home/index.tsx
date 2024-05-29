@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import FaseConcurso from '@/assets/images/FasesConcurso.webp';
+import FaseConcurso from '@/assets/images/FaseConcurso.webp';
+import FasesConcurso from '@/assets/images/FasesConcurso.webp';
 import GreenButton from '@/components/Buttons/GreenButton';
 import LayoutWithSidebarCandidate from '@/components/Layout/LayoutWithSidebarCandidate';
 import { CANIDADATEOFFERS } from '@/routes/paths';
