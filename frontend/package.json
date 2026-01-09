@@ -29,7 +29,7 @@
     "react-modal": "^3.16.1",
     "react-pdf": "^7.7.3",
     "react-pdf-tailwind": "^2.3.0",
-    "react-router-dom": "^6.18.0",
+    "react-router-dom": "^6.30.3",
     "react-select": "^5.8.0",
     "react-slick": "^0.29.0",
     "slick-carousel": "^1.8.1"
